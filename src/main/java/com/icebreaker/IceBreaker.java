@@ -4,8 +4,11 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 public class IceBreaker {
 
@@ -25,6 +28,11 @@ public class IceBreaker {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             System.out.println("Hello!!!");
+            // Print request body
+            System.out.println("Request Body: ");
+            InputStream requestBody = exchange.getRequestBody();
+            String body = new Scanner(requestBody, StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
+            System.out.println(body);
             String response = "Hello, this is the response";
             exchange.sendResponseHeaders(200, response.length());
             OutputStream os = exchange.getResponseBody();

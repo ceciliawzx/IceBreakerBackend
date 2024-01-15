@@ -1,8 +1,7 @@
 import org.junit.Assert;
 import org.junit.Test;
 
-public class IceBreakerTest {
-
+public class TestTest {
     @Test
     public void testAdd() {
         int a = 5;

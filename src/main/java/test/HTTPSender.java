@@ -19,9 +19,10 @@ public class HTTPSender {
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             StringBuffer content = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
-            }
+            content.append("This is Leo Li");
+//            while ((inputLine = in.readLine()) != null) {
+//                content.append(inputLine);
+//            }
             in.close();
 
             // Print the response

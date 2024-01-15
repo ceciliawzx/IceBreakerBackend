@@ -27,6 +27,7 @@ public class IceBreaker {
     static class MyHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
+            exchange.getRemoteAddress();
             System.out.println("Hello!!!");
             // Print request body
             System.out.println("Request Body: ");

@@ -1,3 +1,5 @@
+package main.java;
+
 public class SampleClass {
 
     public int add(int a, int b) {

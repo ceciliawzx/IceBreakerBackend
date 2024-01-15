@@ -1,0 +1,36 @@
+# IntelliJ IDEA
+.idea/
+
+# Compiled class file
+*.class
+
+# Log files
+*.log
+
+# Bytecode
+*.jar
+
+# Compiled Java binaries
+/target/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Maven
+target/
+*.iml
+
+# Gradle
+.gradle/
+build/
+
+# Visual Studio Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db

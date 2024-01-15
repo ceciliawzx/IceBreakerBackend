@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.net.InetSocketAddress;
 
-@SuperBuilder
+@Builder
 @Getter
 @RequiredArgsConstructor
 public class Person {

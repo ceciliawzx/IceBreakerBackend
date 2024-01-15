@@ -24,6 +24,7 @@ public class IceBreaker {
     static class MyHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
+            System.out.println("Hello!!!");
             String response = "Hello, this is the response";
             exchange.sendResponseHeaders(200, response.length());
             OutputStream os = exchange.getResponseBody();

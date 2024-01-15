@@ -1,5 +1,9 @@
 package com.icebreaker.person;
 
-public class Admin {
+import lombok.Builder;
+import lombok.Getter;
 
+@Builder
+@Getter
+public class Admin extends Person{
 }

@@ -1,6 +1,6 @@
 # This is a sample GitLab CI/CD configuration file for a Maven project
 
-image: maven:3.6.3-jdk-11
+image: maven:3.8.1-jdk-17
 
 stages:
   - build

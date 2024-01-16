@@ -3,8 +3,7 @@
 image: maven:3.6.3-jdk-11
 
 stages:
-  - build
-  - test
+  - build_and_test
   - deploy
 
 cache:
@@ -12,23 +11,25 @@ cache:
     - .m2/repository
 
 build:
-  stage: build
+  stage: build_and_test
   script:
-    - mvn compile
+    - mvn clean install
   artifacts:
     paths:
       - target/
 
-test:
-  stage: test
-  script:
-    - mvn test
+variables:
+  REMOTE_SERVER: "ljthey.co.uk"
+  REMOTE_USER: "ice"
+  JAR_FILE: "target/IceBreakerBackend-1.0.jar"
+  SSH_PASSWORD: "$CI_SSH_PASSWORD"
 
 deploy:
   stage: deploy
   script:
-    - echo "Deploying the application..."
-    # Add deployment scripts here
-    # For example, scp files to a server, or push to a container registry
-  only:
-    - master # or any other branch you prefer
+    - apt-get update -qy
+    - apt-get install -y openssh-client
+    - apt-get install -y sshpass
+
+    # Copy the JAR file to the remote server
+    - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$JAR_FILE" "$REMOTE_USER@$REMOTE_SERVER:IceBreaker/cicd/"

@@ -1,5 +1,6 @@
 package com.icebreaker.room;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import com.icebreaker.person.*;
 
@@ -12,17 +13,17 @@ public class Room {
     @Getter
     private final int roomNumber;
     private final List<User> players = new ArrayList<User>(); // All players including the host. Host is at position 0
-    private final Admin host;
-    private final List<InetSocketAddress> userAddresses = new ArrayList<InetSocketAddress>();
+    // private final Admin host;
+    private final List<HttpServletRequest> userAddresses = new ArrayList<HttpServletRequest>();
 
-    public Room(int roomNumber, Admin host) {
+    public Room(int roomNumber, HttpServletRequest request) {
         this.roomNumber = roomNumber;
-        this.host = host;
+        userAddresses.add(request);
     }
 
-    public boolean joinRoom() {
-        // TODO
-        return false;
+    public boolean joinRoom(HttpServletRequest request) {
+        userAddresses.add(request);
+        return true;
     }
 
     public void startRoom() {

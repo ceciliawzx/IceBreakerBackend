@@ -29,8 +29,4 @@ public class Room {
     public void startRoom() {
 
     }
-
-    public int getRoomNumber() {
-        return roomNumber;
-    }
 }

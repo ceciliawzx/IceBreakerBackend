@@ -43,6 +43,6 @@ public class HttpRequests {
     public String handleDestroyRoom(@RequestParam(name = "roomNumber", required = true) int number) {
         ServerRunner runner = ServerRunner.getInstance();
         return runner.destroyRoom(number) ?
-                "You have deleted room " + number : "Room Deletion Failed";
+                "You have deleted room " + number : "Room Deletion Failed. No Such Active Room.";
     }
 }

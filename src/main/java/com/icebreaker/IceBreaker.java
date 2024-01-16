@@ -18,7 +18,11 @@ public class IceBreaker {
 
     @GetMapping("/myEndpoint")
     public String handleRequest(@RequestParam(name = "message", required = false) String message) {
-        System.out.println("YOYOYOYOYOYO");
         return "Received message: " + message;
+    }
+
+    @GetMapping("/createRoom")
+    public String handleRoomCreation(@RequestParam(name = "message", required = false) String message) {
+        return "Room Created!!! OMG I am soooooooooooooooooooooooooo SmartttttttttttttT!!!!!!!!!!!!!!!!!!";
     }
 }

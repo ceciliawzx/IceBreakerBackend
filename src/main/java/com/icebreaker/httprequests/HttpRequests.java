@@ -1,5 +1,6 @@
 package com.icebreaker.httprequests;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +26,7 @@ public class HttpRequests {
 
     @GetMapping("/joinRoom")
     public String handleJoinRoom(@RequestParam(name = "roomNumber", required = true) int number,
-                                 @RequestHeader(value = "X-Forwarded-For", required = false) String xForwardedFor) {
-        String clientIpAddress = xForwardedFor != null ? xForwardedFor.split(",")[0] : "Unknown";
-        return "You have joined room " + number + ". Your IP address is " + xForwardedFor;
+                                 HttpServletRequest request) {
+        return "You have joined room " + number + ". Your IP address is " + request.getRemoteAddr();
     }
 }

@@ -1,7 +1,6 @@
 package com.icebreaker.room;
 
 import lombok.Getter;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import com.icebreaker.person.*;
 
 import java.net.InetSocketAddress;
@@ -23,6 +22,6 @@ public class Room {
 
     public boolean joinRoom() {
         // TODO
-        throw new NotImplementedException();
+        return false;
     }
 }

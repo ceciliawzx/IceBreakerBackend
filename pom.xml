@@ -12,8 +12,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version> <!-- Use the latest version available -->
                 <configuration>
-                    <source>1.8</source> <!-- Specify Java source compatibility -->
-                    <target>1.8</target> <!-- Specify Java target compatibility -->
+                    <source>11</source> <!-- Specify Java source compatibility -->
+                    <target>11</target> <!-- Specify Java target compatibility -->
                 </configuration>
             </plugin>
             <plugin>
@@ -61,6 +61,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
             <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

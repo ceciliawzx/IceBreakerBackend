@@ -24,4 +24,8 @@ public class Room {
         // TODO
         return false;
     }
+
+    public void startRoom() {
+
+    }
 }

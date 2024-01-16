@@ -1,6 +1,6 @@
 # This is a sample GitLab CI/CD configuration file for a Maven project
 
-image: maven:3.8.1-jdk-11
+image: openjdk:17-jdk-alpine
 
 stages:
   - build_and_test
@@ -9,10 +9,22 @@ stages:
 cache:
   paths:
     - .m2/repository
+    
+before_script:
+  - apk update
 
 build:
   stage: build_and_test
   script:
+    # Download and install Maven
+    - apk add curl
+    - curl -fsSL https://archive.apache.org/dist/maven/maven-3/3.8.1/binaries/apache-maven-3.8.1-bin.tar.gz -o /tmp/apache-maven.tar.gz
+    - tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/
+    - mv /usr/share/apache-maven-3.8.1 /usr/share/maven
+    - ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+
+    - mvn --version
+    - java --version
     - mvn clean install
   artifacts:
     paths:
@@ -28,12 +40,30 @@ variables:
 deploy:
   stage: deploy
   script:
-    - apt-get update -qy
-    - apt-get install -y openssh-client
-    - apt-get install -y sshpass
+    - apk add openssh-client
+    - apk add sshpass
 
+    # copy jar to server
     - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$JAR_FILE" "$REMOTE_USER@$REMOTE_SERVER:IceBreaker/cicd/"
-    # - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "pkill -f 'java -jar IceBreakerBackend-1.0.jar'"
-    # - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "nohup java -jar IceBreakerBackend-1.0.jar &>/dev/null &"
-    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "nohup java -jar IceBreakerBackend-1.0.jar &"
+
+    # serach if ther is existing pid
+    - EXISTING_PID=$(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
+    - echo "Checking for existing process on port $EXISTING_PORT"
+    - echo "EXISTING_PID $EXISTING_PID"
+
+    # if existing, kill it
+    - >
+      if [ "$EXISTING_PID" != "not_found" ]; then
+        echo "Killing existing process on port $EXISTING_PORT with PID $EXISTING_PID"
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "kill $EXISTING_PID"
+      else
+        echo "No existing process found on port $EXISTING_PORT"
+      fi
+
+    # launch
+    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "nohup java -jar IceBreaker/cicd/IceBreakerBackend-1.0.jar &>/dev/null  &"
+
+    - sleep 5
+
+    # Show current pid
     - echo $(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")

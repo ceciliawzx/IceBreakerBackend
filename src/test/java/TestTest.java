@@ -25,7 +25,7 @@ public class TestTest {
         for (int i = 0; i < TOTAL_NUM_OF_THREADS; i++) {
             threads[i] = new Thread(() -> {
                 for (int j = 0; j < TOTAL_NUM_OF_CALLS_PER_THREAD; j++) {
-                    httpRequests.handleRoomCreation("");
+                    httpRequests.handleRoomCreation("", null);
                 }
             });
             threads[i].start();
@@ -35,7 +35,7 @@ public class TestTest {
             threads[i].join();
         }
 
-        Assert.assertEquals(httpRequests.handleRoomCreation(""),
+        Assert.assertEquals(httpRequests.handleRoomCreation("", null),
                 "Room Created!!! Your New Room Number is " + TOTAL_NUM_OF_CALLS);
     }
 }

@@ -15,7 +15,8 @@ public class ServerRunner {
 
 //    private final List<Room> activeRooms = new ArrayList<>();
 
-    private ServerRunner() {}
+    private ServerRunner() {
+    }
 
     public static ServerRunner getInstance() {
         if (instance == null) {

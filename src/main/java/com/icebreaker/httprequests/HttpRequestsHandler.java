@@ -6,12 +6,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
-public class HttpRequests {
+public class HttpRequestsHandler {
 
     private final AtomicInteger roomNumber = new AtomicInteger(0);
 

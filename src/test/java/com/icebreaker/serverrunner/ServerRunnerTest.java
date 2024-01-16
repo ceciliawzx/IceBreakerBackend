@@ -2,17 +2,13 @@ package com.icebreaker.serverrunner;
 
 import static org.junit.Assert.*;
 
-import com.icebreaker.httprequests.HttpRequests;
 import com.icebreaker.room.Room;
 import jakarta.servlet.http.HttpServletRequest;
+import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-
-import org.junit.Rule;
-import org.junit.Test;
 
 
 public class ServerRunnerTest {
@@ -38,7 +34,6 @@ public class ServerRunnerTest {
         assertFalse(serverRunner.containsRoom(room));
         assertFalse(serverRunner.containsRoom(123));
     }
-
 
 
 }

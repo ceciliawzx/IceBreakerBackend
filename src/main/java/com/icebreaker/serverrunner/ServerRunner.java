@@ -2,8 +2,6 @@ package com.icebreaker.serverrunner;
 
 import com.icebreaker.room.Room;
 import jakarta.servlet.http.HttpServletRequest;
-//import java.util.ArrayList;
-//import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,8 +10,6 @@ public class ServerRunner {
 
     private final Map<Room, Integer> activeRooms = new HashMap<>();
     private final Map<Integer, Room> roomNumbers = new HashMap<>();
-
-//    private final List<Room> activeRooms = new ArrayList<>();
 
     private ServerRunner() {
     }
@@ -40,12 +36,6 @@ public class ServerRunner {
     }
 
     public boolean destroyRoom(int roomNumber) {
-//        for (Room r : activeRooms) {
-//            if (roomNumber == r.getRoomNumber()) {
-//                activeRooms.remove(r);
-//                return true;
-//            }
-//        }
         if (this.containsRoom(roomNumber)) {
             activeRooms.remove(roomNumbers.get(roomNumber));
             roomNumbers.remove(roomNumber);
@@ -55,12 +45,6 @@ public class ServerRunner {
     }
 
     public boolean joinRoom(int roomNumber, HttpServletRequest request) {
-//        for (Room r : activeRooms) {
-//            if (roomNumber == r.getRoomNumber()) {
-//                r.joinRoom(request);
-//                return true;
-//            }
-//        }
         if (this.containsRoom(roomNumber)) {
             roomNumbers.get(roomNumber).joinRoom(request);
             return true;

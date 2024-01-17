@@ -5,6 +5,7 @@ image: openjdk:17-jdk-alpine
 stages:
   - build_and_test
   - deploy
+  - integration_test
 
 cache:
   paths:
@@ -25,7 +26,8 @@ build:
 
     - mvn --version
     - java --version
-    - mvn clean install
+    # Skip integration test in build stage
+    - mvn install -DskipITs
   artifacts:
     paths:
       - target/
@@ -67,3 +69,9 @@ deploy:
 
     # Show current pid
     - echo $(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
+
+integration_test:
+  stage: integration_test
+  script:
+    # Only run integration tests after deployment
+    - mvn failsafe:integration-test

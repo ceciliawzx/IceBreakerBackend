@@ -25,7 +25,4 @@ public class HttpRequestsHandlerTest {
         assertEquals("Received message: Hello", response);
     }
 
-    // Add more tests for other methods...
 }
-
-// Additional tests for /joinRoom and /destroyRoom

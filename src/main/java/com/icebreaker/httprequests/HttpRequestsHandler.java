@@ -4,6 +4,7 @@ import com.icebreaker.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,7 +22,7 @@ public class HttpRequestsHandler {
         return "Received message: " + message;
     }
 
-    @GetMapping("/createRoom")
+    @PostMapping("/createRoom")
     public String handleRoomCreation(@RequestParam(name = "message", required = false) String message,
                                      HttpServletRequest request) {
         int newRoomNumber = roomNumber.getAndIncrement();

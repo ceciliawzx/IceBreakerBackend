@@ -5,6 +5,7 @@ image: openjdk:17-jdk-alpine
 stages:
   - build_and_test
   - deploy
+  - integration_test
 
 cache:
   paths:
@@ -22,10 +23,10 @@ build:
     - tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/
     - mv /usr/share/apache-maven-3.8.1 /usr/share/maven
     - ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
-
     - mvn --version
     - java --version
-    - mvn clean install
+    # Skip integration test in build stage
+    - mvn install -DskipITs
   artifacts:
     paths:
       - target/
@@ -67,3 +68,15 @@ deploy:
 
     # Show current pid
     - echo $(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
+
+integration_test:
+  stage: integration_test
+  script:
+    # Download and install Maven
+    - apk add curl
+    - curl -fsSL https://archive.apache.org/dist/maven/maven-3/3.8.1/binaries/apache-maven-3.8.1-bin.tar.gz -o /tmp/apache-maven.tar.gz
+    - tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/
+    - mv /usr/share/apache-maven-3.8.1 /usr/share/maven
+    - ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+    # Only run integration tests after deployment
+    - mvn failsafe:integration-test

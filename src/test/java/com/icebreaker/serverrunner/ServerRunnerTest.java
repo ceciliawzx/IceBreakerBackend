@@ -7,8 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Rule;
 import org.junit.Test;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
 
 
 public class ServerRunnerTest {

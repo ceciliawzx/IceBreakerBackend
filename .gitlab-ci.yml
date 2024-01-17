@@ -23,7 +23,6 @@ build:
     - tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/
     - mv /usr/share/apache-maven-3.8.1 /usr/share/maven
     - ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
-
     - mvn --version
     - java --version
     # Skip integration test in build stage
@@ -73,5 +72,11 @@ deploy:
 integration_test:
   stage: integration_test
   script:
+    # Download and install Maven
+    - apk add curl
+    - curl -fsSL https://archive.apache.org/dist/maven/maven-3/3.8.1/binaries/apache-maven-3.8.1-bin.tar.gz -o /tmp/apache-maven.tar.gz
+    - tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/
+    - mv /usr/share/apache-maven-3.8.1 /usr/share/maven
+    - ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
     # Only run integration tests after deployment
     - mvn failsafe:integration-test

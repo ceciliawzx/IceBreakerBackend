@@ -12,9 +12,9 @@ public class Room {
     private final int MAX_CAPACITY = 10;
     @Getter
     private final int roomNumber;
-    private final List<User> players = new ArrayList<User>(); // All players including the host. Host is at position 0
+    private final List<User> players = new ArrayList<>(); // All players including the host. Host is at position 0
     // private final Admin host;
-    private final List<HttpServletRequest> userAddresses = new ArrayList<HttpServletRequest>();
+    private final List<HttpServletRequest> userAddresses = new ArrayList<>();
 
     public Room(int roomNumber, HttpServletRequest request) {
         this.roomNumber = roomNumber;

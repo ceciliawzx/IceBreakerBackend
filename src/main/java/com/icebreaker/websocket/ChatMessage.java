@@ -1,14 +1,20 @@
 package com.icebreaker.websocket;
 
-import lombok.Data;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
-import com.icebreaker.person.Person;
 
 @Data
+@Builder
+@RequiredArgsConstructor
 public class ChatMessage {
-    private String content;
+    @NonNull
     private int roomNumber;
+    @NonNull
+    private String content;
+    @NonNull
     private LocalDateTime timestamp;
-    private Person sender;
+    @NonNull
+    private String sender;
 }

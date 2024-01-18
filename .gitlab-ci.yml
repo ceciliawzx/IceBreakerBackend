@@ -36,7 +36,7 @@ variables:
   REMOTE_USER: "ice"
   JAR_FILE: "target/IceBreakerBackend-1.0.jar"
   SSH_PASSWORD: "$CI_SSH_PASSWORD"
-  EXISTING_PORT: 8080
+  EXISTING_PORT: 8081
 
 deploy:
   stage: deploy

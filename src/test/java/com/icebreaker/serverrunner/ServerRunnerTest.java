@@ -1,20 +1,24 @@
 package com.icebreaker.serverrunner;
 
-import static org.junit.Assert.*;
-
 import com.icebreaker.room.Room;
 import jakarta.servlet.http.HttpServletRequest;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 public class ServerRunnerTest {
 
-    @Rule
-    public JUnitRuleMockery context = new JUnitRuleMockery();
-    private final ServerRunner serverRunner = ServerRunner.getInstance();
-    private final HttpServletRequest request = context.mock(HttpServletRequest.class);
+    private ServerRunner serverRunner;
+    private HttpServletRequest request;
+
+    @BeforeEach
+    public void setUp() {
+        serverRunner = ServerRunner.getInstance();
+        request = Mockito.mock(HttpServletRequest.class);
+    }
 
     @Test
     public void serverRunnerOnlyCreatesOneInstance() {
@@ -25,6 +29,10 @@ public class ServerRunnerTest {
     @Test
     public void serverRunnerCanAddAndDestroyRoom() {
         Room room = new Room(123, request);
+
+        // Mock behavior for HttpServletRequest
+        when(request.getAttribute("someAttribute")).thenReturn("someValue");
+
         assertTrue(serverRunner.addRoom(room));
         assertTrue(serverRunner.containsRoom(room));
         assertTrue(serverRunner.containsRoom(123));
@@ -32,6 +40,4 @@ public class ServerRunnerTest {
         assertFalse(serverRunner.containsRoom(room));
         assertFalse(serverRunner.containsRoom(123));
     }
-
-
 }

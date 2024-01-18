@@ -3,8 +3,8 @@ package com.icebreaker.person;
 import lombok.*;
 import java.net.InetSocketAddress;
 
+@Data
 @Builder
-@Getter
 @RequiredArgsConstructor
 public class Person {
     @NonNull

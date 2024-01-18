@@ -1,13 +1,13 @@
 package com.icebreaker.controllers;
 
+import com.icebreaker.person.Person;
+import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -46,5 +46,12 @@ public class HttpRequestsHandler {
         ServerRunner runner = ServerRunner.getInstance();
         return runner.destroyRoom(number) ?
                 "You have deleted room " + number : "Room Deletion Failed. No Such Active Room.";
+    }
+
+    @PutMapping("/addPerson")
+    public ResponseEntity<String> createPerson(@RequestBody User user) {
+        ServerRunner runner = ServerRunner.getInstance();
+        runner.roomAddUser(user);
+        return new ResponseEntity<>("Person updated successfully", HttpStatus.OK);
     }
 }

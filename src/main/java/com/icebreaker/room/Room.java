@@ -29,4 +29,9 @@ public class Room {
     public void startRoom() {
 
     }
+
+    public boolean addUser(User user) {
+        players.add(user);
+        return true;
+    }
 }

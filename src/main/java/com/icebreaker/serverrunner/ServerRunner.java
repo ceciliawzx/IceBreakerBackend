@@ -1,5 +1,7 @@
 package com.icebreaker.serverrunner;
 
+import com.icebreaker.person.Person;
+import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -50,5 +52,9 @@ public class ServerRunner {
             return true;
         }
         return false;
+    }
+
+    public void roomAddUser(User user) {
+        roomNumbers.get(user.getRoomId()).addUser(user);
     }
 }

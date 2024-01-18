@@ -1,5 +1,6 @@
 package com.icebreaker.websocket;
 
+import com.icebreaker.controller.ChatController;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

@@ -42,11 +42,13 @@ public class Room {
     }
 
     public Person getPlayer(String userID) {
+        System.out.println(userID);
         for (Person p : players) {
-            if (p.getId() == userID) {
+            if (userID.equals(p.getId())) {
                 return p;
             }
         }
+        System.out.println("Fail");
         return null;
     }
 }

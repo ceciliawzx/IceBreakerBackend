@@ -129,24 +129,29 @@ public class HttpRequestsHandler {
     }
 
     @GetMapping("/getPlayers")
-    public String getPlayersInARooom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String getPlayersInARoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
         List<Person> players = runner.getPlayersInRoom(roomCode);
-        Person admin = players.getFirst();
-        List<Person> users = players.subList(1, players.size());
+        if (players != null && !players.isEmpty()) {
+            Person admin = players.get(0);
+            List<Person> users = players.subList(1, players.size());
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json;
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json;
+            try {
+                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users));
+            } catch (Exception e) {
+                // Handle exception if JSON serialization fails
+                e.printStackTrace();
+                json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+            }
 
-        try {
-            json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users));
-        } catch (Exception e) {
-            // Handle exception if JSON serialization fails
-            e.printStackTrace();
-            json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+            return json;
         }
 
-        return json;
+        return "Room can not be found";
+
+
     }
 
     // In: room code    Out: Display name, who admin

@@ -8,12 +8,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 public class HttpRequestsHandler {
 
     private final AtomicInteger roomNumber = new AtomicInteger(0);
+    private final AtomicInteger userID = new AtomicInteger(0);
 
     @GetMapping("/myEndpoint")
     public String handleRequest(@RequestParam(name = "message", required = false) String message) {
@@ -21,9 +24,19 @@ public class HttpRequestsHandler {
     }
 
     @PostMapping("/createRoom")
-    public String handleRoomCreation(@RequestParam(name = "message", required = false) String message,
-                                     HttpServletRequest request) {
-        int newRoomNumber = roomNumber.getAndIncrement();
+    public String handleRoomCreation(@RequestParam(name = "name", required = false) String name,
+                                     HttpServletRequest request) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+        Integer newRoomNumber = roomNumber.getAndIncrement();
+        md.update(newRoomNumber.byteValue());
+        byte[] hashBytes = md.digest();
+        StringBuilder sb = new StringBuilder();
+        for (byte hashByte : hashBytes) {
+            sb.append(String.format("%02x", hashByte));
+        }
+        System.out.println(sb);
+
         Room newRoom = new Room(newRoomNumber, request);
         ServerRunner runner = ServerRunner.getInstance();
         return runner.addRoom(newRoom) ? "Room Created!!! Your New Room Number is " + newRoomNumber :
@@ -32,10 +45,11 @@ public class HttpRequestsHandler {
 
     @PostMapping("/joinRoom")
     public String handleJoinRoom(@RequestParam(name = "roomNumber", required = true) int number,
+                                 @RequestParam(name = "name", required = true) String name,
                                  HttpServletRequest request) {
         ServerRunner runner = ServerRunner.getInstance();
         return runner.joinRoom(number, request) ?
-                "You have joined room " + number + ". Your IP address is " + request.getRemoteAddr() :
+                name + " have joined room " + number + ". Your IP address is " + request.getRemoteAddr() :
                 "Join Room Failed";
     }
 

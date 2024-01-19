@@ -1,14 +1,12 @@
 package com.icebreaker.httprequests;
 
 import com.icebreaker.controllers.HttpRequestsHandler;
-import org.junit.Test;
 import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.mockito.Mockito;
-
 
 public class HttpRequestsHandlerTest {
 
@@ -25,5 +23,4 @@ public class HttpRequestsHandlerTest {
         String response = handler.handleRequest("Hello");
         assertEquals("Received message: Hello", response);
     }
-
 }

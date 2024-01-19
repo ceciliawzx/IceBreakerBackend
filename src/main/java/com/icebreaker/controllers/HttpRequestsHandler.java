@@ -1,6 +1,5 @@
 package com.icebreaker.controllers;
 
-import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-@CrossOrigin(origins = "*")
 @RestController
 public class HttpRequestsHandler {
 

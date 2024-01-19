@@ -1,10 +1,9 @@
 package com.icebreaker.person;
 
 import lombok.*;
-import lombok.experimental.SuperBuilder;
-
 import java.net.InetSocketAddress;
 
+@Data
 @Builder
 @Getter
 @RequiredArgsConstructor
@@ -16,7 +15,7 @@ public class Person {
     protected String nickname;
     @NonNull
     protected Integer roomId;
-    protected Integer id;
+    protected int id;
     protected byte[] profileImage;
     protected String firstName;
     protected String lastName;

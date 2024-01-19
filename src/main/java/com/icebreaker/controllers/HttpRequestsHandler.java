@@ -1,15 +1,18 @@
 package com.icebreaker.controllers;
 
+import com.icebreaker.person.Admin;
+import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
-import jakarta.servlet.http.HttpServletRequest;
+import com.icebreaker.utils.RoomCodeGenerator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -46,7 +49,7 @@ public class HttpRequestsHandler {
 
         ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
-        Room newRoom = new Room(newRoomNumber, roomCode, usb.toString());
+        Room newRoom = new Room(newRoomNumber, roomCode, new Admin(name, newRoomNumber, usb.toString()));
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -92,7 +95,7 @@ public class HttpRequestsHandler {
             json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
         }
 
-        return runner.joinRoom(code, usb.toString()) ?
+        return runner.joinRoom(code, name, usb.toString()) ?
                 json :
                 "Join Room Failed";
     }
@@ -102,6 +105,13 @@ public class HttpRequestsHandler {
         ServerRunner runner = ServerRunner.getInstance();
         return runner.destroyRoom(number) ?
                 "You have deleted room " + number : "Room Deletion Failed. No Such Active Room.";
+    }
+
+    @GetMapping("/isAdmin")
+    public boolean checkUserInRoom(@RequestParam("userID") String userID,
+                                   @RequestParam("roomCode") String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        return runner.isAdmin(userID, roomCode);
     }
 
     @PutMapping("/addPerson")
@@ -117,4 +127,33 @@ public class HttpRequestsHandler {
         // TODO
         return new ResponseEntity<>("Kicked user: " + userID + " From room: " + roomID, HttpStatus.OK);
     }
+
+    @GetMapping("/getPlayers")
+    public String getPlayersInARoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        List<Person> players = runner.getPlayersInRoom(roomCode);
+        if (players != null && !players.isEmpty()) {
+            Person admin = players.get(0);
+            List<Person> users = players.subList(1, players.size());
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json;
+
+            try {
+                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users));
+            } catch (Exception e) {
+                // Handle exception if JSON serialization fails
+                e.printStackTrace();
+                json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+            }
+
+            return json;
+        }
+
+        return "Room can not be found";
+
+
+    }
+
+    // In: room code    Out: Display name, who admin
+    // Im: userID    Out: User class
 }

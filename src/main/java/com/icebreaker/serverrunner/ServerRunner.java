@@ -1,5 +1,6 @@
 package com.icebreaker.serverrunner;
 
+import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
 import com.icebreaker.utils.RoomCodeGenerator;
@@ -7,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ServerRunner {
@@ -56,11 +58,11 @@ public class ServerRunner {
         return false;
     }
 
-    public boolean joinRoom(String roomCode, String userID) {
+    public boolean joinRoom(String roomCode, String nickname, String userID) {
         if (this.codeNumberMapping.containsKey(roomCode)) {
             int roomNumber = codeNumberMapping.get(roomCode);
             if (this.containsRoom(roomNumber)) {
-                roomNumbers.get(roomNumber).joinRoom(userID);
+                roomNumbers.get(roomNumber).joinRoom(new User(nickname, roomNumber, userID));
                 return true;
             }
         }
@@ -69,5 +71,9 @@ public class ServerRunner {
 
     public void roomAddUser(User user) {
         roomNumbers.get(user.getRoomId()).addUser(user);
+    }
+
+    public List<Person> getPlayersInRoom(String roomCode) {
+
     }
 }

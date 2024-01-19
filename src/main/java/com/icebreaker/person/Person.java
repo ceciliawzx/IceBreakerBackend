@@ -13,7 +13,8 @@ public class Person {
     protected String nickname;
     @NonNull
     protected Integer roomId;
-    protected int id;
+    @NonNull
+    protected String id;
     protected byte[] profileImage;
     protected String firstName;
     protected String lastName;

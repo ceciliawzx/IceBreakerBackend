@@ -1,5 +1,6 @@
 package com.icebreaker.controllers;
 
+import com.icebreaker.person.Admin;
 import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
@@ -46,7 +47,7 @@ public class HttpRequestsHandler {
 
         ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
-        Room newRoom = new Room(newRoomNumber, roomCode, usb.toString());
+        Room newRoom = new Room(newRoomNumber, roomCode, new Admin(name, newRoomNumber, usb.toString()));
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -92,7 +93,7 @@ public class HttpRequestsHandler {
             json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
         }
 
-        return runner.joinRoom(code, usb.toString()) ?
+        return runner.joinRoom(code, name, usb.toString()) ?
                 json :
                 "Join Room Failed";
     }
@@ -117,4 +118,12 @@ public class HttpRequestsHandler {
         // TODO
         return new ResponseEntity<>("Kicked user: " + userID + " From room: " + roomID, HttpStatus.OK);
     }
+
+    @GetMapping("/getPlayers")
+    public String getPlayersInARooom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+
+    }
+
+    // In: room code    Out: Display name, who admin
+    // Im: userID    Out: User class
 }

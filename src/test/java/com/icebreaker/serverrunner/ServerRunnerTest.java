@@ -1,5 +1,6 @@
 package com.icebreaker.serverrunner;
 
+import com.icebreaker.person.Admin;
 import com.icebreaker.room.Room;
 import com.icebreaker.utils.RoomCodeGenerator;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +32,7 @@ public class ServerRunnerTest {
     public void serverRunnerCanAddAndDestroyRoom() {
         RoomCodeGenerator roomCodeGenerator = new RoomCodeGenerator();
         String roomCode = roomCodeGenerator.generateUniqueCode();
-        Room room = new Room(123, roomCode, "");
+        Room room = new Room(123, roomCode, null);
 
         // Mock behavior for HttpServletRequest
         when(request.getAttribute("someAttribute")).thenReturn("someValue");

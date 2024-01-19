@@ -52,7 +52,7 @@ public class HttpRequestsHandler {
         String json;
 
         try {
-            json = objectMapper.writeValueAsString(Map.of("userID", usb.toString(), "roomID", newRoomNumber));
+            json = objectMapper.writeValueAsString(Map.of("userID", usb.toString(), "roomCode", roomCode));
         } catch (Exception e) {
             // Handle exception if JSON serialization fails
             e.printStackTrace();

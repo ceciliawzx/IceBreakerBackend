@@ -56,9 +56,9 @@ public class ServerRunner {
         return false;
     }
 
-    public boolean joinRoom(int roomNumber, HttpServletRequest request) {
+    public boolean joinRoom(int roomNumber, String userID) {
         if (this.containsRoom(roomNumber)) {
-            roomNumbers.get(roomNumber).joinRoom(request);
+            roomNumbers.get(roomNumber).joinRoom(userID);
             return true;
         }
         return false;

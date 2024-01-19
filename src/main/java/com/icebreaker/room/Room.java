@@ -21,7 +21,7 @@ public class Room {
         this.roomCode = roomCode;
     }
 
-    public boolean joinRoom(HttpServletRequest request) {
+    public boolean joinRoom(String userID) {
         return true;
     }
 

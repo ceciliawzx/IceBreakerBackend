@@ -63,12 +63,37 @@ public class HttpRequestsHandler {
     }
 
     @PostMapping("/joinRoom")
-    public String handleJoinRoom(@RequestParam(name = "roomNumber", required = true) int number,
+    public String handleJoinRoom(@RequestParam(name = "roomCode", required = true) int code,
                                  @RequestParam(name = "name", required = true) String name,
-                                 HttpServletRequest request) {
+                                 HttpServletRequest request) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+        Integer newUserID = userID.getAndIncrement();
+        String nameID = name + newUserID;
+        md.update(nameID.getBytes());
+        byte[] userBytes = md.digest();
+        StringBuilder usb = new StringBuilder();
+        for (byte hashByte : userBytes) {
+            usb.append(String.format("%02x", hashByte));
+        }
+
+        System.out.println("User ID: " + usb);
+
         ServerRunner runner = ServerRunner.getInstance();
-        return runner.joinRoom(number, request) ?
-                name + " have joined room " + number + ". Your IP address is " + request.getRemoteAddr() :
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json;
+
+        try {
+            json = objectMapper.writeValueAsString(Map.of("userID", usb.toString()));
+        } catch (Exception e) {
+            // Handle exception if JSON serialization fails
+            e.printStackTrace();
+            json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+        }
+
+        return runner.joinRoom(code, usb.toString()) ?
+                json :
                 "Join Room Failed";
     }
 

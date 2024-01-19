@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 public class HttpRequestsHandler {
@@ -24,17 +27,11 @@ public class HttpRequestsHandler {
     }
 
     @PostMapping("/createRoom")
-    public String handleRoomCreation(@RequestParam(name = "name", required = true) String name,
-                                     HttpServletRequest request) throws NoSuchAlgorithmException {
+    public String handleRoomCreation(@RequestParam(name = "name", required = true) String name)
+            throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         Integer newRoomNumber = roomNumber.getAndIncrement();
-        md.update(newRoomNumber.byteValue());
-        byte[] roomBytes = md.digest();
-        StringBuilder rsb = new StringBuilder();
-        for (byte hashByte : roomBytes) {
-            rsb.append(String.format("%02x", hashByte));
-        }
 
         Integer newUserID = userID.getAndIncrement();
         String nameID = name + newUserID;
@@ -45,12 +42,24 @@ public class HttpRequestsHandler {
             usb.append(String.format("%02x", hashByte));
         }
 
-        System.out.println("Room ID: " + rsb);
         System.out.println("User ID: " + usb);
 
-        Room newRoom = new Room(newRoomNumber, request);
+        Room newRoom = new Room(newRoomNumber, usb.toString());
+
         ServerRunner runner = ServerRunner.getInstance();
-        return runner.addRoom(newRoom) ? "Room Created!!! Your New Room Number is " + newRoomNumber :
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json;
+
+        try {
+            json = objectMapper.writeValueAsString(Map.of("userID", usb.toString(), "roomID", newRoomNumber));
+        } catch (Exception e) {
+            // Handle exception if JSON serialization fails
+            e.printStackTrace();
+            json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+        }
+
+        return runner.addRoom(newRoom) ? json :
                 "Room Creation Failed";
     }
 

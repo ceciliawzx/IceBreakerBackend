@@ -28,7 +28,7 @@ public class ServerRunnerTest {
 
     @Test
     public void serverRunnerCanAddAndDestroyRoom() {
-        Room room = new Room(123, request);
+        Room room = new Room(123, "");
 
         // Mock behavior for HttpServletRequest
         when(request.getAttribute("someAttribute")).thenReturn("someValue");

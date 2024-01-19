@@ -14,15 +14,13 @@ public class Room {
     private final int roomNumber;
     private final List<User> players = new ArrayList<>(); // All players including the host. Host is at position 0
     // private final Admin host;
-    private final List<HttpServletRequest> userAddresses = new ArrayList<>();
 
-    public Room(int roomNumber, HttpServletRequest request) {
+    public Room(int roomNumber, String adminID) {
         this.roomNumber = roomNumber;
-        userAddresses.add(request);
+
     }
 
     public boolean joinRoom(HttpServletRequest request) {
-        userAddresses.add(request);
         return true;
     }
 

@@ -1,17 +1,24 @@
 package com.icebreaker.websocket;
+
 import lombok.*;
+
 import java.time.LocalDateTime;
+
 
 @Data
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChatMessage {
-    @NonNull
     private int roomNumber;
-    @NonNull
     private String content;
-    @NonNull
     private LocalDateTime timestamp;
-    @NonNull
     private String sender;
+    private String senderId;
+
+    @Override
+    public String toString() {
+        return sender + " with id: " + senderId + " has sent a message: " + content + " in room: " + roomNumber + " at time: " + timestamp.toString();
+    }
 }
+

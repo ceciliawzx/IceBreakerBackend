@@ -1,4 +1,4 @@
-package com.icebreaker.websocket;
+package com.icebreaker.configs;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -12,9 +12,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Register a WebSocket endpoint and enable SockJS fallback options
-        registry.addEndpoint("/chat").setAllowedOrigins("*").withSockJS();
+        // Dynamically allocate WebSocket paths based on user ID
+        registry.addEndpoint("/chat")
+                .setAllowedOriginPatterns("*localhost*", "*ljthey*")
+                .withSockJS();
     }
+
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {

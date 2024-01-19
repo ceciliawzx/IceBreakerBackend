@@ -10,6 +10,12 @@
 # Bytecode
 *.jar
 
+# applications.properties
+src/main/resources/
+
+# cicd
+.gitlab-ci.yml
+
 # Compiled Java binaries
 /target/
 

@@ -1,5 +1,6 @@
 package com.icebreaker.httprequests;
 
+import com.icebreaker.controllers.HttpRequestsHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 

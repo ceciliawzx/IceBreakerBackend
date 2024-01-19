@@ -5,26 +5,21 @@ import java.net.InetSocketAddress;
 
 @Data
 @Builder
+@Getter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class Person {
     @NonNull
-    protected InetSocketAddress address;
+    protected String nickname;
     @NonNull
+    protected Integer roomId;
     protected int id;
-    @NonNull
     protected byte[] profileImage;
-    @NonNull
     protected String firstName;
-    @NonNull
     protected String lastName;
-    @NonNull
     protected String country;
-    @NonNull
     protected String city;
-    @NonNull
     protected String feeling;
-    @NonNull
     protected String favFood;
-    @NonNull
     protected String favActivities;
 }

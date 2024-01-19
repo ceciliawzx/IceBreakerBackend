@@ -54,8 +54,9 @@ public class HttpRequestsHandler {
     }
 
     @DeleteMapping("/kickPerson")
-    public ResponseEntity<String> kickPerson(@RequestParam(name = "roomNumber", required = true) int userID) {
+    public ResponseEntity<String> kickPerson(@RequestParam(name = "userID", required = true) int userID,
+                                             @RequestParam(name = "roomID", required = true) int roomID) {
         // TODO
-        return new ResponseEntity<>("Kicked user: " + userID, HttpStatus.OK);
+        return new ResponseEntity<>("Kicked user: " + userID + " From room: " + roomID, HttpStatus.OK);
     }
 }

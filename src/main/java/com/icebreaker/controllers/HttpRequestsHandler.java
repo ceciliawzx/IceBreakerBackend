@@ -136,7 +136,27 @@ public class HttpRequestsHandler {
         }
         return "Room can not be found";
     }
-
-    // In: room code    Out: Display name, who admin
     // Im: userID    Out: User class
+
+    @GetMapping("/getPlayer")
+    public String getPlayerInARoom(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                   @RequestParam(name = "userID", required = true) String userID) {
+        ServerRunner runner = ServerRunner.getInstance();
+        Person person = runner.getOnePlayerInfo(roomCode, userID);
+        if (person != null) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json;
+
+            try {
+                json = objectMapper.writeValueAsString(Map.of("userInfo", person));
+            } catch (Exception e) {
+                // Handle exception if JSON serialization fails
+                e.printStackTrace();
+                json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+            }
+
+            return json;
+        }
+        return "Person Not Found";
+    }
 }

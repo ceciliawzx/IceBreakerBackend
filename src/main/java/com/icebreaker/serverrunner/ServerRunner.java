@@ -82,6 +82,14 @@ public class ServerRunner {
         return null;
     }
 
+    public Person getOnePlayerInfo(String roomCode, String userID) {
+        if (containsRoom(roomCode)) {
+            int roomNumber = codeNumberMapping.get(roomCode);
+            return roomNumbers.get(roomNumber).getPlayer(userID);
+        }
+        return null;
+    }
+
     public boolean isAdmin(String userID, String roomCode) {
         int roomNum = this.codeNumberMapping.get(roomCode);
         Room room = roomNumbers.get(roomNum);

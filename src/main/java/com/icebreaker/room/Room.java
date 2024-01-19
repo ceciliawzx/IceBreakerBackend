@@ -40,4 +40,15 @@ public class Room {
     public List<Person> getPlayers() {
         return players;
     }
+
+    public Person getPlayer(String userID) {
+        System.out.println(userID);
+        for (Person p : players) {
+            if (userID.equals(p.getId())) {
+                return p;
+            }
+        }
+        System.out.println("Fail");
+        return null;
+    }
 }

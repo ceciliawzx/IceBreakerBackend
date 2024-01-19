@@ -39,6 +39,10 @@ public class ServerRunner {
         return roomNumbers.containsKey(roomNumber);
     }
 
+    public boolean containsRoom(String roomCode) {
+        return codeNumberMapping.containsKey(roomCode);
+    }
+
     public boolean addRoom(Room room, String code) {
         activeRooms.put(room, room.getRoomNumber());
         roomNumbers.put(room.getRoomNumber(), room);
@@ -59,12 +63,10 @@ public class ServerRunner {
     }
 
     public boolean joinRoom(String roomCode, String nickname, String userID) {
-        if (this.codeNumberMapping.containsKey(roomCode)) {
+        if (containsRoom(roomCode)) {
             int roomNumber = codeNumberMapping.get(roomCode);
-            if (this.containsRoom(roomNumber)) {
-                roomNumbers.get(roomNumber).joinRoom(new User(nickname, roomNumber, userID));
-                return true;
-            }
+            roomNumbers.get(roomNumber).joinRoom(new User(nickname, roomNumber, userID));
+            return true;
         }
         return false;
     }
@@ -74,6 +76,16 @@ public class ServerRunner {
     }
 
     public List<Person> getPlayersInRoom(String roomCode) {
+        if (containsRoom(roomCode)) {
+            int roomNumber = codeNumberMapping.get(roomCode);
+            return roomNumbers.get(roomNumber).getPlayers();
+        }
+        return null;
+    }
 
+    public boolean isAdmin(String userID, String roomCode) {
+        int roomNum = this.codeNumberMapping.get(roomCode);
+        Room room = roomNumbers.get(roomNum);
+        return userID.equals(room.getHost().getId());
     }
 }

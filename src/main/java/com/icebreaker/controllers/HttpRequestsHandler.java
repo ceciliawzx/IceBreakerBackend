@@ -1,16 +1,18 @@
 package com.icebreaker.controllers;
 
 import com.icebreaker.person.Admin;
+import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
-import jakarta.servlet.http.HttpServletRequest;
+import com.icebreaker.utils.RoomCodeGenerator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -105,6 +107,13 @@ public class HttpRequestsHandler {
                 "You have deleted room " + number : "Room Deletion Failed. No Such Active Room.";
     }
 
+    @GetMapping("/isAdmin")
+    public boolean checkUserInRoom(@RequestParam("userID") String userID,
+                                   @RequestParam("roomCode") String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        return runner.isAdmin(userID, roomCode);
+    }
+
     @PutMapping("/addPerson")
     public ResponseEntity<String> createPerson(@RequestBody User user) {
         ServerRunner runner = ServerRunner.getInstance();
@@ -121,7 +130,23 @@ public class HttpRequestsHandler {
 
     @GetMapping("/getPlayers")
     public String getPlayersInARooom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        List<Person> players = runner.getPlayersInRoom(roomCode);
+        Person admin = players.getFirst();
+        List<Person> users = players.subList(1, players.size());
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json;
+
+        try {
+            json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users));
+        } catch (Exception e) {
+            // Handle exception if JSON serialization fails
+            e.printStackTrace();
+            json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+        }
+
+        return json;
     }
 
     // In: room code    Out: Display name, who admin

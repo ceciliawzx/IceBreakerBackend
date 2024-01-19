@@ -1,6 +1,5 @@
 package com.icebreaker.room;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import com.icebreaker.person.*;
 
@@ -14,6 +13,7 @@ public class Room {
     @Getter
     private final String roomCode;
     private final List<Person> players = new ArrayList<>(); // All players including the host. Host is at position 0
+    @Getter
     private final Admin host;
 
     public Room(int roomNumber, String roomCode, Admin host) {

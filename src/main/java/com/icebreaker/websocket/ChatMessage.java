@@ -14,10 +14,11 @@ public class ChatMessage {
     private String content;
     private LocalDateTime timestamp;
     private String sender;
+    private String senderId;
 
     @Override
     public String toString() {
-        return "Sender " + sender + " has sent a message: " + content + " in room: " + roomNumber + " at time: " + timestamp.toString();
+        return sender + " with id: " + senderId + " has sent a message: " + content + " in room: " + roomNumber + " at time: " + timestamp.toString();
     }
 }
 

@@ -34,3 +34,6 @@ build/
 
 # Windows
 Thumbs.db
+
+.gitlab-ci.yml
+src/main/resources/application.properties

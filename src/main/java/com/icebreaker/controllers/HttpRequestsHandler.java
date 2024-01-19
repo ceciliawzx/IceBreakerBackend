@@ -30,7 +30,7 @@ public class HttpRequestsHandler {
                 "Room Creation Failed";
     }
 
-    @GetMapping("/joinRoom")
+    @PostMapping("/joinRoom")
     public String handleJoinRoom(@RequestParam(name = "roomNumber", required = true) int number,
                                  HttpServletRequest request) {
         ServerRunner runner = ServerRunner.getInstance();
@@ -39,7 +39,7 @@ public class HttpRequestsHandler {
                 "Join Room Failed";
     }
 
-    @GetMapping("/destroyRoom")
+    @DeleteMapping("/destroyRoom")
     public String handleDestroyRoom(@RequestParam(name = "roomNumber", required = true) int number) {
         ServerRunner runner = ServerRunner.getInstance();
         return runner.destroyRoom(number) ?
@@ -51,5 +51,11 @@ public class HttpRequestsHandler {
         ServerRunner runner = ServerRunner.getInstance();
         runner.roomAddUser(user);
         return new ResponseEntity<>("Person updated successfully", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/kickPerson")
+    public ResponseEntity<String> kickPerson(@RequestParam(name = "roomNumber", required = true) int userID) {
+        // TODO
+        return new ResponseEntity<>("Kicked user: " + userID, HttpStatus.OK);
     }
 }

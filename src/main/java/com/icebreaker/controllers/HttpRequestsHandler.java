@@ -46,7 +46,7 @@ public class HttpRequestsHandler {
 
         ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
-        Room newRoom = new Room(newRoomNumber, roomCode, usb.toString());
+        Room newRoom = new Room(newRoomNumber, roomCode, null);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -102,6 +102,13 @@ public class HttpRequestsHandler {
         ServerRunner runner = ServerRunner.getInstance();
         return runner.destroyRoom(number) ?
                 "You have deleted room " + number : "Room Deletion Failed. No Such Active Room.";
+    }
+
+    @GetMapping("/isAdmin")
+    public boolean checkUserInRoom(@RequestParam("userID") String userID,
+                                   @RequestParam("roomCode") String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        return runner.isAdmin(userID, roomCode);
     }
 
     @PutMapping("/addPerson")

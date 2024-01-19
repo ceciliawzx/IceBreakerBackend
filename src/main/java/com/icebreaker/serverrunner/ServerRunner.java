@@ -70,4 +70,10 @@ public class ServerRunner {
     public void roomAddUser(User user) {
         roomNumbers.get(user.getRoomId()).addUser(user);
     }
+
+    public boolean isAdmin(String userID, String roomCode) {
+        int roomNum = this.codeNumberMapping.get(roomCode);
+        Room room = roomNumbers.get(roomNum);
+        return userID.equals(room.getHost().getId());
+    }
 }

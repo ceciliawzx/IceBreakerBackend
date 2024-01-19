@@ -11,7 +11,7 @@ import java.net.InetSocketAddress;
 @Setter
 public class User extends Person {
 
-    public User(@NonNull String nickname, @NonNull Integer roomId, int id, byte[] profileImage, String firstName, String lastName, String country, String city, String feeling, String favFood, String favActivities) {
+    public User(@NonNull String nickname, @NonNull Integer roomId, @NonNull String id, byte[] profileImage, String firstName, String lastName, String country, String city, String feeling, String favFood, String favActivities) {
         super(nickname, roomId, id, profileImage, firstName, lastName, country, city, feeling, favFood, favActivities);
     }
 }

@@ -1,6 +1,5 @@
 package com.icebreaker.room;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import com.icebreaker.person.*;
 
@@ -13,15 +12,19 @@ public class Room {
     private final int roomNumber;
     @Getter
     private final String roomCode;
-    private final List<User> players = new ArrayList<>(); // All players including the host. Host is at position 0
-    // private final Admin host;
+    private final List<Person> players = new ArrayList<>(); // All players including the host. Host is at position 0
+    @Getter
+    private final Admin host;
 
-    public Room(int roomNumber, String roomCode, String adminId) {
+    public Room(int roomNumber, String roomCode, Admin host) {
         this.roomNumber = roomNumber;
         this.roomCode = roomCode;
+        this.host = host;
+        players.add(host);
     }
 
-    public boolean joinRoom(String userID) {
+    public boolean joinRoom(User user) {
+        players.add(user);
         return true;
     }
 
@@ -32,5 +35,9 @@ public class Room {
     public boolean addUser(User user) {
         players.add(user);
         return true;
+    }
+
+    public List<Person> getPlayers() {
+        return players;
     }
 }

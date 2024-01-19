@@ -30,12 +30,23 @@ public class HttpRequestsHandler {
 
         Integer newRoomNumber = roomNumber.getAndIncrement();
         md.update(newRoomNumber.byteValue());
-        byte[] hashBytes = md.digest();
-        StringBuilder sb = new StringBuilder();
-        for (byte hashByte : hashBytes) {
-            sb.append(String.format("%02x", hashByte));
+        byte[] roomBytes = md.digest();
+        StringBuilder rsb = new StringBuilder();
+        for (byte hashByte : roomBytes) {
+            rsb.append(String.format("%02x", hashByte));
         }
-        System.out.println(sb);
+
+        Integer newUserID = userID.getAndIncrement();
+        String nameID = name + newUserID;
+        md.update(nameID.getBytes());
+        byte[] userBytes = md.digest();
+        StringBuilder usb = new StringBuilder();
+        for (byte hashByte : userBytes) {
+            usb.append(String.format("%02x", hashByte));
+        }
+
+        System.out.println("Room ID: " + rsb);
+        System.out.println("User ID: " + usb);
 
         Room newRoom = new Room(newRoomNumber, request);
         ServerRunner runner = ServerRunner.getInstance();

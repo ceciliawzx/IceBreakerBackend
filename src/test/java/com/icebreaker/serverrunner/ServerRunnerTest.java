@@ -1,6 +1,7 @@
 package com.icebreaker.serverrunner;
 
 import com.icebreaker.room.Room;
+import com.icebreaker.utils.RoomCodeGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,12 +29,14 @@ public class ServerRunnerTest {
 
     @Test
     public void serverRunnerCanAddAndDestroyRoom() {
-        Room room = new Room(123, request);
+        RoomCodeGenerator roomCodeGenerator = new RoomCodeGenerator();
+        String roomCode = roomCodeGenerator.generateUniqueCode();
+        Room room = new Room(123, roomCode);
 
         // Mock behavior for HttpServletRequest
         when(request.getAttribute("someAttribute")).thenReturn("someValue");
 
-        assertTrue(serverRunner.addRoom(room));
+        assertTrue(serverRunner.addRoom(room, roomCode));
         assertTrue(serverRunner.containsRoom(room));
         assertTrue(serverRunner.containsRoom(123));
         assertTrue(serverRunner.destroyRoom(123));

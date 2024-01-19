@@ -3,6 +3,7 @@ package com.icebreaker.controllers;
 import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.utils.RoomCodeGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HttpRequestsHandler {
 
     private final AtomicInteger roomNumber = new AtomicInteger(0);
+    private RoomCodeGenerator roomCodeGenerator;
 
     @GetMapping("/myEndpoint")
     public String handleRequest(@RequestParam(name = "message", required = false) String message) {
@@ -24,9 +26,10 @@ public class HttpRequestsHandler {
     public String handleRoomCreation(@RequestParam(name = "message", required = false) String message,
                                      HttpServletRequest request) {
         int newRoomNumber = roomNumber.getAndIncrement();
-        Room newRoom = new Room(newRoomNumber, request);
+        String roomCode = roomCodeGenerator.generateUniqueCode();
+        Room newRoom = new Room(newRoomNumber, roomCode);
         ServerRunner runner = ServerRunner.getInstance();
-        return runner.addRoom(newRoom) ? "Room Created!!! Your New Room Number is " + newRoomNumber :
+        return runner.addRoom(newRoom, roomCode) ? "Room Created!!! Your New Room Number is " + newRoomNumber :
                 "Room Creation Failed";
     }
 

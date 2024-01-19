@@ -21,12 +21,4 @@ public class ChatController {
         message.setContent("Server has received your message: " + message.getContent());
         return message;
     }
-
-    @MessageMapping("/app/connect")
-    public void connect(Principal principal, SimpMessageHeaderAccessor headerAccessor) {
-        // Get the user identifier (e.g., user ID) from the principal
-        String userId = principal.getName();
-
-        System.out.println("ID: " + userId);
-    }
 }

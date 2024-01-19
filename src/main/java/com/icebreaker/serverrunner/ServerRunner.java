@@ -4,12 +4,15 @@ import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
 import com.icebreaker.utils.RoomCodeGenerator;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class ServerRunner {
     private static ServerRunner instance;
-    private RoomCodeGenerator roomCodeGenerator;
+    @Getter
+    private RoomCodeGenerator roomCodeGenerator = new RoomCodeGenerator();
 
     private final Map<Room, Integer> activeRooms = new HashMap<>();
     private final Map<Integer, Room> roomNumbers = new HashMap<>();

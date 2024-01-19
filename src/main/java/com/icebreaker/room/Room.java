@@ -32,9 +32,19 @@ public class Room {
 
     }
 
-    public boolean addUser(User user) {
-        players.add(user);
-        return true;
+    public void updateUser(Person person) {
+        if (person.getId().equals(host.getId())) {
+            players.remove(0);
+            players.add(0, person);
+        } else {
+            for (int i = 1; i < players.size(); i++) {
+                if (person.getId().equals(players.get(i).getId())) {
+                    players.remove(i);
+                    players.add(person);
+                    break;
+                }
+            }
+        }
     }
 
     public List<Person> getPlayers() {

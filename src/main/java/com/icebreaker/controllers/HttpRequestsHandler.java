@@ -114,10 +114,10 @@ public class HttpRequestsHandler {
         return runner.isAdmin(userID, roomCode);
     }
 
-    @PutMapping("/addPerson")
-    public ResponseEntity<String> createPerson(@RequestBody User user) {
+    @PostMapping("/updatePerson")
+    public ResponseEntity<String> updatePerson(@RequestBody Person person) {
         ServerRunner runner = ServerRunner.getInstance();
-        runner.roomAddUser(user);
+        runner.roomUpdateUser(person);
         return new ResponseEntity<>("Person updated successfully", HttpStatus.OK);
     }
 

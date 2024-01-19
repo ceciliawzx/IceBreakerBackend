@@ -71,8 +71,8 @@ public class ServerRunner {
         return false;
     }
 
-    public void roomAddUser(User user) {
-        roomNumbers.get(user.getRoomId()).addUser(user);
+    public void roomUpdateUser(Person person) {
+        roomNumbers.get(person.getRoomId()).updateUser(person);
     }
 
     public List<Person> getPlayersInRoom(String roomCode) {

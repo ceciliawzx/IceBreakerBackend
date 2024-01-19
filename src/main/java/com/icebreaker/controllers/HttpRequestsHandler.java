@@ -24,7 +24,7 @@ public class HttpRequestsHandler {
     }
 
     @PostMapping("/createRoom")
-    public String handleRoomCreation(@RequestParam(name = "name", required = false) String name,
+    public String handleRoomCreation(@RequestParam(name = "name", required = true) String name,
                                      HttpServletRequest request) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 

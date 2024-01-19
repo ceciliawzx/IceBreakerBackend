@@ -18,6 +18,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static com.icebreaker.utils.HashUserId.hashUserId;
+
 @RestController
 public class HttpRequestsHandler {
 
@@ -36,17 +38,8 @@ public class HttpRequestsHandler {
 
         Integer newRoomNumber = roomNumber.getAndIncrement();
 
-        Integer newUserID = userID.getAndIncrement();
-        String nameID = name + newUserID;
-        md.update(nameID.getBytes());
-        byte[] userBytes = md.digest();
-        StringBuilder usb = new StringBuilder();
-        for (byte hashByte : userBytes) {
-            usb.append(String.format("%02x", hashByte));
-        }
-
-        System.out.println("User ID: " + usb);
-
+        int newUserID = userID.getAndIncrement();
+        StringBuilder usb = hashUserId(name, md, newUserID);
         ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
         Room newRoom = new Room(newRoomNumber, roomCode, new Admin(name, newRoomNumber, usb.toString()));
@@ -65,6 +58,7 @@ public class HttpRequestsHandler {
         return runner.addRoom(newRoom, roomCode) ? json : "Room Creation Failed";
     }
 
+
     @PostMapping("/joinRoom")
     public String handleJoinRoom(@RequestParam(name = "roomCode", required = true) String code,
                                  @RequestParam(name = "name", required = true) String name)
@@ -72,15 +66,7 @@ public class HttpRequestsHandler {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         Integer newUserID = userID.getAndIncrement();
-        String nameID = name + newUserID;
-        md.update(nameID.getBytes());
-        byte[] userBytes = md.digest();
-        StringBuilder usb = new StringBuilder();
-        for (byte hashByte : userBytes) {
-            usb.append(String.format("%02x", hashByte));
-        }
-
-        System.out.println("User ID: " + usb);
+        StringBuilder usb = hashUserId(name, md, newUserID);
 
         ServerRunner runner = ServerRunner.getInstance();
 
@@ -148,10 +134,7 @@ public class HttpRequestsHandler {
 
             return json;
         }
-
         return "Room can not be found";
-
-
     }
 
     // In: room code    Out: Display name, who admin

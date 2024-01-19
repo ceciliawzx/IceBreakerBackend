@@ -40,4 +40,13 @@ public class Room {
     public List<Person> getPlayers() {
         return players;
     }
+
+    public Person getPlayer(String userID) {
+        for (Person p : players) {
+            if (p.getId() == userID) {
+                return p;
+            }
+        }
+        return null;
+    }
 }

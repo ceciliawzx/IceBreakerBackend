@@ -10,6 +10,12 @@
 # Bytecode
 *.jar
 
+# applications.properties
+src/main/resources/
+
+# cicd
+.gitlab-ci.yml
+
 # Compiled Java binaries
 /target/
 
@@ -34,6 +40,3 @@ build/
 
 # Windows
 Thumbs.db
-
-.gitlab-ci.yml
-src/main/resources/application.properties

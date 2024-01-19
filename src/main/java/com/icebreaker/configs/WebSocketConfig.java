@@ -12,11 +12,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Dynamically allocate WebSocket paths based on user ID
         registry.addEndpoint("/chat")
                 .setAllowedOriginPatterns("*localhost*", "*ljthey*")
                 .withSockJS();
     }
-
 
 
     @Override

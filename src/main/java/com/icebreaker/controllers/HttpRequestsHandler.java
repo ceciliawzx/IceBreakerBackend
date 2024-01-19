@@ -63,9 +63,9 @@ public class HttpRequestsHandler {
     }
 
     @PostMapping("/joinRoom")
-    public String handleJoinRoom(@RequestParam(name = "roomCode", required = true) int code,
-                                 @RequestParam(name = "name", required = true) String name,
-                                 HttpServletRequest request) throws NoSuchAlgorithmException {
+    public String handleJoinRoom(@RequestParam(name = "roomCode", required = true) String code,
+                                 @RequestParam(name = "name", required = true) String name)
+            throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         Integer newUserID = userID.getAndIncrement();

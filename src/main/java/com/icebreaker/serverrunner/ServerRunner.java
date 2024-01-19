@@ -56,10 +56,13 @@ public class ServerRunner {
         return false;
     }
 
-    public boolean joinRoom(int roomNumber, String userID) {
-        if (this.containsRoom(roomNumber)) {
-            roomNumbers.get(roomNumber).joinRoom(userID);
-            return true;
+    public boolean joinRoom(String roomCode, String userID) {
+        if (this.codeNumberMapping.containsKey(roomCode)) {
+            int roomNumber = codeNumberMapping.get(roomCode);
+            if (this.containsRoom(roomNumber)) {
+                roomNumbers.get(roomNumber).joinRoom(userID);
+                return true;
+            }
         }
         return false;
     }

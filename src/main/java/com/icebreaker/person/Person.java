@@ -10,8 +10,6 @@ import java.net.InetSocketAddress;
 @AllArgsConstructor
 public class Person {
     @NonNull
-    protected InetSocketAddress address;
-    @NonNull
     protected String nickname;
     @NonNull
     protected Integer roomId;

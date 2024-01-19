@@ -14,6 +14,7 @@ public class BroadcastScheduler {
         this.chatController = chatController;
     }
 
+    // This is a test: the server will broadcast the test message every 5s
     @Scheduled(fixedRate = 5000) // 5000 milliseconds = 5 seconds
     public void broadcastTestMessage() {
         ChatMessage testMessage = new ChatMessage();

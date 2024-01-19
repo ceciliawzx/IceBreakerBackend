@@ -4,7 +4,6 @@ import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
 import com.icebreaker.utils.RoomCodeGenerator;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 
 import java.util.HashMap;

@@ -20,7 +20,7 @@ public class BroadcastScheduler {
         ChatMessage testMessage = new ChatMessage();
         testMessage.setContent("This is a scheduled test broadcast message from server!");
         testMessage.setTimestamp(LocalDateTime.now());
-        testMessage.setRoomNumber(0);
+        testMessage.setRoomCode(0);
         testMessage.setSender("Server");
         testMessage.setSender("ServerId");
         chatController.broadcastToRoom(0, testMessage); // Broadcasting to room 0

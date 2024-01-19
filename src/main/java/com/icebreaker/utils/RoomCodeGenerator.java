@@ -7,8 +7,8 @@ import java.util.Set;
 public class RoomCodeGenerator {
     private static final int MAX_CODE_VALUE = 10000;
 
-    private Set<String> existingCodes;
-    private Random random;
+    private final Set<String> existingCodes;
+    private final Random random;
 
     public RoomCodeGenerator() {
         existingCodes = new HashSet<>();

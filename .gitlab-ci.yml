@@ -44,12 +44,12 @@ deploy:
     - apk add openssh-client
     - apk add sshpass
 
-    # serach if ther is existing pid
+    # search if there is existing pid
     - EXISTING_PID=$(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
     - echo "Checking for existing process on port $EXISTING_PORT"
     - echo "EXISTING_PID $EXISTING_PID"
 
-      # copy jar to server
+    # copy jar to server
     - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$JAR_FILE" "$REMOTE_USER@$REMOTE_SERVER:IceBreaker/cicd/"
 
     # if existing, kill it

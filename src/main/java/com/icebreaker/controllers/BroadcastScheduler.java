@@ -1,6 +1,8 @@
 package com.icebreaker.controllers;
 import com.icebreaker.services.ChatService;
+import com.icebreaker.services.DrawingService;
 import com.icebreaker.websocket.ChatMessage;
+import com.icebreaker.websocket.DrawingMessage;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

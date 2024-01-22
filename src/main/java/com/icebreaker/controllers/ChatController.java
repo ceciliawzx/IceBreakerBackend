@@ -2,6 +2,7 @@ package com.icebreaker.controllers;
 
 import com.icebreaker.services.ChatService;
 import com.icebreaker.websocket.ChatMessage;
+import com.icebreaker.websocket.DrawingMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -24,5 +25,4 @@ public class ChatController {
         message.setContent("Server has received your message: " + message.getContent());
         return message;
     }
-
 }

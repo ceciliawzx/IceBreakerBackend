@@ -14,7 +14,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Dynamically allocate WebSocket paths based on user ID
         registry.addEndpoint("/chat")
-//                .setAllowedOriginPatterns("*localhost*", "*ljthey*")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }

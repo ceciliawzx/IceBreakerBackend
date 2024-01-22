@@ -17,6 +17,9 @@
                 <configuration>
                     <source>17</source> <!-- Specify Java source compatibility -->
                     <target>17</target> <!-- Specify Java target compatibility -->
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>

@@ -1,4 +1,5 @@
 package com.icebreaker.controllers;
+import com.icebreaker.services.ChatService;
 import com.icebreaker.websocket.ChatMessage;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -8,10 +9,10 @@ import java.time.LocalDateTime;
 @Component
 public class BroadcastScheduler {
 
-    private final ChatController chatController;
+    private final ChatService chatService;
 
-    public BroadcastScheduler(ChatController chatController) {
-        this.chatController = chatController;
+    public BroadcastScheduler(ChatService chatService) {
+        this.chatService = chatService;
     }
 
     // This is a test: the server will broadcast the test message every 5s
@@ -23,6 +24,6 @@ public class BroadcastScheduler {
         testMessage.setRoomCode(0);
         testMessage.setSender("Server");
         testMessage.setSender("ServerId");
-        chatController.broadcastToRoom("0", testMessage); // Broadcasting to room 0
+        chatService.broadcastToRoom("0", testMessage); // Broadcasting to room 0
     }
 }

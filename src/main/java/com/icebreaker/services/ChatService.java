@@ -16,7 +16,7 @@ public class ChatService {
     }
 
     public void broadcastToRoom(String roomCode, ChatMessage message) {
-//        System.out.println("Broadcast to room " + roomCode + ": " + message.toString());
+        System.out.println("Broadcast to room " + roomCode + ": " + message.toString());
         messagingTemplate.convertAndSend("/topic/room/" + roomCode, message);
     }
 

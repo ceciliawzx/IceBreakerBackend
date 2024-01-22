@@ -17,6 +17,9 @@ public class DrawingMessage {
     public static class DrawingData {
         private double x;
         private double y;
+        private boolean drawing;
+        private String color;
+        private String strokeWidth;
     }
 
     private int roomCode;
@@ -30,3 +33,4 @@ public class DrawingMessage {
         return drawer + " has sent a message: " + drawingData + " in room: " + roomCode + " at time: " + timestamp.toString();
     }
 }
+

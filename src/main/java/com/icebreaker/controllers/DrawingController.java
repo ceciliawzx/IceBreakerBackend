@@ -19,10 +19,11 @@ public class DrawingController {
         this.drawingService = drawingService;
     }
 
-    @MessageMapping("/room/{roomNumber}/sendDrawing")
-    public void handleDrawing(@Payload DrawingMessage message, @DestinationVariable String roomNumber) {
-//        System.out.println("Receiving drawing message " + message + "from room " + roomNumber);
-        drawingService.broadcastDrawing(roomNumber, message);
+    @MessageMapping("/room/{roomCode}/sendDrawing")
+    public void handleDrawing(@Payload DrawingMessage message) {
+//        System.out.println("Receiving drawing message " + message + "from room " + roomCode);
+        String roomCode = String.valueOf(message.getRoomCode());
+        drawingService.broadcastDrawing(roomCode, message);
     }
 
 }

@@ -23,6 +23,6 @@ public class BroadcastScheduler {
         testMessage.setRoomCode(0);
         testMessage.setSender("Server");
         testMessage.setSender("ServerId");
-        chatController.broadcastToRoom(0, testMessage); // Broadcasting to room 0
+        chatController.broadcastToRoom("0", testMessage); // Broadcasting to room 0
     }
 }

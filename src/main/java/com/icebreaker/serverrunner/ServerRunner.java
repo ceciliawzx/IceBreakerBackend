@@ -22,8 +22,8 @@ public class ServerRunner {
 
     private ServerRunner() {
     }
-
     public static ServerRunner getInstance() {
+
         if (instance == null) {
             instance = new ServerRunner();
         }
@@ -31,68 +31,136 @@ public class ServerRunner {
     }
 
     public boolean containsRoom(Room room) {
-        return activeRooms.containsKey(room);
+        synchronized (this) {
+            return activeRooms.containsKey(room);
+        }
     }
 
     public boolean containsRoom(int roomNumber) {
-        return roomNumbers.containsKey(roomNumber);
+        synchronized (this) {
+            return roomNumbers.containsKey(roomNumber);
+        }
     }
 
     public boolean containsRoom(String roomCode) {
-        return codeNumberMapping.containsKey(roomCode);
+        synchronized (this) {
+            return codeNumberMapping.containsKey(roomCode);
+        }
     }
 
     public boolean addRoom(Room room, String code) {
-        activeRooms.put(room, room.getRoomNumber());
-        roomNumbers.put(room.getRoomNumber(), room);
-        codeNumberMapping.put(code, room.getRoomNumber());
-        numberCodeMapping.put(room.getRoomNumber(), code);
-        return true;
-    }
-
-    public boolean destroyRoom(int roomNumber) {
-        if (this.containsRoom(roomNumber)) {
-            activeRooms.remove(roomNumbers.get(roomNumber));
-            roomNumbers.remove(roomNumber);
-            codeNumberMapping.remove(numberCodeMapping.get(roomNumber), roomNumber);
-            numberCodeMapping.remove(roomNumber);
+        synchronized (this) {
+            activeRooms.put(room, room.getRoomNumber());
+            roomNumbers.put(room.getRoomNumber(), room);
+            codeNumberMapping.put(code, room.getRoomNumber());
+            numberCodeMapping.put(room.getRoomNumber(), code);
             return true;
         }
-        return false;
+    }
+
+    public boolean destroyRoom(String roomCode) {
+        synchronized (this) {
+            if (this.containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                activeRooms.remove(roomNumbers.get(roomNumber));
+                roomNumbers.remove(roomNumber);
+                codeNumberMapping.remove(roomCode);
+                numberCodeMapping.remove(roomNumber);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    // We should change the test for this
+    public boolean destroyRoom(int roomNumber) {
+        synchronized (this) {
+            if (this.containsRoom(roomNumber)) {
+                activeRooms.remove(roomNumbers.get(roomNumber));
+                roomNumbers.remove(roomNumber);
+                codeNumberMapping.remove(numberCodeMapping.get(roomNumber), roomNumber);
+                numberCodeMapping.remove(roomNumber);
+                return true;
+            }
+            return false;
+        }
     }
 
     public boolean joinRoom(String roomCode, String nickname, String userID) {
-        if (containsRoom(roomCode)) {
-            int roomNumber = codeNumberMapping.get(roomCode);
-            roomNumbers.get(roomNumber).joinRoom(new User(nickname, roomNumber, userID));
-            return true;
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                roomNumbers.get(roomNumber).joinRoom(new User(nickname, roomCode, userID));
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 
-    public void roomUpdateUser(Person person) {
-        roomNumbers.get(person.getRoomId()).updateUser(person);
+    public boolean roomUpdateUser(Person person) {
+        synchronized (this) {
+            if (containsRoom(person.getRoomCode())) {
+                return roomNumbers.get(codeNumberMapping.get(person.getRoomCode())).updateUser(person);
+            }
+            return false;
+        }
     }
 
     public List<Person> getPlayersInRoom(String roomCode) {
-        if (containsRoom(roomCode)) {
-            int roomNumber = codeNumberMapping.get(roomCode);
-            return roomNumbers.get(roomNumber).getPlayers();
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                return roomNumbers.get(roomNumber).getPlayers();
+            }
+            return null;
         }
-        return null;
     }
 
     public Person getOnePlayerInfo(String roomCode, String userID) {
-        if (containsRoom(roomCode)) {
-            int roomNumber = codeNumberMapping.get(roomCode);
-            return roomNumbers.get(roomNumber).getPlayer(userID);
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                return roomNumbers.get(roomNumber).getPlayer(userID);
+            }
+            return null;
         }
-        return null;
     }
 
     public boolean isAdmin(String userID, String roomCode) {
-        int roomNum = this.codeNumberMapping.get(roomCode);
-        Room room = roomNumbers.get(roomNum);
-        return userID.equals(room.getHost().getId());
+        synchronized (this) {
+            int roomNum = this.codeNumberMapping.get(roomCode);
+            Room room = roomNumbers.get(roomNum);
+            return userID.equals(room.getHost().getUserID());
+        }
+    }
+
+    public int getStatus(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                return roomNumbers.get(codeNumberMapping.get(roomCode)).getGameStatus();
+            }
+            return -1;
+        }
+    }
+
+    public boolean kickPerson(String roomCode, String userID) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                return roomNumbers.get(roomNumber).kickPerson(userID);
+            }
+            return false;
+        }
+    }
+
+    public boolean serverStartRoom(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                roomNumbers.get(roomNumber).startRoom();
+                return true;
+            }
+            return false;
+        }
     }
 }

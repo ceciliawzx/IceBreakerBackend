@@ -1,4 +1,4 @@
-package com.icebreaker.unittests;
+package com.icebreaker.room;
 
 import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;

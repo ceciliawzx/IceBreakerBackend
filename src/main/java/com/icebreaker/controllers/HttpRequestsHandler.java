@@ -4,10 +4,9 @@ import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;
 import com.icebreaker.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.services.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
@@ -22,11 +21,12 @@ import static com.icebreaker.utils.HashUserId.hashUserId;
 
 @RestController
 public class HttpRequestsHandler {
-    private final ChatController chatController;
+
+    private final ChatService chatService;
 
     @Autowired
-    public HttpRequestsHandler(ChatController chatController) {
-        this.chatController = chatController;
+    public HttpRequestsHandler(ChatService chatService) {
+        this.chatService = chatService;
     }
     private final AtomicInteger roomNumber = new AtomicInteger(0);
     private final AtomicInteger userID = new AtomicInteger(0);
@@ -41,13 +41,13 @@ public class HttpRequestsHandler {
             throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-        Integer newRoomNumber = roomNumber.getAndIncrement();
+        int newRoomNumber = roomNumber.getAndIncrement();
 
         int newUserID = userID.getAndIncrement();
         StringBuilder usb = hashUserId(name, md, newUserID);
         ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
-        Room newRoom = new Room(newRoomNumber, roomCode, new Admin(name, roomCode, usb.toString()), chatController);
+        Room newRoom = new Room(newRoomNumber, roomCode, new Admin(name, roomCode, usb.toString()), chatService);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -70,7 +70,7 @@ public class HttpRequestsHandler {
             throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-        Integer newUserID = userID.getAndIncrement();
+        int newUserID = userID.getAndIncrement();
         StringBuilder usb = hashUserId(name, md, newUserID);
 
         ServerRunner runner = ServerRunner.getInstance();

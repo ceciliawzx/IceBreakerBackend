@@ -28,9 +28,9 @@ public class ChatController {
         return message;
     }
 
-    public void broadcastToRoom(int roomNumber, ChatMessage message) {
-        System.out.println("Broadcast to room " + roomNumber + ": " + message.toString());
-        messagingTemplate.convertAndSend("/topic/room/" + roomNumber, message);
+    public void broadcastToRoom(String roomCode, ChatMessage message) {
+        System.out.println("Broadcast to room " + roomCode + ": " + message.toString());
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode, message);
     }
 
 }

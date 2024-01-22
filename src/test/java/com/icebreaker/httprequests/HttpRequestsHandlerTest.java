@@ -13,7 +13,7 @@ public class HttpRequestsHandlerTest {
     @Test
     public void handlerCanReceiveRequestAndReply() {
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
-        HttpRequestsHandler handler = new HttpRequestsHandler();
+        HttpRequestsHandler handler = new HttpRequestsHandler(null);
 
         // Test with a null message
         String responseNull = handler.handleRequest(null);

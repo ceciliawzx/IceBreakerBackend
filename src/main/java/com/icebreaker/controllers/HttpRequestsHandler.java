@@ -2,11 +2,11 @@ package com.icebreaker.controllers;
 
 import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;
-import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
-import com.icebreaker.utils.RoomCodeGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +22,12 @@ import static com.icebreaker.utils.HashUserId.hashUserId;
 
 @RestController
 public class HttpRequestsHandler {
+    private final ChatController chatController;
 
+    @Autowired
+    public HttpRequestsHandler(ChatController chatController) {
+        this.chatController = chatController;
+    }
     private final AtomicInteger roomNumber = new AtomicInteger(0);
     private final AtomicInteger userID = new AtomicInteger(0);
 
@@ -42,7 +47,7 @@ public class HttpRequestsHandler {
         StringBuilder usb = hashUserId(name, md, newUserID);
         ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
-        Room newRoom = new Room(newRoomNumber, roomCode, new Admin(name, newRoomNumber, usb.toString()));
+        Room newRoom = new Room(newRoomNumber, roomCode, new Admin(name, roomCode, usb.toString()), chatController);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -87,10 +92,9 @@ public class HttpRequestsHandler {
     }
 
     @DeleteMapping("/destroyRoom")
-    public String handleDestroyRoom(@RequestParam(name = "roomNumber", required = true) int number) {
+    public boolean handleDestroyRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
-        return runner.destroyRoom(number) ?
-                "You have deleted room " + number : "Room Deletion Failed. No Such Active Room.";
+        return runner.destroyRoom(roomCode);
     }
 
     @GetMapping("/isAdmin")
@@ -100,18 +104,22 @@ public class HttpRequestsHandler {
         return runner.isAdmin(userID, roomCode);
     }
 
-    @PostMapping("/updatePerson")
-    public ResponseEntity<String> updatePerson(@RequestBody Person person) {
+    @PostMapping(path = "/updatePerson", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public String updatePerson(@RequestBody Person person) {
         ServerRunner runner = ServerRunner.getInstance();
-        runner.roomUpdateUser(person);
-        return new ResponseEntity<>("Person updated successfully", HttpStatus.OK);
+        if (runner.roomUpdateUser(person)) {
+            return "Success";
+        } else {
+            return "Fail";
+        }
     }
 
     @DeleteMapping("/kickPerson")
-    public ResponseEntity<String> kickPerson(@RequestParam(name = "userID", required = true) int userID,
-                                             @RequestParam(name = "roomID", required = true) int roomID) {
-        // TODO
-        return new ResponseEntity<>("Kicked user: " + userID + " From room: " + roomID, HttpStatus.OK);
+    public boolean kickPerson(@RequestParam(name = "userID", required = true) String userID,
+                                             @RequestParam(name = "roomCode", required = true) String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        return runner.kickPerson(roomCode, userID);
     }
 
     @GetMapping("/getPlayers")
@@ -121,11 +129,12 @@ public class HttpRequestsHandler {
         if (players != null && !players.isEmpty()) {
             Person admin = players.get(0);
             List<Person> users = players.subList(1, players.size());
+            boolean gameStatus = runner.getStatus(roomCode) == 1;
             ObjectMapper objectMapper = new ObjectMapper();
             String json;
 
             try {
-                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users));
+                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users, "gameStatus", gameStatus));
             } catch (Exception e) {
                 // Handle exception if JSON serialization fails
                 e.printStackTrace();
@@ -158,5 +167,14 @@ public class HttpRequestsHandler {
             return json;
         }
         return "Person Not Found";
+    }
+
+    @PostMapping("/startInput")
+    public String startInput(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        if (runner.serverStartRoom(roomCode)) {
+            return "Success";
+        }
+        return "Fail";
     }
 }

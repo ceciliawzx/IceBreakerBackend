@@ -2,6 +2,7 @@ package com.icebreaker.room;
 
 import com.icebreaker.controllers.BroadcastScheduler;
 import com.icebreaker.controllers.ChatController;
+import com.icebreaker.services.ChatService;
 import com.icebreaker.websocket.ChatMessage;
 import lombok.Getter;
 import com.icebreaker.person.*;
@@ -23,20 +24,16 @@ public class Room {
     private final Admin host;
     @Getter
     private int gameStatus;
-    private final ChatController chatController;
 
-    public Room(int roomNumber, String roomCode, Admin host, ChatController chatController) {
+    private final ChatService chatService;
+
+    public Room(int roomNumber, String roomCode, Admin host, ChatService chatService) {
         this.roomNumber = roomNumber;
         this.roomCode = roomCode;
         this.host = host;
-        this.chatController = chatController;
+        this.chatService = chatService;
         players.add(host);
         this.gameStatus = 0;
-    }
-
-    public boolean joinRoom(User user) {
-        players.add(user);
-        return true;
     }
 
     public void startRoom() {
@@ -47,7 +44,12 @@ public class Room {
         testMessage.setRoomCode(0);
         testMessage.setSender("Server");
         testMessage.setSender("ServerId");
-        chatController.broadcastToRoom(roomCode, testMessage);
+        chatService.broadcastToRoom(roomCode, testMessage);
+    }
+
+    public boolean joinRoom(User user) {
+        players.add(user);
+        return true;
     }
 
     public boolean updateUser(Person person) {

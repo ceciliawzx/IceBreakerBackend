@@ -1,22 +1,19 @@
 package com.icebreaker.controllers;
 
+import com.icebreaker.services.ChatService;
 import com.icebreaker.websocket.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 
 @Controller
 public class ChatController {
 
-    private final SimpMessagingTemplate messagingTemplate;
-
     @Autowired
-    public ChatController(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
+    public ChatController(ChatService chatService) {
     }
 
     @MessageMapping("/room/{roomNumber}/sendMessage")
@@ -26,11 +23,6 @@ public class ChatController {
         System.out.println("handleMessage has been triggered, received message: " + message.toString());
         message.setContent("Server has received your message: " + message.getContent());
         return message;
-    }
-
-    public void broadcastToRoom(String roomCode, ChatMessage message) {
-        System.out.println("Broadcast to room " + roomCode + ": " + message.toString());
-        messagingTemplate.convertAndSend("/topic/room/" + roomCode, message);
     }
 
 }

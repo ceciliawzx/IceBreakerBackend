@@ -96,4 +96,20 @@ public class Room {
         }
         return false;
     }
+
+    public boolean checkPlayerInfoComplete(String userID) {
+        for (Person p : players) {
+            if (userID.equals(p.getUserID())) {
+                return p.getProfileImage() != null &&
+                        p.getFirstName() != null &&
+                        p.getLastName() != null &&
+                        p.getCountry() != null &&
+                        p.getCity() != null &&
+                        p.getFeeling() != null &&
+                        p.getFavFood() != null &&
+                        p.getFavActivity() != null;
+            }
+        }
+        return false;
+    }
 }

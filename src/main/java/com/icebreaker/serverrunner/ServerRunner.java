@@ -163,4 +163,14 @@ public class ServerRunner {
             return false;
         }
     }
+
+    public boolean checkPlayerInfoComplete(String roomCode, String userID) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                return roomNumbers.get(roomNumber).checkPlayerInfoComplete(userID);
+            }
+            return false;
+        }
+    }
 }

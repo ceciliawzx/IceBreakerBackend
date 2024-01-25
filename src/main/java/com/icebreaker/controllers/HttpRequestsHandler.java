@@ -177,4 +177,11 @@ public class HttpRequestsHandler {
         }
         return "Fail";
     }
+
+    @GetMapping("/infoComplete")
+    public boolean checkPlayerInfoComplete(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                           @RequestParam(name = "userID", required = true) String userID) {
+        ServerRunner runner = ServerRunner.getInstance();
+        return runner.checkPlayerInfoComplete(roomCode, userID);
+    }
 }

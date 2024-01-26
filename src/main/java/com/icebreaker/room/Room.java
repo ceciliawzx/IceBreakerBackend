@@ -29,11 +29,11 @@ public class Room {
         this.host = host;
         this.chatService = chatService;
         players.add(host);
-        this.roomStatus = RoomStatus.waiting;
+        this.roomStatus = RoomStatus.WAITING;
     }
 
     public void startRoom() {
-        this.roomStatus = RoomStatus.presenting;
+        this.roomStatus = RoomStatus.PRESENTING;
         ChatMessage testMessage = new ChatMessage();
         testMessage.setContent("Test!");
         testMessage.setTimestamp(LocalDateTime.now());

@@ -140,7 +140,7 @@ public class ServerRunner {
             if (containsRoom(roomCode)) {
                 return roomNumbers.get(codeNumberMapping.get(roomCode)).getRoomStatus();
             }
-            return RoomStatus.non_existence;
+            return RoomStatus.NON_EXIST;
         }
     }
 

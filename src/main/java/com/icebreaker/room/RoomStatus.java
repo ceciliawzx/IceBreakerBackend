@@ -1,12 +1,12 @@
 package com.icebreaker.room;
 
 public enum RoomStatus {
-    waiting,
-    dismissed,
-    presenting,
-    picturing,
-    geoguessing,
-    wordling,
-    gaming,
-    non_existence
+    WAITING,
+    DISMISSED,
+    PRESENTING,
+    PICTURING,
+    GEO_GUESSING,
+    WORDLING,
+    GAMING,
+    NON_EXIST,
 }

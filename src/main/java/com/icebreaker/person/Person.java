@@ -23,4 +23,5 @@ public class Person {
     protected String favFood;
     protected String favActivity;
     protected boolean completed;
+    protected boolean isPresenter;
 }

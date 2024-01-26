@@ -4,6 +4,7 @@ import com.icebreaker.services.ChatService;
 import com.icebreaker.websocket.ChatMessage;
 import lombok.Getter;
 import com.icebreaker.person.*;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,8 +20,10 @@ public class Room {
     @Getter
     private final Admin host;
     @Getter
+    @Setter
     private RoomStatus roomStatus;
-
+    @Getter
+    private Person presenter;
     private final ChatService chatService;
 
     public Room(int roomNumber, String roomCode, Admin host, ChatService chatService) {

@@ -50,7 +50,7 @@ public class HttpRequestsHandler {
         ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
         Admin admin = new Admin(name, roomCode, usb.toString());
-        Room newRoom = new Room(newRoomNumber, roomCode, admin, admin, chatService);
+        Room newRoom = new Room(newRoomNumber, roomCode, admin, chatService);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -228,5 +228,12 @@ public class HttpRequestsHandler {
             return "Success";
         }
         return "Fail";
+    }
+
+    @PostMapping("/changePresenter")
+    public boolean changePresenter(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                   @RequestParam(name = "userID", required = true) String userID) {
+        ServerRunner runner = ServerRunner.getInstance();
+        return runner.changePresenter(roomCode, userID);
     }
 }

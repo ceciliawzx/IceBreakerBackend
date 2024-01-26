@@ -49,10 +49,8 @@ public class HttpRequestsHandler {
         StringBuilder usb = hashUserId(name, md, newUserID);
         ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
-//        if (roomCode.contains("no room available")) {
-//            return "No room available";
-//        }
-        Room newRoom = new Room(newRoomNumber, roomCode, new Admin(name, roomCode, usb.toString()), chatService);
+        Admin admin = new Admin(name, roomCode, usb.toString());
+        Room newRoom = new Room(newRoomNumber, roomCode, admin, admin, chatService);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -112,14 +110,24 @@ public class HttpRequestsHandler {
                                    @RequestParam("roomCode") String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
         System.out.printf("Check Admin: %s, %s%n", userID, roomCode);
-        return runner.isAdmin(userID, roomCode);
+        try {
+            return runner.isAdmin(userID, roomCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @GetMapping("/isPresenter")
     public boolean isPresenter(@RequestParam("userID") String userID,
                                    @RequestParam("roomCode") String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
-        return runner.isPresenter(userID, roomCode);
+        try {
+            return runner.isPresenter(userID, roomCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @PostMapping(path = "/updatePerson", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -149,13 +157,14 @@ public class HttpRequestsHandler {
         System.out.printf("Get Players in room: %s%n", roomCode);
         if (players != null && !players.isEmpty()) {
             Person admin = players.get(0);
+            Person presenter = runner.getPresenterInRoom(roomCode);
             List<Person> users = players.subList(1, players.size());
             RoomStatus status = runner.getStatus(roomCode);
             ObjectMapper objectMapper = new ObjectMapper();
             String json;
 
             try {
-                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users, "roomStatus", status));
+                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users, "presenter", presenter, "roomStatus", status));
             } catch (Exception e) {
                 // Handle exception if JSON serialization fails
                 e.printStackTrace();

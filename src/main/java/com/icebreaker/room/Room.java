@@ -26,13 +26,14 @@ public class Room {
     private Person presenter;
     private final ChatService chatService;
 
-    public Room(int roomNumber, String roomCode, Admin host, ChatService chatService) {
+    public Room(int roomNumber, String roomCode, Admin host, Person presenter, ChatService chatService) {
         this.roomNumber = roomNumber;
         this.roomCode = roomCode;
         this.host = host;
         this.chatService = chatService;
         players.add(host);
         this.roomStatus = RoomStatus.WAITING;
+        this.presenter = presenter;
     }
 
     public void startRoom() {

@@ -118,6 +118,16 @@ public class ServerRunner {
         }
     }
 
+    public Person getPresenterInRoom(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                return roomNumbers.get(roomNumber).getPresenter();
+            }
+            return null;
+        }
+    }
+
     public Person getOnePlayerInfo(String roomCode, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
@@ -128,19 +138,25 @@ public class ServerRunner {
         }
     }
 
-    public boolean isAdmin(String userID, String roomCode) {
+    public boolean isAdmin(String userID, String roomCode) throws Exception {
         synchronized (this) {
-            int roomNum = this.codeNumberMapping.get(roomCode);
-            Room room = roomNumbers.get(roomNum);
-            return userID.equals(room.getHost().getUserID());
+            if (containsRoom(roomCode)) {
+                int roomNum = this.codeNumberMapping.get(roomCode);
+                Room room = roomNumbers.get(roomNum);
+                return userID.equals(room.getHost().getUserID());
+            }
+            return false;
         }
     }
 
     public boolean isPresenter(String userID, String roomCode) {
         synchronized (this) {
-            int roomNum = this.codeNumberMapping.get(roomCode);
-            Room room = roomNumbers.get(roomNum);
-            return userID.equals(room.getPresenter().getUserID());
+            if (containsRoom(roomCode)) {
+                int roomNum = this.codeNumberMapping.get(roomCode);
+                Room room = roomNumbers.get(roomNum);
+                return userID.equals(room.getPresenter().getUserID());
+            }
+            return false;
         }
     }
 

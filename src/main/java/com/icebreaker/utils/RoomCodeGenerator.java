@@ -1,7 +1,5 @@
 package com.icebreaker.utils;
 
-import lombok.Getter;
-
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;

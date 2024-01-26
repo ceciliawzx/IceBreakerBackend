@@ -1,13 +1,9 @@
 package com.icebreaker.room;
 
-import com.icebreaker.controllers.BroadcastScheduler;
-import com.icebreaker.controllers.ChatController;
 import com.icebreaker.services.ChatService;
 import com.icebreaker.websocket.ChatMessage;
 import lombok.Getter;
 import com.icebreaker.person.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +19,7 @@ public class Room {
     @Getter
     private final Admin host;
     @Getter
-    private int gameStatus;
+    private RoomStatus roomStatus;
 
     private final ChatService chatService;
 
@@ -33,11 +29,11 @@ public class Room {
         this.host = host;
         this.chatService = chatService;
         players.add(host);
-        this.gameStatus = 0;
+        this.roomStatus = RoomStatus.WAITING;
     }
 
     public void startRoom() {
-        this.gameStatus = 1;
+        this.roomStatus = RoomStatus.PRESENTING;
         ChatMessage testMessage = new ChatMessage();
         testMessage.setContent("Test!");
         testMessage.setTimestamp(LocalDateTime.now());

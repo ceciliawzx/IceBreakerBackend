@@ -22,5 +22,5 @@ public class Person {
     protected String feeling;
     protected String favFood;
     protected String favActivity;
-
+    protected boolean completed;
 }

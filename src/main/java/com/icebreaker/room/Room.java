@@ -17,6 +17,7 @@ public class Room {
     @Getter
     private final String roomCode;
     private final List<Person> players = new ArrayList<>(); // All players including the host. Host is at position 0
+    private final List<Person> presentedList = new ArrayList<>();
     @Getter
     private final Admin host;
     @Getter
@@ -26,14 +27,14 @@ public class Room {
     private Person presenter;
     private final ChatService chatService;
 
-    public Room(int roomNumber, String roomCode, Admin host, Person presenter, ChatService chatService) {
+    public Room(int roomNumber, String roomCode, Admin host, ChatService chatService) {
         this.roomNumber = roomNumber;
         this.roomCode = roomCode;
         this.host = host;
         this.chatService = chatService;
         players.add(host);
         this.roomStatus = RoomStatus.WAITING;
-        this.presenter = presenter;
+        this.presenter = host;
     }
 
     public void startRoom() {
@@ -108,6 +109,17 @@ public class Room {
                         p.getFeeling() != null &&
                         p.getFavFood() != null &&
                         p.getFavActivity() != null;
+            }
+        }
+        return false;
+    }
+
+    public boolean setPresenter(String userID) {
+        for (Person person : players) {
+            if (person.getUserID().equals(userID)) {
+                presenter = person;
+                presentedList.add(person);
+                return true;
             }
         }
         return false;

@@ -36,7 +36,7 @@ variables:
   REMOTE_USER: "ice"
   JAR_FILE: "target/IceBreakerBackend-1.0.jar"
   SSH_PASSWORD: "$CI_SSH_PASSWORD"
-  EXISTING_PORT: 8080
+  EXISTING_PORT: 8083
 
 deploy:
   stage: deploy
@@ -50,7 +50,7 @@ deploy:
     - echo "EXISTING_PID $EXISTING_PID"
 
     # copy jar to server
-    - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$JAR_FILE" "$REMOTE_USER@$REMOTE_SERVER:IceBreaker/cicd/"
+    - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$JAR_FILE" "$REMOTE_USER@$REMOTE_SERVER:IceBreaker/leo/"
 
     # if existing, kill it
     - >
@@ -62,7 +62,7 @@ deploy:
       fi
 
     # launch
-    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "nohup java -jar IceBreaker/cicd/IceBreakerBackend-1.0.jar &>/dev/null  &"
+    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "nohup java -jar IceBreaker/leo/IceBreakerBackend-1.0.jar &>/dev/null  &"
 
     - sleep 5
 

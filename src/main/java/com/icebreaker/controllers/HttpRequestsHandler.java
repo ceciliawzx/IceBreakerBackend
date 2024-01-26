@@ -3,6 +3,7 @@ package com.icebreaker.controllers;
 import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;
 import com.icebreaker.room.Room;
+import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,12 +140,12 @@ public class HttpRequestsHandler {
         if (players != null && !players.isEmpty()) {
             Person admin = players.get(0);
             List<Person> users = players.subList(1, players.size());
-            boolean gameStatus = runner.getStatus(roomCode) == 1;
+            RoomStatus status = runner.getStatus(roomCode);
             ObjectMapper objectMapper = new ObjectMapper();
             String json;
 
             try {
-                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users, "gameStatus", gameStatus));
+                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users, "roomStatus", status));
             } catch (Exception e) {
                 // Handle exception if JSON serialization fails
                 e.printStackTrace();
@@ -161,6 +162,9 @@ public class HttpRequestsHandler {
     public String getPlayerInARoom(@RequestParam(name = "roomCode", required = true) String roomCode,
                                    @RequestParam(name = "userID", required = true) String userID) {
         ServerRunner runner = ServerRunner.getInstance();
+        if (!runner.containsRoom(roomCode)) {
+            return "Room Not found";
+        }
         Person person = runner.getOnePlayerInfo(roomCode, userID);
         System.out.printf("Get Player: %s, %s%n", userID, roomCode);
         if (person != null) {

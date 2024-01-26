@@ -3,6 +3,7 @@ package com.icebreaker.serverrunner;
 import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
 import com.icebreaker.room.Room;
+import com.icebreaker.room.RoomStatus;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
 
@@ -134,12 +135,12 @@ public class ServerRunner {
         }
     }
 
-    public int getStatus(String roomCode) {
+    public RoomStatus getStatus(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                return roomNumbers.get(codeNumberMapping.get(roomCode)).getGameStatus();
+                return roomNumbers.get(codeNumberMapping.get(roomCode)).getRoomStatus();
             }
-            return -1;
+            return RoomStatus.NON_EXIST;
         }
     }
 

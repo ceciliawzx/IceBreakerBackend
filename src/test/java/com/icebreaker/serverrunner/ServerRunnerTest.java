@@ -32,11 +32,7 @@ public class ServerRunnerTest {
     public void serverRunnerCanAddAndDestroyRoom() {
         RoomCodeGenerator roomCodeGenerator = new RoomCodeGenerator();
         String roomCode = roomCodeGenerator.generateUniqueCode();
-<<<<<<< HEAD
-        Room room = new Room("123", roomCode, null, null, null);
-=======
-        Room room = new Room(123, roomCode, null, null);
->>>>>>> 7283572c4d456cbb5a559f071b43c4c2bfaac345
+        Room room = new Room("123", roomCode, null, null);
 
         // Mock behavior for HttpServletRequest
         when(request.getAttribute("someAttribute")).thenReturn("someValue");

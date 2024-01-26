@@ -105,11 +105,18 @@ public class HttpRequestsHandler {
     }
 
     @GetMapping("/isAdmin")
-    public boolean checkUserInRoom(@RequestParam("userID") String userID,
+    public boolean isAdmin(@RequestParam("userID") String userID,
                                    @RequestParam("roomCode") String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
         System.out.printf("Check Admin: %s, %s%n", userID, roomCode);
         return runner.isAdmin(userID, roomCode);
+    }
+
+    @GetMapping("/isPresenter")
+    public boolean isPresenter(@RequestParam("userID") String userID,
+                                   @RequestParam("roomCode") String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        return runner.isPresenter(userID, roomCode);
     }
 
     @PostMapping(path = "/updatePerson", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -200,5 +207,14 @@ public class HttpRequestsHandler {
         ServerRunner runner = ServerRunner.getInstance();
         System.out.printf("Info Complete: %s, %s%n", userID, roomCode);
         return runner.checkPlayerInfoComplete(roomCode, userID);
+    }
+
+    @PostMapping("/startDrawAndGuess")
+    public String startDrawAndGuess(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        if (runner.changeRoomStatus(roomCode, RoomStatus.PICTURING)) {
+            return "Success";
+        }
+        return "Fail";
     }
 }

@@ -1,5 +1,7 @@
 package com.icebreaker.utils;
 
+import lombok.Getter;
+
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -26,11 +28,18 @@ public class RoomCodeGenerator {
 
     public String generateUniqueCode() {
         String code;
+        if (existingCodes.size() == 9999) {
+            return "no room available";
+        }
         do {
             code = generateRandomCode();
         } while (isCodeExists(code));
 
         existingCodes.add(code);
         return code;
+    }
+
+    public void deleteUnUseCode(String roomCode) {
+        existingCodes.remove(roomCode);
     }
 }

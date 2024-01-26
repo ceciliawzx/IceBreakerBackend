@@ -14,7 +14,7 @@ import java.util.Map;
 public class ServerRunner {
     private static ServerRunner instance;
     @Getter
-    private RoomCodeGenerator roomCodeGenerator = new RoomCodeGenerator();
+    private final RoomCodeGenerator roomCodeGenerator = new RoomCodeGenerator();
 
     private final Map<Room, Integer> activeRooms = new HashMap<>();
     private final Map<Integer, Room> roomNumbers = new HashMap<>();
@@ -67,6 +67,7 @@ public class ServerRunner {
                 roomNumbers.remove(roomNumber);
                 codeNumberMapping.remove(roomCode);
                 numberCodeMapping.remove(roomNumber);
+                roomCodeGenerator.deleteUnUseCode(roomCode);
                 return true;
             }
             return false;

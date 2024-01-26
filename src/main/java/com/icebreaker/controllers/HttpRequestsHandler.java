@@ -43,7 +43,8 @@ public class HttpRequestsHandler {
             throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-        int newRoomNumber = roomNumber.getAndIncrement();
+        int newRoomNumberInt = Integer.parseInt(String.valueOf(roomNumber)) + 1;
+        String newRoomNumber = String.valueOf(newRoomNumberInt);
 
         int newUserID = userID.getAndIncrement();
         StringBuilder usb = hashUserId(name, md, newUserID);
@@ -102,7 +103,7 @@ public class HttpRequestsHandler {
     public boolean handleDestroyRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
         System.out.printf("Destroy Room: %s%n", roomCode);
-        return runner.destroyRoom(roomCode);
+        return runner.destroyRoom(roomCode, true);
     }
 
     @GetMapping("/isAdmin")
@@ -122,6 +123,8 @@ public class HttpRequestsHandler {
     public boolean isPresenter(@RequestParam("userID") String userID,
                                    @RequestParam("roomCode") String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
+        System.out.printf("Check Presenter: %s, %s%n", userID, roomCode);
+
         try {
             return runner.isPresenter(userID, roomCode);
         } catch (Exception e) {

@@ -18,6 +18,7 @@ public class DrawingMessage {
         private double x;
         private double y;
         private boolean drawing;
+        private boolean isNewLine;
         private String color;
         private String strokeWidth;
     }

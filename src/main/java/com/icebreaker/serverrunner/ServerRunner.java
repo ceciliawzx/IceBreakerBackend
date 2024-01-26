@@ -16,13 +16,14 @@ public class ServerRunner {
     @Getter
     private final RoomCodeGenerator roomCodeGenerator = new RoomCodeGenerator();
 
-    private final Map<Room, Integer> activeRooms = new HashMap<>();
-    private final Map<Integer, Room> roomNumbers = new HashMap<>();
-    private final Map<String, Integer> codeNumberMapping  = new HashMap<>();
-    private final Map<Integer, String> numberCodeMapping  = new HashMap<>();
+    private final Map<Room, String> activeRooms = new HashMap<>();
+    private final Map<String, Room> roomNumbers = new HashMap<>();
+    private final Map<String, String> codeNumberMapping = new HashMap<>();
+    private final Map<String, String> numberCodeMapping = new HashMap<>();
 
     private ServerRunner() {
     }
+
     public static ServerRunner getInstance() {
 
         if (instance == null) {
@@ -37,15 +38,9 @@ public class ServerRunner {
         }
     }
 
-    public boolean containsRoom(int roomNumber) {
-        synchronized (this) {
-            return roomNumbers.containsKey(roomNumber);
-        }
-    }
-
     public boolean containsRoom(String roomCode) {
         synchronized (this) {
-            return codeNumberMapping.containsKey(roomCode);
+            return codeNumberMapping.containsKey(roomCode) || numberCodeMapping.containsKey(roomCode);
         }
     }
 
@@ -59,39 +54,37 @@ public class ServerRunner {
         }
     }
 
-    public boolean destroyRoom(String roomCode) {
+    public boolean destroyRoom(String roomCode, boolean isRoomCode) {
         synchronized (this) {
             if (this.containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                activeRooms.remove(roomNumbers.get(roomNumber));
-                roomNumbers.remove(roomNumber);
-                codeNumberMapping.remove(roomCode);
-                numberCodeMapping.remove(roomNumber);
-                roomCodeGenerator.deleteUnUseCode(roomCode);
+                if (isRoomCode) {
+                    // room code
+                    String roomNumber = codeNumberMapping.get(roomCode);
+                    activeRooms.remove(roomNumbers.get(roomNumber));
+                    roomNumbers.remove(roomNumber);
+                    codeNumberMapping.remove(roomCode);
+                    numberCodeMapping.remove(roomNumber);
+                    roomCodeGenerator.deleteUnUseCode(roomCode);
+                } else {
+                    // room number
+                    activeRooms.remove(roomNumbers.get(roomCode));
+                    roomNumbers.remove(roomCode);
+                    codeNumberMapping.remove(numberCodeMapping.get(roomCode), roomCode);
+                    numberCodeMapping.remove(roomCode);
+                }
                 return true;
+            } else {
+                return false;
             }
-            return false;
+
         }
     }
 
-    // We should change the test for this
-    public boolean destroyRoom(int roomNumber) {
-        synchronized (this) {
-            if (this.containsRoom(roomNumber)) {
-                activeRooms.remove(roomNumbers.get(roomNumber));
-                roomNumbers.remove(roomNumber);
-                codeNumberMapping.remove(numberCodeMapping.get(roomNumber), roomNumber);
-                numberCodeMapping.remove(roomNumber);
-                return true;
-            }
-            return false;
-        }
-    }
 
     public boolean joinRoom(String roomCode, String nickname, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
+                String roomNumber = codeNumberMapping.get(roomCode);
                 roomNumbers.get(roomNumber).joinRoom(new User(nickname, roomCode, userID));
                 return true;
             }
@@ -111,7 +104,7 @@ public class ServerRunner {
     public List<Person> getPlayersInRoom(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
+                String roomNumber = codeNumberMapping.get(roomCode);
                 return roomNumbers.get(roomNumber).getPlayers();
             }
             return null;
@@ -121,7 +114,7 @@ public class ServerRunner {
     public Person getPresenterInRoom(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
+                String roomNumber = codeNumberMapping.get(roomCode);
                 return roomNumbers.get(roomNumber).getPresenter();
             }
             return null;
@@ -131,7 +124,7 @@ public class ServerRunner {
     public Person getOnePlayerInfo(String roomCode, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
+                String roomNumber = codeNumberMapping.get(roomCode);
                 return roomNumbers.get(roomNumber).getPlayer(userID);
             }
             return null;
@@ -141,7 +134,7 @@ public class ServerRunner {
     public boolean isAdmin(String userID, String roomCode) throws Exception {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNum = this.codeNumberMapping.get(roomCode);
+                String roomNum = this.codeNumberMapping.get(roomCode);
                 Room room = roomNumbers.get(roomNum);
                 return userID.equals(room.getHost().getUserID());
             }
@@ -152,7 +145,7 @@ public class ServerRunner {
     public boolean isPresenter(String userID, String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNum = this.codeNumberMapping.get(roomCode);
+                String roomNum = this.codeNumberMapping.get(roomCode);
                 Room room = roomNumbers.get(roomNum);
                 return userID.equals(room.getPresenter().getUserID());
             }
@@ -172,7 +165,7 @@ public class ServerRunner {
     public boolean kickPerson(String roomCode, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
+                String roomNumber = codeNumberMapping.get(roomCode);
                 return roomNumbers.get(roomNumber).kickPerson(userID);
             }
             return false;
@@ -182,7 +175,7 @@ public class ServerRunner {
     public boolean serverStartRoom(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
+                String roomNumber = codeNumberMapping.get(roomCode);
                 roomNumbers.get(roomNumber).startRoom();
                 return true;
             }
@@ -193,7 +186,7 @@ public class ServerRunner {
     public boolean checkPlayerInfoComplete(String roomCode, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
+                String roomNumber = codeNumberMapping.get(roomCode);
                 return roomNumbers.get(roomNumber).checkPlayerInfoComplete(userID);
             }
             return false;
@@ -203,7 +196,7 @@ public class ServerRunner {
     public boolean changeRoomStatus(String roomCode, RoomStatus roomStatus) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
+                String roomNumber = codeNumberMapping.get(roomCode);
                 roomNumbers.get(roomNumber).setRoomStatus(roomStatus);
                 return true;
             }

@@ -32,16 +32,16 @@ public class ServerRunnerTest {
     public void serverRunnerCanAddAndDestroyRoom() {
         RoomCodeGenerator roomCodeGenerator = new RoomCodeGenerator();
         String roomCode = roomCodeGenerator.generateUniqueCode();
-        Room room = new Room(123, roomCode, null, null, null);
+        Room room = new Room("123", roomCode, null, null, null);
 
         // Mock behavior for HttpServletRequest
         when(request.getAttribute("someAttribute")).thenReturn("someValue");
 
         assertTrue(serverRunner.addRoom(room, roomCode));
         assertTrue(serverRunner.containsRoom(room));
-        assertTrue(serverRunner.containsRoom(123));
-        assertTrue(serverRunner.destroyRoom(123));
+        assertTrue(serverRunner.containsRoom("123"));
+        assertTrue(serverRunner.destroyRoom("123", false));
         assertFalse(serverRunner.containsRoom(room));
-        assertFalse(serverRunner.containsRoom(123));
+        assertFalse(serverRunner.containsRoom("123"));
     }
 }

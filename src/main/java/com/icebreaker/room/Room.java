@@ -13,27 +13,27 @@ import java.util.List;
 public class Room {
     private final int MAX_CAPACITY = 10;
     @Getter
-    private final int roomNumber;
+    private final String roomNumber;
     @Getter
     private final String roomCode;
     private final List<Person> players = new ArrayList<>(); // All players including the host. Host is at position 0
     @Getter
     private final Admin host;
     @Getter
+    private final Person presenter;
+    @Getter
     @Setter
     private RoomStatus roomStatus;
-    @Getter
-    private Person presenter;
     private final ChatService chatService;
 
-    public Room(int roomNumber, String roomCode, Admin host, Person presenter, ChatService chatService) {
+    public Room(String roomNumber, String roomCode, Admin host, Person presenter, ChatService chatService) {
         this.roomNumber = roomNumber;
         this.roomCode = roomCode;
         this.host = host;
+        this.presenter = host;
         this.chatService = chatService;
         players.add(host);
         this.roomStatus = RoomStatus.WAITING;
-        this.presenter = presenter;
     }
 
     public void startRoom() {

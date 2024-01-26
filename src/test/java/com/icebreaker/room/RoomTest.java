@@ -20,7 +20,11 @@ public class RoomTest {
     @BeforeEach
     public void setUp() {
         admin = new Admin("Admin", "1111", "admin1");
+<<<<<<< HEAD
         room = new Room("1", "ABC123", admin, admin, null);
+=======
+        room = new Room(1, "ABC123", admin,  null);
+>>>>>>> 7283572c4d456cbb5a559f071b43c4c2bfaac345
         user1 = new User("Alice", "1111", "user1");
         user2 = new User("Bob", "1111", "user2");
         room.joinRoom(user1);

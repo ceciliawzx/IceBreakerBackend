@@ -203,4 +203,14 @@ public class ServerRunner {
             return false;
         }
     }
+
+    public boolean changePresenter(String roomCode, String userID) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                String roomNumber = codeNumberMapping.get(roomCode);
+                return roomNumbers.get(roomNumber).setPresenter(userID);
+            }
+            return false;
+        }
+    }
 }

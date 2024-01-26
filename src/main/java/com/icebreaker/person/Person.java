@@ -1,5 +1,6 @@
 package com.icebreaker.person;
 
+import com.icebreaker.utils.Constants;
 import lombok.*;
 
 @Data
@@ -14,7 +15,7 @@ public class Person {
     protected String roomCode;
     @NonNull
     protected String userID;
-    protected String profileImage;
+    protected String profileImage = Constants.getYellowDuck();
     protected String firstName;
     protected String lastName;
     protected String country;

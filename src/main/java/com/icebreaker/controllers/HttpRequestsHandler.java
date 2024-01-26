@@ -34,6 +34,7 @@ public class HttpRequestsHandler {
 
     @GetMapping("/myEndpoint")
     public String handleRequest(@RequestParam(name = "message", required = false) String message) {
+        System.out.println("My endPoint " + message);
         return "Received message: " + message;
     }
 
@@ -61,6 +62,8 @@ public class HttpRequestsHandler {
             json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
         }
 
+        System.out.printf("Create Room: %s, %s, %s%n", name, usb.toString(), roomCode);
+
         return runner.addRoom(newRoom, roomCode) ? json : "Room Creation Failed";
     }
 
@@ -87,6 +90,8 @@ public class HttpRequestsHandler {
             json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
         }
 
+        System.out.printf("Join Room: %s, %s, %s%n", name, usb.toString(), code);
+
         return runner.joinRoom(code, name, usb.toString()) ?
                 json :
                 "Join Room Failed";
@@ -95,6 +100,7 @@ public class HttpRequestsHandler {
     @DeleteMapping("/destroyRoom")
     public boolean handleDestroyRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
+        System.out.printf("Destroy Room: %s%n", roomCode);
         return runner.destroyRoom(roomCode);
     }
 
@@ -102,6 +108,7 @@ public class HttpRequestsHandler {
     public boolean checkUserInRoom(@RequestParam("userID") String userID,
                                    @RequestParam("roomCode") String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
+        System.out.printf("Check Admin: %s, %s%n", userID, roomCode);
         return runner.isAdmin(userID, roomCode);
     }
 
@@ -109,6 +116,7 @@ public class HttpRequestsHandler {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public String updatePerson(@RequestBody Person person) {
         ServerRunner runner = ServerRunner.getInstance();
+        System.out.printf("Update Person: %s, %s%n", person.getUserID(), person.getRoomCode());
         if (runner.roomUpdateUser(person)) {
             return "Success";
         } else {
@@ -120,6 +128,7 @@ public class HttpRequestsHandler {
     public boolean kickPerson(@RequestParam(name = "userID", required = true) String userID,
                                              @RequestParam(name = "roomCode", required = true) String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
+        System.out.printf("Kick Person: %s, %s%n", userID, roomCode);
         return runner.kickPerson(roomCode, userID);
     }
 
@@ -127,6 +136,7 @@ public class HttpRequestsHandler {
     public String getPlayersInARoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
         List<Person> players = runner.getPlayersInRoom(roomCode);
+        System.out.printf("Get Players in room: %s%n", roomCode);
         if (players != null && !players.isEmpty()) {
             Person admin = players.get(0);
             List<Person> users = players.subList(1, players.size());
@@ -156,6 +166,7 @@ public class HttpRequestsHandler {
             return "Room Not found";
         }
         Person person = runner.getOnePlayerInfo(roomCode, userID);
+        System.out.printf("Get Player: %s, %s%n", userID, roomCode);
         if (person != null) {
             ObjectMapper objectMapper = new ObjectMapper();
             String json;
@@ -176,6 +187,7 @@ public class HttpRequestsHandler {
     @PostMapping("/startInput")
     public String startInput(@RequestParam(name = "roomCode", required = true) String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
+        System.out.printf("Start Room: %s%n", roomCode);
         if (runner.serverStartRoom(roomCode)) {
             return "Success";
         }
@@ -186,6 +198,7 @@ public class HttpRequestsHandler {
     public boolean checkPlayerInfoComplete(@RequestParam(name = "roomCode", required = true) String roomCode,
                                            @RequestParam(name = "userID", required = true) String userID) {
         ServerRunner runner = ServerRunner.getInstance();
+        System.out.printf("Info Complete: %s, %s%n", userID, roomCode);
         return runner.checkPlayerInfoComplete(roomCode, userID);
     }
 }

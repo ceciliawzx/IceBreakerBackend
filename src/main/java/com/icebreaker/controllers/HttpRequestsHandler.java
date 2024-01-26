@@ -49,6 +49,9 @@ public class HttpRequestsHandler {
         StringBuilder usb = hashUserId(name, md, newUserID);
         ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
+//        if (roomCode.contains("no room available")) {
+//            return "No room available";
+//        }
         Room newRoom = new Room(newRoomNumber, roomCode, new Admin(name, roomCode, usb.toString()), chatService);
 
         ObjectMapper objectMapper = new ObjectMapper();

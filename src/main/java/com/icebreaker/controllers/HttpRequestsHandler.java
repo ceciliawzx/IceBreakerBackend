@@ -207,9 +207,9 @@ public class HttpRequestsHandler {
                 json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
             }
 
-            System.out.println("Player Not Found");
             return json;
         }
+        System.out.println("Player Not Found");
         return "Person Not Found";
     }
 

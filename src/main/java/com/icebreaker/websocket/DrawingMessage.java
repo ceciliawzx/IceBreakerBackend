@@ -23,7 +23,7 @@ public class DrawingMessage {
         private String strokeWidth;
     }
 
-    private int roomCode;
+    private String roomCode;
     // such as stroke data (coordinates, color, thickness), the user who drew it, and the room it belongs to.
     private DrawingData drawingData;
     private LocalDateTime timestamp;

@@ -19,7 +19,7 @@ public class ChatControllerTest {
 
     @Test
     public void whenSendMessage_thenReturnsSameMessage() {
-        ChatMessage incomingMessage = new ChatMessage(0, "Hello World!", LocalDateTime.now(), "UnitTestUser", "UnitTestUserId");
+        ChatMessage incomingMessage = new ChatMessage("0000", "Hello World!", LocalDateTime.now(), "UnitTestUser", "UnitTestUserId");
 
         ChatMessage returnedMessage = controller.handleMessage(incomingMessage);
 

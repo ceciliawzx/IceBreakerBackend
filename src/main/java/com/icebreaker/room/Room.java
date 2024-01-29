@@ -13,7 +13,7 @@ import java.util.List;
 public class Room {
     private final int MAX_CAPACITY = 10;
     @Getter
-    private final String roomNumber;
+    private final int roomNumber;
     @Getter
     private final String roomCode;
     private final List<Person> players = new ArrayList<>(); // All players including the host. Host is at position 0
@@ -27,7 +27,7 @@ public class Room {
     private RoomStatus roomStatus;
     private final ChatService chatService;
 
-    public Room(String roomNumber, String roomCode, Admin host, ChatService chatService) {
+    public Room(int roomNumber, String roomCode, Admin host, ChatService chatService) {
         this.roomNumber = roomNumber;
         this.roomCode = roomCode;
         this.host = host;
@@ -39,13 +39,6 @@ public class Room {
 
     public void startRoom() {
         this.roomStatus = RoomStatus.PRESENTING;
-        ChatMessage testMessage = new ChatMessage();
-        testMessage.setContent("Test!");
-        testMessage.setTimestamp(LocalDateTime.now());
-        testMessage.setRoomCode(0);
-        testMessage.setSender("Server");
-        testMessage.setSender("ServerId");
-        chatService.broadcastToRoom(roomCode, testMessage);
     }
 
     public boolean joinRoom(User user) {
@@ -123,5 +116,16 @@ public class Room {
             }
         }
         return false;
+    }
+
+    public List<Person> getNotPresentedPeople() {
+        List<Person> difference = new ArrayList<>();
+        for (Person person : players) {
+            if (!presentedList.contains(person)) {
+                difference.add(person);
+            }
+        }
+
+        return difference;
     }
 }

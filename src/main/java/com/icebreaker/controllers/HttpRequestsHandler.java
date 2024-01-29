@@ -43,7 +43,7 @@ public class HttpRequestsHandler {
             throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-        int newRoomNumberInt = Integer.parseInt(String.valueOf(roomNumber)) + 1;
+        int newRoomNumberInt = Integer.parseInt(String.valueOf(roomNumber.getAndIncrement()));
         System.out.println("Room number: " + newRoomNumberInt);
         System.out.println("Atomic Value: " + roomNumber.get());
         String newRoomNumber = String.valueOf(newRoomNumberInt);

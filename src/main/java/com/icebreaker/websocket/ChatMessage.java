@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatMessage {
-    private int roomCode;
+    private String roomCode;
     private String content;
     private LocalDateTime timestamp;
     private String sender;

@@ -43,8 +43,7 @@ public class HttpRequestsHandler {
             throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-        int newRoomNumberInt = roomNumber.getAndIncrement();
-        String newRoomNumber = String.valueOf(newRoomNumberInt);
+        int newRoomNumber = roomNumber.getAndIncrement();
 
         int newUserID = userID.getAndIncrement();
         StringBuilder usb = hashUserId(name, md, newUserID);
@@ -103,7 +102,7 @@ public class HttpRequestsHandler {
     public boolean handleDestroyRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
         System.out.printf("Destroy Room: %s%n", roomCode);
-        return runner.destroyRoom(roomCode, true);
+        return runner.destroyRoom(roomCode);
     }
 
     @GetMapping("/isAdmin")
@@ -238,5 +237,26 @@ public class HttpRequestsHandler {
                                    @RequestParam(name = "userID", required = true) String userID) {
         ServerRunner runner = ServerRunner.getInstance();
         return runner.changePresenter(roomCode, userID);
+    }
+
+    @GetMapping("/notPresentedPeople")
+    public String getNotPresentedPeople(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        List<Person> notPresentedPeople = runner.getNotPresentedPeople(roomCode);
+
+        if (notPresentedPeople != null && !notPresentedPeople.isEmpty()) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json;
+
+            try {
+                json = objectMapper.writeValueAsString(Map.of("notPresentedPeople", notPresentedPeople));
+            } catch (Exception e) {
+                e.printStackTrace();
+                json = "{\"error\": \"Serialization error\"}";
+            }
+
+            return json;
+        }
+        return "Room can not be found";
     }
 }

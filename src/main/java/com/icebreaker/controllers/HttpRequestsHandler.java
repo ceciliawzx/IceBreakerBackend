@@ -167,15 +167,18 @@ public class HttpRequestsHandler {
             String json;
 
             try {
+                System.out.println("Players Found");
                 json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users, "presenter", presenter, "roomStatus", status));
             } catch (Exception e) {
                 // Handle exception if JSON serialization fails
+                System.out.println("Players Not Found");
                 e.printStackTrace();
                 json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
             }
 
             return json;
         }
+        System.out.println("Players Not Found");
         return "Room can not be found";
     }
     // Im: userID    Out: User class
@@ -185,6 +188,7 @@ public class HttpRequestsHandler {
                                    @RequestParam(name = "userID", required = true) String userID) {
         ServerRunner runner = ServerRunner.getInstance();
         if (!runner.containsRoom(roomCode)) {
+            System.out.println("Room Not Found");
             return "Room Not found";
         }
         Person person = runner.getOnePlayerInfo(roomCode, userID);
@@ -194,13 +198,16 @@ public class HttpRequestsHandler {
             String json;
 
             try {
+                System.out.println("Player Found");
                 json = objectMapper.writeValueAsString(Map.of("userInfo", person));
             } catch (Exception e) {
                 // Handle exception if JSON serialization fails
+                System.out.println("Player Not Found");
                 e.printStackTrace();
                 json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
             }
 
+            System.out.println("Player Not Found");
             return json;
         }
         return "Person Not Found";

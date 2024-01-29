@@ -32,13 +32,14 @@ public class WordleMessage {
 
     @Data
     public static class Letters {
-        private final Character letter;
-        private final int state;
-        public Letters(char letter, int state) {
-            this.letter = letter;
-            this.state = state;
+        private Character letter;
+        private WordleStateCode state;
+        public Letters(char l, WordleStateCode s) {
+            letter = l;
+            state = s;
         }
     }
+
 
     private boolean isCheck;
     private List<Letters> letters;

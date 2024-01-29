@@ -24,11 +24,11 @@ public class WordleController {
         this.wordleService = wordleService;
     }
 
-    @MessageMapping("/room/{roomNumber}/sendMessage")
-    @SendTo("/topic/room/{roomNumber}")
-    public void handleMessage(@Payload WordleMessage message) {
-        String roomCode = String.valueOf(message.getRoomCode());
-        wordleService.checkCorrectness(roomCode, message);
-        wordleService.broadcastResult(roomCode, message);
+    @MessageMapping("/room/{roomNumber}/wordle")
+    public void handleMessage(@Payload String message) {
+
+        // String roomCode = String.valueOf(message.getRoomCode());
+        // wordleService.checkCorrectness(roomCode, message);
+        wordleService.broadcastResult("1234", message);
     }
 }

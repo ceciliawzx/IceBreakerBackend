@@ -1,6 +1,7 @@
 package com.icebreaker.services;
 
 import com.icebreaker.websocket.WordleMessage;
+import com.icebreaker.websocket.WordleStateCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,19 @@ public class WordleService {
             List<WordleMessage.Letters> guess = message.getLetters();
             String answer = answers.get(roomCode);
             for (int i = 0; i < answer.length(); i++) {
-                if (guess.get(i).getLetter().equals(answer.charAt(i))) {
-
+                Character currentChar = guess.get(i).getLetter();
+                if (currentChar.equals(answer.charAt(i))) {
+                    guess.get(i).setState(WordleStateCode.GREEN);
+                } else if (answer.contains(currentChar.toString())) {
+                    guess.get(i).setState(WordleStateCode.YELLOW);
+                } else {
+                    guess.get(i).setState(WordleStateCode.Grey);
                 }
             }
         }
     }
 
-    public void broadcastResult(String roomCode, WordleMessage message) {
+    public void broadcastResult(String roomCode, String message) {
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", message);
     }
 }

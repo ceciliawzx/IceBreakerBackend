@@ -18,9 +18,10 @@ public class DrawingMessage {
         private double x;
         private double y;
         private boolean drawing;
-        private boolean isNewLine;
+        private boolean newLine;
         private String color;
         private String strokeWidth;
+        private boolean eraser;
     }
 
     private String roomCode;

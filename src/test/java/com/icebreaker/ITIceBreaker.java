@@ -11,7 +11,7 @@ public class ITIceBreaker {
     @Test
     public void endpointCanReceiveRequestAndResponse() {
         // Specify the base URL of your deployed server
-        RestAssured.baseURI = "http://ljthey.co.uk:8080/";
+        RestAssured.baseURI = "https://ljthey.co.uk:8080/";
         given()
                 .queryParam("message", "Hello")
                 .when()

@@ -44,9 +44,6 @@ public class HttpRequestsHandler {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         int newRoomNumberInt = roomNumber.getAndIncrement();
-
-        System.out.println("Room number: " + newRoomNumberInt);
-        System.out.println("Atomic Value: " + roomNumber.get());
         String newRoomNumber = String.valueOf(newRoomNumberInt);
 
         int newUserID = userID.getAndIncrement();
@@ -77,7 +74,7 @@ public class HttpRequestsHandler {
     public String handleJoinRoom(@RequestParam(name = "roomCode", required = true) String code,
                                  @RequestParam(name = "name", required = true) String name)
             throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
+    MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         int newUserID = userID.getAndIncrement();
         StringBuilder usb = hashUserId(name, md, newUserID);
@@ -170,18 +167,15 @@ public class HttpRequestsHandler {
             String json;
 
             try {
-                System.out.println("Players Found");
                 json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users, "presenter", presenter, "roomStatus", status));
             } catch (Exception e) {
                 // Handle exception if JSON serialization fails
-                System.out.println("Players Not Found");
                 e.printStackTrace();
                 json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
             }
 
             return json;
         }
-        System.out.println("Players Not Found");
         return "Room can not be found";
     }
     // Im: userID    Out: User class
@@ -191,7 +185,6 @@ public class HttpRequestsHandler {
                                    @RequestParam(name = "userID", required = true) String userID) {
         ServerRunner runner = ServerRunner.getInstance();
         if (!runner.containsRoom(roomCode)) {
-            System.out.println("Room Not Found");
             return "Room Not found";
         }
         Person person = runner.getOnePlayerInfo(roomCode, userID);
@@ -201,18 +194,15 @@ public class HttpRequestsHandler {
             String json;
 
             try {
-                System.out.println("Player Found");
                 json = objectMapper.writeValueAsString(Map.of("userInfo", person));
             } catch (Exception e) {
                 // Handle exception if JSON serialization fails
-                System.out.println("Player Not Found");
                 e.printStackTrace();
                 json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
             }
 
             return json;
         }
-        System.out.println("Player Not Found");
         return "Person Not Found";
     }
 

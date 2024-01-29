@@ -44,6 +44,8 @@ public class HttpRequestsHandler {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         int newRoomNumberInt = Integer.parseInt(String.valueOf(roomNumber)) + 1;
+        System.out.println("Room number: " + newRoomNumberInt);
+        System.out.println("Atomic Value: " + roomNumber.get());
         String newRoomNumber = String.valueOf(newRoomNumberInt);
 
         int newUserID = userID.getAndIncrement();

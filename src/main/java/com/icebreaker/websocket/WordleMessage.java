@@ -31,9 +31,8 @@ public class WordleMessage {
     // Correct?
 
     @Data
-    @Getter
     public static class Letters {
-        private final char letter;
+        private final Character letter;
         private final int state;
         public Letters(char letter, int state) {
             this.letter = letter;
@@ -43,8 +42,11 @@ public class WordleMessage {
 
     private boolean isCheck;
     private List<Letters> letters;
-    private int roomCode;
+    private String roomCode;
 
+    public boolean getIsCheck() {
+        return isCheck;
+    }
     @Override
     public String toString() {
         return "";

@@ -49,7 +49,8 @@ public class HttpRequestsHandler {
         StringBuilder usb = hashUserId(name, md, newUserID);
         ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
-        Room newRoom = new Room(newRoomNumber, roomCode, new Admin(name, roomCode, usb.toString()), chatService);
+        Admin admin = new Admin(name, roomCode, usb.toString());
+        Room newRoom = new Room(newRoomNumber, roomCode, admin, chatService);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -72,7 +73,7 @@ public class HttpRequestsHandler {
     public String handleJoinRoom(@RequestParam(name = "roomCode", required = true) String code,
                                  @RequestParam(name = "name", required = true) String name)
             throws NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
+    MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         int newUserID = userID.getAndIncrement();
         StringBuilder usb = hashUserId(name, md, newUserID);
@@ -105,11 +106,30 @@ public class HttpRequestsHandler {
     }
 
     @GetMapping("/isAdmin")
-    public boolean checkUserInRoom(@RequestParam("userID") String userID,
+    public boolean isAdmin(@RequestParam("userID") String userID,
                                    @RequestParam("roomCode") String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
         System.out.printf("Check Admin: %s, %s%n", userID, roomCode);
-        return runner.isAdmin(userID, roomCode);
+        try {
+            return runner.isAdmin(userID, roomCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @GetMapping("/isPresenter")
+    public boolean isPresenter(@RequestParam("userID") String userID,
+                                   @RequestParam("roomCode") String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        System.out.printf("Check Presenter: %s, %s%n", userID, roomCode);
+
+        try {
+            return runner.isPresenter(userID, roomCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @PostMapping(path = "/updatePerson", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -139,13 +159,14 @@ public class HttpRequestsHandler {
         System.out.printf("Get Players in room: %s%n", roomCode);
         if (players != null && !players.isEmpty()) {
             Person admin = players.get(0);
+            Person presenter = runner.getPresenterInRoom(roomCode);
             List<Person> users = players.subList(1, players.size());
             RoomStatus status = runner.getStatus(roomCode);
             ObjectMapper objectMapper = new ObjectMapper();
             String json;
 
             try {
-                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users, "roomStatus", status));
+                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users, "presenter", presenter, "roomStatus", status));
             } catch (Exception e) {
                 // Handle exception if JSON serialization fails
                 e.printStackTrace();
@@ -202,5 +223,40 @@ public class HttpRequestsHandler {
         return runner.checkPlayerInfoComplete(roomCode, userID);
     }
 
-    // GETNEXTPRESENTER
+    @PostMapping("/startDrawAndGuess")
+    public String startDrawAndGuess(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        if (runner.changeRoomStatus(roomCode, RoomStatus.PICTURING)) {
+            return "Success";
+        }
+        return "Fail";
+    }
+
+    @PostMapping("/changePresenter")
+    public boolean changePresenter(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                   @RequestParam(name = "userID", required = true) String userID) {
+        ServerRunner runner = ServerRunner.getInstance();
+        return runner.changePresenter(roomCode, userID);
+    }
+
+    @GetMapping("/notPresentedPeople")
+    public String getNotPresentedPeople(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        List<Person> notPresentedPeople = runner.getNotPresentedPeople(roomCode);
+
+        if (notPresentedPeople != null && !notPresentedPeople.isEmpty()) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json;
+
+            try {
+                json = objectMapper.writeValueAsString(Map.of("notPresentedPeople", notPresentedPeople));
+            } catch (Exception e) {
+                e.printStackTrace();
+                json = "{\"error\": \"Serialization error\"}";
+            }
+
+            return json;
+        }
+        return "Room can not be found";
+    }
 }

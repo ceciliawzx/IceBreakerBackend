@@ -44,4 +44,5 @@ public class ServerRunnerTest {
         assertFalse(serverRunner.containsRoom(room));
         assertFalse(serverRunner.containsRoom(123));
     }
+
 }

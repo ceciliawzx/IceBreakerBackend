@@ -201,4 +201,6 @@ public class HttpRequestsHandler {
         System.out.printf("Info Complete: %s, %s%n", userID, roomCode);
         return runner.checkPlayerInfoComplete(roomCode, userID);
     }
+
+    // GETNEXTPRESENTER
 }

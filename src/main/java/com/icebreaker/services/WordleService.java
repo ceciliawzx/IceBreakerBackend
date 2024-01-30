@@ -30,6 +30,7 @@ public class WordleService {
     public boolean setAnswers(String roomCode, String answer) {
         if (!answers.containsKey(roomCode)) {
             answers.put(roomCode, answer);
+            return true;
         }
         return false;
     }

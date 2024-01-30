@@ -49,13 +49,7 @@ public class WordleMessage {
     private Boolean isCheck;
     private List<Letters> letters;
     private String roomCode;
-
-//    public boolean getIsCheck() {
-//        return isCheck;
-//    }
-//    public void setIsCheck(boolean b) {
-//        this.isCheck = b;
-//    }
+    // List of wordle status code
     @Override
     public String toString() {
         return "Is Check: " + isCheck + " Letters: " + letters.toString() + " RoomCode: " + roomCode;

@@ -27,7 +27,15 @@ public class WordleService {
         answers.put("1234", "GET");
     }
 
-    public void checkCorrectness(String roomCode, WordleMessage message) {
+    public boolean setAnswers(String roomCode, String answer) {
+        if (!answers.containsKey(roomCode)) {
+            answers.put(roomCode, answer);
+        }
+        return false;
+    }
+
+    private boolean checkCorrectness(String roomCode, WordleMessage message) {
+        boolean isCorrect = true;
         if (message.getIsCheck()) {
             List<WordleMessage.Letters> guess = message.getLetters();
             String answer = answers.get(roomCode);
@@ -37,14 +45,22 @@ public class WordleService {
                     guess.get(i).setState(WordleStateCode.GREEN);
                 } else if (answer.contains(currentChar.toString())) {
                     guess.get(i).setState(WordleStateCode.YELLOW);
+                    isCorrect = false;
                 } else {
                     guess.get(i).setState(WordleStateCode.Grey);
+                    isCorrect = false;
                 }
             }
+        } else {
+            isCorrect = false;
         }
+        return isCorrect;
     }
 
     public void broadcastResult(String roomCode, WordleMessage message) {
+        if (checkCorrectness(roomCode, message)) {
+            answers.remove(roomCode);
+        }
 //        WordleMessage msg = new WordleMessage();
 //        WordleMessage.Letters let1 = new WordleMessage.Letters('G', WordleStateCode.UNCHECKED);
 //        WordleMessage.Letters let2 = new WordleMessage.Letters('E', WordleStateCode.UNCHECKED);

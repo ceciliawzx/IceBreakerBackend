@@ -1,14 +1,20 @@
 package com.icebreaker.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.websocket.WordleMessage;
 import com.icebreaker.websocket.WordleStateCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+
 
 @Service
 public class WordleService {
@@ -18,6 +24,7 @@ public class WordleService {
     @Autowired
     public WordleService(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
+        answers.put("1234", "GET");
     }
 
     public void checkCorrectness(String roomCode, WordleMessage message) {
@@ -37,7 +44,31 @@ public class WordleService {
         }
     }
 
-    public void broadcastResult(String roomCode, String message) {
-        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", message);
+    public void broadcastResult(String roomCode, WordleMessage message) {
+//        WordleMessage msg = new WordleMessage();
+//        WordleMessage.Letters let1 = new WordleMessage.Letters('G', WordleStateCode.UNCHECKED);
+//        WordleMessage.Letters let2 = new WordleMessage.Letters('E', WordleStateCode.UNCHECKED);
+//        WordleMessage.Letters let3 = new WordleMessage.Letters('T', WordleStateCode.UNCHECKED);
+//        List<WordleMessage.Letters> lets = new ArrayList<>();
+//        lets.add(let1);
+//        lets.add(let2);
+//        lets.add(let3);
+//        msg.setLetters(lets);
+//        msg.setIsCheck(false);
+//        msg.setRoomCode("1234");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json;
+
+        try {
+            json = objectMapper.writeValueAsString(message);
+        } catch (Exception e) {
+            // Handle exception if JSON serialization fails
+            e.printStackTrace();
+            json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+        }
+        System.out.println(json);
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", json);
     }
 }
+

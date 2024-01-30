@@ -1,5 +1,6 @@
 package com.icebreaker.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.services.ChatService;
 import com.icebreaker.services.DrawingService;
 import com.icebreaker.services.WordleService;
@@ -10,6 +11,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,10 +27,10 @@ public class WordleController {
     }
 
     @MessageMapping("/room/{roomNumber}/wordle")
-    public void handleMessage(@Payload String message) {
-
-        // String roomCode = String.valueOf(message.getRoomCode());
-        // wordleService.checkCorrectness(roomCode, message);
+    public void handleMessage(@Payload WordleMessage message) {
+        System.out.println("Received: " + message);
+        String roomCode = String.valueOf(message.getRoomCode());
+        wordleService.checkCorrectness(roomCode, message);
         wordleService.broadcastResult("1234", message);
     }
 }

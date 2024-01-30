@@ -38,19 +38,27 @@ public class WordleMessage {
             letter = l;
             state = s;
         }
+
+        @Override
+        public String toString() {
+            return "{ Letter: " + letter.toString() + " State: " + state.toString() + " }";
+        }
     }
 
 
-    private boolean isCheck;
+    private Boolean isCheck;
     private List<Letters> letters;
     private String roomCode;
 
-    public boolean getIsCheck() {
-        return isCheck;
-    }
+//    public boolean getIsCheck() {
+//        return isCheck;
+//    }
+//    public void setIsCheck(boolean b) {
+//        this.isCheck = b;
+//    }
     @Override
     public String toString() {
-        return "";
+        return "Is Check: " + isCheck + " Letters: " + letters.toString() + " RoomCode: " + roomCode;
     }
 }
 

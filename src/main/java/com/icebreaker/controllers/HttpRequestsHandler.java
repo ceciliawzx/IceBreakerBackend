@@ -268,6 +268,7 @@ public class HttpRequestsHandler {
     public boolean startDrawAndGuess(@RequestParam(name = "roomCode", required = true) String roomCode,
                                      @RequestParam(name = "userID", required = true) String userID,
                                      @RequestParam(name = "field", required = true) String field) {
+        System.out.println("Start Wordle: " + roomCode + userID + field);
         ServerRunner runner = ServerRunner.getInstance();
         if (runner.changeRoomStatus(roomCode, RoomStatus.WORDLING)) {
             String word = "POWER"; // TODO Should be getField.

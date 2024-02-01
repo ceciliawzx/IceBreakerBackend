@@ -3,6 +3,7 @@ package com.icebreaker.httprequests;
 import com.icebreaker.controllers.ChatController;
 import com.icebreaker.controllers.HttpRequestsHandler;
 import com.icebreaker.services.ChatService;
+import com.icebreaker.services.WordleService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 
@@ -15,11 +16,12 @@ public class HttpRequestsHandlerTest {
 
     @Mock
     private ChatService chatService;
+    private WordleService wordleService;
 
     @Test
     public void handlerCanReceiveRequestAndReply() {
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
-        HttpRequestsHandler handler = new HttpRequestsHandler(chatService);
+        HttpRequestsHandler handler = new HttpRequestsHandler(chatService, wordleService);
 
         // Test with a null message
         String responseNull = handler.handleRequest(null);

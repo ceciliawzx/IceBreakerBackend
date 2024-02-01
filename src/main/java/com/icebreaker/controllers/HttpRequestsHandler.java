@@ -8,6 +8,7 @@ import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.ChatService;
+import com.icebreaker.services.WordleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +27,13 @@ import static com.icebreaker.utils.HashUserId.hashUserId;
 public class HttpRequestsHandler {
 
     private final ChatService chatService;
+    private final WordleService wordleService;
 
     @Autowired
-    public HttpRequestsHandler(ChatService chatService) {
+    public HttpRequestsHandler(ChatService chatService, WordleService wordleService) {
         this.chatService = chatService;
+        this.wordleService = wordleService;
+
     }
     private final AtomicInteger roomNumber = new AtomicInteger(0);
     private final AtomicInteger userID = new AtomicInteger(0);
@@ -321,4 +325,27 @@ public class HttpRequestsHandler {
         runner.setPresentRoomInfo(roomCode, presentRoomInfo);
     }
 
+    @PostMapping("/startWordle")
+    public boolean startDrawAndGuess(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                     @RequestParam(name = "userID", required = true) String userID,
+                                     @RequestParam(name = "field", required = true) String field) {
+        System.out.println("Start Wordle: " + roomCode + " " + userID + " " + field);
+        ServerRunner runner = ServerRunner.getInstance();
+        if (runner.changeRoomStatus(roomCode, RoomStatus.WORDLING)) {
+            String word = runner.getFieldValue(roomCode, userID, field);
+            System.out.println("The word is: " + word);
+            return wordleService.setAnswers(roomCode, word);
+        }
+        return false;
+    }
+
+    @GetMapping("/getWordleInfo")
+    public int getWordleInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        if (wordleService.roomExist(roomCode)) {
+            System.out.println("The word is: " + wordleService.getAnswer(roomCode));
+            System.out.println("With length: " + wordleService.getAnswer(roomCode).length());
+            return wordleService.getAnswer(roomCode).length();
+        }
+        return -1;
+    }
 }

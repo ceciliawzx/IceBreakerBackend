@@ -24,7 +24,6 @@ public class ChatController {
     private final ServerRunner serverRunner = ServerRunner.getInstance();
 
     @MessageMapping("/room/{roomCode}/sendMessage")
-//    @SendTo("/topic/room/{roomCode}")
     public void handleMessage(@Payload ChatMessage message) {
         // Handle the message
         // Draw & Guess: handle guess messages

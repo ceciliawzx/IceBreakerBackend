@@ -304,7 +304,17 @@ public class ServerRunner {
         synchronized (this) {
             if (containsRoom(roomCode)) {
                 int roomNumber = codeNumberMapping.get(roomCode);
-                roomNumbers.get(roomNumber).getAvailableGames(userID, fieldName);
+                return roomNumbers.get(roomNumber).getAvailableGames(userID, fieldName);
+            }
+            return null;
+        }
+    }
+
+    public String getFieldValue(String roomCode, String userID, String fieldName) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                return roomNumbers.get(roomNumber).getFieldValue(userID, fieldName);
             }
             return null;
         }

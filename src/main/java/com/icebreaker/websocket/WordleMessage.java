@@ -49,7 +49,8 @@ public class WordleMessage {
     private Boolean isCheck;
     private List<Letters> letters;
     private String roomCode;
-    // List of wordle status code
+    private Boolean isCorrect;
+    private List<WordleStateCode> allLetterStat;
     @Override
     public String toString() {
         return "Is Check: " + isCheck + " Letters: " + letters.toString() + " RoomCode: " + roomCode;

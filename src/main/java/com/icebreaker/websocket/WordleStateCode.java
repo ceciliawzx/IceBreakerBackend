@@ -4,5 +4,5 @@ public enum WordleStateCode {
     UNCHECKED,
     GREEN,
     YELLOW,
-    Grey
+    GREY
 }

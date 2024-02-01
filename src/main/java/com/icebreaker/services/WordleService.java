@@ -7,29 +7,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-
+import java.util.*;
 
 @Service
 public class WordleService {
     private final Map<String, String> answers = new HashMap<String, String>();
+    private final Map<String, List<WordleStateCode>> letterStates = new HashMap<>();
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
     public WordleService(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
-        answers.put("1234", "GET");
+        // answers.put("1234", "GET");
     }
 
     public boolean setAnswers(String roomCode, String answer) {
         if (!answers.containsKey(roomCode)) {
             answers.put(roomCode, answer);
+            List<WordleStateCode> code = new ArrayList<>();
+            for (int i = 0; i < 26; i++) {
+                code.add(WordleStateCode.UNCHECKED);
+            }
+            letterStates.put(roomCode, code);
             return true;
         }
         return false;
@@ -52,11 +51,19 @@ public class WordleService {
                 Character currentChar = guess.get(i).getLetter();
                 if (currentChar.equals(answer.charAt(i))) {
                     guess.get(i).setState(WordleStateCode.GREEN);
+                    letterStates.get(roomCode).set(currentChar, WordleStateCode.GREEN);
                 } else if (answer.contains(currentChar.toString())) {
                     guess.get(i).setState(WordleStateCode.YELLOW);
+                    if (!letterStates.get(roomCode).get(currentChar).equals(WordleStateCode.GREEN)) {
+                        letterStates.get(roomCode).set(currentChar, WordleStateCode.YELLOW);
+                    }
                     isCorrect = false;
                 } else {
-                    guess.get(i).setState(WordleStateCode.Grey);
+                    guess.get(i).setState(WordleStateCode.GREY);
+                    if ((!letterStates.get(roomCode).get(currentChar).equals(WordleStateCode.GREEN)) &&
+                            (!letterStates.get(roomCode).get(currentChar).equals(WordleStateCode.YELLOW))) {
+                        letterStates.get(roomCode).set(currentChar, WordleStateCode.GREY);
+                    }
                     isCorrect = false;
                 }
             }
@@ -67,20 +74,8 @@ public class WordleService {
     }
 
     public void broadcastResult(String roomCode, WordleMessage message) {
-        if (checkCorrectness(roomCode, message)) {
-            answers.remove(roomCode);
-        }
-//        WordleMessage msg = new WordleMessage();
-//        WordleMessage.Letters let1 = new WordleMessage.Letters('G', WordleStateCode.UNCHECKED);
-//        WordleMessage.Letters let2 = new WordleMessage.Letters('E', WordleStateCode.UNCHECKED);
-//        WordleMessage.Letters let3 = new WordleMessage.Letters('T', WordleStateCode.UNCHECKED);
-//        List<WordleMessage.Letters> lets = new ArrayList<>();
-//        lets.add(let1);
-//        lets.add(let2);
-//        lets.add(let3);
-//        msg.setLetters(lets);
-//        msg.setIsCheck(false);
-//        msg.setRoomCode("1234");
+
+        message.setAllLetterStat(letterStates.get(roomCode));
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -94,6 +89,11 @@ public class WordleService {
         }
         System.out.println(json);
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", json);
+        if (checkCorrectness(roomCode, message)) {
+            message.setIsCorrect(true);
+            answers.remove(roomCode);
+            letterStates.remove(roomCode);
+        }
     }
 }
 

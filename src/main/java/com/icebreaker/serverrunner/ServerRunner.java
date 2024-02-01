@@ -1,12 +1,15 @@
 package com.icebreaker.serverrunner;
 
+import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
+import com.icebreaker.room.GameType;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +117,35 @@ public class ServerRunner {
             if (containsRoom(roomCode)) {
                 int roomNumber = codeNumberMapping.get(roomCode);
                 return roomNumbers.get(roomNumber).getPlayers();
+            }
+            return null;
+        }
+    }
+
+    public Admin getAdminInRoom(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                return roomNumbers.get(roomNumber).getHost();
+            }
+            return null;
+        }
+    }
+
+    public List<Person> getOtherPlayersInRoom(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                List<Person> otherPlayers = new ArrayList<>();
+                int roomNumber = codeNumberMapping.get(roomCode);
+                List<Person> players = roomNumbers.get(roomNumber).getPlayers();
+                List<Person> playersWithoutAdmin = players.subList(1, players.size());
+                Person presenter = roomNumbers.get(roomNumber).getPresenter();
+                for (Person p : playersWithoutAdmin) {
+                    if (!p.getUserID().equals(presenter.getUserID())) {
+                        otherPlayers.add(p);
+                    }
+                }
+                return otherPlayers;
             }
             return null;
         }
@@ -229,7 +261,28 @@ public class ServerRunner {
                 int roomNumber = codeNumberMapping.get(roomCode);
                 return roomNumbers.get(roomNumber).getNotPresentedPeople();
             }
+            return null;
         }
-        return null;
+    }
+
+    public boolean setTargetInRoom(String roomCode, String target) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                roomNumbers.get(roomNumber).setTarget(target);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public List<GameType> availableGames(String roomCode, String userID, String fieldName) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                roomNumbers.get(roomNumber).getAvailableGames(userID, fieldName);
+            }
+            return null;
+        }
     }
 }

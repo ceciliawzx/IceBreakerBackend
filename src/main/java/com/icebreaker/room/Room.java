@@ -205,4 +205,29 @@ public class Room {
         }
         return games;
     }
+
+    public String getFieldValue(String userID, String fieldName) {
+        Person person = null;
+        for (Person player: players) {
+            if (player.getUserID().equals(userID)) {
+                person = player;
+                break;
+            }
+        }
+
+        try {
+            Field field = Person.class.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            Object fieldValue = field.get(person);
+
+            if (fieldValue instanceof String) {
+                return (String) fieldValue;
+            } else {
+                return null;
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

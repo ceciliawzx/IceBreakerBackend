@@ -28,13 +28,14 @@ public class HttpRequestsHandler {
 
     private final ChatService chatService;
     private final WordleService wordleService;
+    private final ServerRunner runner = ServerRunner.getInstance();
 
     @Autowired
     public HttpRequestsHandler(ChatService chatService, WordleService wordleService) {
         this.chatService = chatService;
         this.wordleService = wordleService;
-
     }
+
     private final AtomicInteger roomNumber = new AtomicInteger(0);
     private final AtomicInteger userID = new AtomicInteger(0);
 
@@ -53,7 +54,6 @@ public class HttpRequestsHandler {
 
         int newUserID = userID.getAndIncrement();
         StringBuilder usb = hashUserId(name, md, newUserID);
-        ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
         Admin admin = new Admin(name, roomCode, usb.toString());
         Room newRoom = new Room(newRoomNumber, roomCode, admin, chatService);
@@ -79,12 +79,10 @@ public class HttpRequestsHandler {
     public String handleJoinRoom(@RequestParam(name = "roomCode", required = true) String code,
                                  @RequestParam(name = "name", required = true) String name)
             throws NoSuchAlgorithmException {
-    MessageDigest md = MessageDigest.getInstance("SHA-256");
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         int newUserID = userID.getAndIncrement();
         StringBuilder usb = hashUserId(name, md, newUserID);
-
-        ServerRunner runner = ServerRunner.getInstance();
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -106,15 +104,13 @@ public class HttpRequestsHandler {
 
     @DeleteMapping("/destroyRoom")
     public boolean handleDestroyRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        ServerRunner runner = ServerRunner.getInstance();
         System.out.printf("Destroy Room: %s%n", roomCode);
         return runner.destroyRoom(roomCode);
     }
 
     @GetMapping("/isAdmin")
     public boolean isAdmin(@RequestParam("userID") String userID,
-                                   @RequestParam("roomCode") String roomCode) {
-        ServerRunner runner = ServerRunner.getInstance();
+                           @RequestParam("roomCode") String roomCode) {
         System.out.printf("Check Admin: %s, %s%n", userID, roomCode);
         try {
             return runner.isAdmin(userID, roomCode);
@@ -126,8 +122,7 @@ public class HttpRequestsHandler {
 
     @GetMapping("/isPresenter")
     public boolean isPresenter(@RequestParam("userID") String userID,
-                                   @RequestParam("roomCode") String roomCode) {
-        ServerRunner runner = ServerRunner.getInstance();
+                               @RequestParam("roomCode") String roomCode) {
         System.out.printf("Check Presenter: %s, %s%n", userID, roomCode);
 
         try {
@@ -141,7 +136,6 @@ public class HttpRequestsHandler {
     @PostMapping(path = "/updatePerson", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public String updatePerson(@RequestBody Person person) {
-        ServerRunner runner = ServerRunner.getInstance();
         System.out.printf("Update Person: %s, %s%n", person.getUserID(), person.getRoomCode());
         if (runner.roomUpdateUser(person)) {
             return "Success";
@@ -152,15 +146,13 @@ public class HttpRequestsHandler {
 
     @DeleteMapping("/kickPerson")
     public boolean kickPerson(@RequestParam(name = "userID", required = true) String userID,
-                                             @RequestParam(name = "roomCode", required = true) String roomCode) {
-        ServerRunner runner = ServerRunner.getInstance();
+                              @RequestParam(name = "roomCode", required = true) String roomCode) {
         System.out.printf("Kick Person: %s, %s%n", userID, roomCode);
         return runner.kickPerson(roomCode, userID);
     }
 
     @GetMapping("/getPlayers")
     public String getPlayersInARoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        ServerRunner runner = ServerRunner.getInstance();
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.printf("Get Players in room: %s%n", roomCode);
         if (runner.containsRoom(roomCode)) {
@@ -198,7 +190,6 @@ public class HttpRequestsHandler {
     @GetMapping("/getPlayer")
     public String getPlayerInARoom(@RequestParam(name = "roomCode", required = true) String roomCode,
                                    @RequestParam(name = "userID", required = true) String userID) {
-        ServerRunner runner = ServerRunner.getInstance();
         ObjectMapper objectMapper = new ObjectMapper();
         if (!runner.containsRoom(roomCode)) {
             String jsonRoomError;
@@ -237,7 +228,6 @@ public class HttpRequestsHandler {
 
     @PostMapping("/startInput")
     public String startInput(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        ServerRunner runner = ServerRunner.getInstance();
         System.out.printf("Start Room: %s%n", roomCode);
         if (runner.serverStartRoom(roomCode)) {
             return "Success";
@@ -248,7 +238,6 @@ public class HttpRequestsHandler {
     @GetMapping("/infoComplete")
     public boolean checkPlayerInfoComplete(@RequestParam(name = "roomCode", required = true) String roomCode,
                                            @RequestParam(name = "userID", required = true) String userID) {
-        ServerRunner runner = ServerRunner.getInstance();
         System.out.printf("Info Complete: %s, %s%n", userID, roomCode);
         return runner.checkPlayerInfoComplete(roomCode, userID);
     }
@@ -256,7 +245,6 @@ public class HttpRequestsHandler {
     @PostMapping("/startDrawAndGuess")
     public String startDrawAndGuess(@RequestParam(name = "roomCode", required = true) String roomCode,
                                     @RequestParam(name = "target", required = true) String target) {
-        ServerRunner runner = ServerRunner.getInstance();
         if (runner.changeRoomStatus(roomCode, RoomStatus.PICTURING)) {
             runner.setTargetInRoom(roomCode, target);
             return "Success";
@@ -267,13 +255,11 @@ public class HttpRequestsHandler {
     @PostMapping("/changePresenter")
     public boolean changePresenter(@RequestParam(name = "roomCode", required = true) String roomCode,
                                    @RequestParam(name = "userID", required = true) String userID) {
-        ServerRunner runner = ServerRunner.getInstance();
         return runner.changePresenter(roomCode, userID);
     }
 
     @GetMapping("/notPresentedPeople")
     public String getNotPresentedPeople(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        ServerRunner runner = ServerRunner.getInstance();
         List<Person> notPresentedPeople = runner.getNotPresentedPeople(roomCode);
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -306,13 +292,11 @@ public class HttpRequestsHandler {
     public List<GameType> availableGames(@RequestParam(name = "roomCode", required = true) String roomCode,
                                          @RequestParam(name = "userID", required = true) String userID,
                                          @RequestParam(name = "fieldName", required = true) String fieldName) {
-        ServerRunner runner = ServerRunner.getInstance();
         return runner.availableGames(roomCode, userID, fieldName);
     }
 
     @PostMapping("/backToWaitRoom")
     public String backToWaitRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        ServerRunner runner = ServerRunner.getInstance();
         if (runner.changeRoomStatus(roomCode, RoomStatus.WAITING)) {
             runner.setTargetInRoom(roomCode, null);
             runner.addToPresentedList(roomCode);
@@ -324,15 +308,13 @@ public class HttpRequestsHandler {
     // Get PresentRoomInfo of a Room
     @GetMapping("/getPresentPageInfo")
     public PresentRoomInfo getPresentPageInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        ServerRunner runner = ServerRunner.getInstance();
         return runner.getPresentRoomInfo(roomCode);
     }
 
     // Set PresentRoomInfo of a Room
     @PostMapping("/setPresentPageInfo")
     public void setPresentPageInfo(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                   @RequestParam(name = "presentPageInfo", required = true) PresentRoomInfo presentRoomInfo ) {
-        ServerRunner runner = ServerRunner.getInstance();
+                                   @RequestParam(name = "presentPageInfo", required = true) PresentRoomInfo presentRoomInfo) {
         runner.setPresentRoomInfo(roomCode, presentRoomInfo);
     }
 
@@ -341,7 +323,6 @@ public class HttpRequestsHandler {
                                      @RequestParam(name = "userID", required = true) String userID,
                                      @RequestParam(name = "field", required = true) String field) {
         System.out.println("Start Wordle: " + roomCode + " " + userID + " " + field);
-        ServerRunner runner = ServerRunner.getInstance();
         if (runner.changeRoomStatus(roomCode, RoomStatus.WORDLING)) {
             String word = runner.getFieldValue(roomCode, userID, field);
             System.out.println("The word is: " + word);

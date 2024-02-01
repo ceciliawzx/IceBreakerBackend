@@ -310,6 +310,17 @@ public class HttpRequestsHandler {
         return runner.availableGames(roomCode, userID, fieldName);
     }
 
+    @PostMapping("/backToWaitRoom")
+    public String backToWaitRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        if (runner.changeRoomStatus(roomCode, RoomStatus.WAITING)) {
+            runner.setTargetInRoom(roomCode, null);
+            runner.addToPresentedList(roomCode);
+            return "Success";
+        }
+        return "Fail";
+    }
+
     // Get PresentRoomInfo of a Room
     @GetMapping("/getPresentPageInfo")
     public PresentRoomInfo getPresentPageInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {

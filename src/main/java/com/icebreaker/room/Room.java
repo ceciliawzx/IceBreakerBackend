@@ -138,11 +138,16 @@ public class Room {
         for (Person person : players) {
             if (person.getUserID().equals(userID)) {
                 presenter = person;
-                presentedList.add(person);
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean addToPresentedList(Person newPresenter) {
+        presentedList.add(presenter);
+        this.presenter = newPresenter;
+        return true;
     }
 
     public List<Person> getNotPresentedPeople() {

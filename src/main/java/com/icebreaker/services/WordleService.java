@@ -51,18 +51,18 @@ public class WordleService {
                 Character currentChar = guess.get(i).getLetter();
                 if (currentChar.equals(answer.charAt(i))) {
                     guess.get(i).setState(WordleStateCode.GREEN);
-                    letterStates.get(roomCode).set(currentChar, WordleStateCode.GREEN);
+                    letterStates.get(roomCode).set(currentChar - 'A', WordleStateCode.GREEN);
                 } else if (answer.contains(currentChar.toString())) {
                     guess.get(i).setState(WordleStateCode.YELLOW);
-                    if (!letterStates.get(roomCode).get(currentChar).equals(WordleStateCode.GREEN)) {
-                        letterStates.get(roomCode).set(currentChar, WordleStateCode.YELLOW);
+                    if (!letterStates.get(roomCode).get(currentChar - 'A').equals(WordleStateCode.GREEN)) {
+                        letterStates.get(roomCode).set(currentChar - 'A', WordleStateCode.YELLOW);
                     }
                     isCorrect = false;
                 } else {
                     guess.get(i).setState(WordleStateCode.GREY);
-                    if ((!letterStates.get(roomCode).get(currentChar).equals(WordleStateCode.GREEN)) &&
-                            (!letterStates.get(roomCode).get(currentChar).equals(WordleStateCode.YELLOW))) {
-                        letterStates.get(roomCode).set(currentChar, WordleStateCode.GREY);
+                    if ((!letterStates.get(roomCode).get(currentChar - 'A').equals(WordleStateCode.GREEN)) &&
+                            (!letterStates.get(roomCode).get(currentChar - 'A').equals(WordleStateCode.YELLOW))) {
+                        letterStates.get(roomCode).set(currentChar - 'A', WordleStateCode.GREY);
                     }
                     isCorrect = false;
                 }

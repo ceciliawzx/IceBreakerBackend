@@ -26,7 +26,7 @@ public class WordleController {
         this.wordleService = wordleService;
     }
 
-    @MessageMapping("/room/{roomNumber}/wordle")
+    @MessageMapping("/room/{roomCode}/wordle")
     public void handleMessage(@Payload WordleMessage message) {
         System.out.println("Received: " + message);
         String roomCode = String.valueOf(message.getRoomCode());

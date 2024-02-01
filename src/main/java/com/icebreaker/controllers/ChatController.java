@@ -17,8 +17,8 @@ public class ChatController {
     public ChatController(ChatService chatService) {
     }
 
-    @MessageMapping("/room/{roomNumber}/sendMessage")
-    @SendTo("/topic/room/{roomNumber}")
+    @MessageMapping("/room/{roomCode}/sendMessage")
+    @SendTo("/topic/room/{roomCode}")
     public ChatMessage handleMessage(@Payload ChatMessage message) {
         // Handle the message, knowing which user it came from
         System.out.println("handleMessage has been triggered, received message: " + message.toString());

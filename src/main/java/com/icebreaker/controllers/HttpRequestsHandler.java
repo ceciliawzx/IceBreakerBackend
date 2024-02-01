@@ -55,7 +55,7 @@ public class HttpRequestsHandler {
         ServerRunner runner = ServerRunner.getInstance();
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
         Admin admin = new Admin(name, roomCode, usb.toString());
-        Room newRoom = new Room(newRoomNumber, roomCode, admin, chatService);
+        Room newRoom = new Room(newRoomNumber, roomCode, admin);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -332,4 +332,9 @@ public class HttpRequestsHandler {
         }
         return -1;
     }
+
+//    @PostMapping("/joinMockRoom")
+//    public boolean joinMockRoom(@RequestParam(name = "userID", required = true) String userID) {
+//
+//    }
 }

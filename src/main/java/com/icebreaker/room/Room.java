@@ -29,16 +29,14 @@ public class Room {
     @Getter
     @Setter
     private RoomStatus roomStatus;
-    private final ChatService chatService;
     @Setter
     private String target;
 
-    public Room(int roomNumber, String roomCode, Admin host, ChatService chatService) {
+    public Room(int roomNumber, String roomCode, Admin host) {
         this.roomNumber = roomNumber;
         this.roomCode = roomCode;
         this.host = host;
         this.presenter = host;
-        this.chatService = chatService;
         players.add(host);
         this.roomStatus = RoomStatus.WAITING;
     }

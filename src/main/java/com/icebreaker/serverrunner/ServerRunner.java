@@ -25,6 +25,33 @@ public class ServerRunner {
     private final Map<Integer, String> numberCodeMapping = new HashMap<>();
 
     private ServerRunner() {
+        int mockRoomNumber = -1;
+        String mockRoomCode = "TEST";
+        Admin mockAdminBob = new Admin("Bobby", mockRoomCode, "1", null,
+                "Bob", "Li", "China", "Beijing", "Sad",
+                "Steak", "Travel", true);
+        Person mockAlex = new User("Alexy", mockRoomCode, "2", null,
+                "Alex", "Yang", "China", "Shanghai", "Sleepy",
+                "Sweet and sour chicken", "Sleep", true);
+        Person mockMohammed = new User("Moha", mockRoomCode, "3", null,
+                "Mohammed", "Lee", "Syria", "Damascus", "Excited",
+                "Baked Potato", "Fight", true);
+        Person mockYHB = new User("Andersuki", mockRoomCode, "4", null,
+                "Yu", "HongBo", "China", "Harbin", "Tired",
+                "Steak", "Gaming", true);
+        Person mockWSY = new User("SelinaWan666", mockRoomCode, "5", null,
+                "Wan", "Siyu", "Maldives", "Olhuveli", "Happy",
+                "Nang", "Sing", true);
+        joinRoom(mockRoomCode, "Alexy", "2");
+        joinRoom(mockRoomCode, "Moha", "3");
+        joinRoom(mockRoomCode, "Andersuki", "4");
+        joinRoom(mockRoomCode, "SelinaWan666", "5");
+        roomUpdateUser(mockAlex);
+        roomUpdateUser(mockMohammed);
+        roomUpdateUser(mockYHB);
+        roomUpdateUser(mockWSY);
+        Room mockRoom = new Room(mockRoomNumber, mockRoomCode, mockAdminBob);
+        addRoom(mockRoom, mockRoomCode);
     }
 
     public static ServerRunner getInstance() {

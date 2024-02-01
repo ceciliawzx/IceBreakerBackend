@@ -118,8 +118,7 @@ public class ServerRunner {
     public boolean joinRoom(String roomCode, String nickname, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                roomNumbers.get(roomNumber).joinRoom(new User(nickname, roomCode, userID));
+                getRoom(roomCode).joinRoom(new User(nickname, roomCode, userID));
                 return true;
             }
             return false;
@@ -130,7 +129,7 @@ public class ServerRunner {
     public boolean roomUpdateUser(Person person) {
         synchronized (this) {
             if (containsRoom(person.getRoomCode())) {
-                return roomNumbers.get(codeNumberMapping.get(person.getRoomCode())).updateUser(person);
+                return getRoom(person.getRoomCode()).updateUser(person);
             }
             return false;
         }
@@ -139,8 +138,7 @@ public class ServerRunner {
     public List<Person> getPlayersInRoom(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                return roomNumbers.get(roomNumber).getPlayers();
+                return getRoom(roomCode).getPlayers();
             }
             return null;
         }
@@ -149,8 +147,7 @@ public class ServerRunner {
     public Admin getAdminInRoom(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                return roomNumbers.get(roomNumber).getHost();
+                return getRoom(roomCode).getHost();
             }
             return null;
         }
@@ -178,8 +175,7 @@ public class ServerRunner {
     public Person getPresenterInRoom(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                return roomNumbers.get(roomNumber).getPresenter();
+                return getRoom(roomCode).getPresenter();
             }
             return null;
         }
@@ -188,18 +184,16 @@ public class ServerRunner {
     public Person getOnePlayerInfo(String roomCode, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                return roomNumbers.get(roomNumber).getPlayer(userID);
+                return getRoom(roomCode).getPlayer(userID);
             }
             return null;
         }
     }
 
-    public boolean isAdmin(String userID, String roomCode) throws Exception {
+    public boolean isAdmin(String userID, String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNum = this.codeNumberMapping.get(roomCode);
-                Room room = roomNumbers.get(roomNum);
+                Room room = getRoom(roomCode);
                 return userID.equals(room.getHost().getUserID());
             }
             return false;
@@ -209,8 +203,7 @@ public class ServerRunner {
     public boolean isPresenter(String userID, String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNum = this.codeNumberMapping.get(roomCode);
-                Room room = roomNumbers.get(roomNum);
+                Room room = getRoom(roomCode);
                 return userID.equals(room.getPresenter().getUserID());
             }
             return false;
@@ -220,7 +213,7 @@ public class ServerRunner {
     public RoomStatus getStatus(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                return roomNumbers.get(codeNumberMapping.get(roomCode)).getRoomStatus();
+                return getRoom(roomCode).getRoomStatus();
             }
             return RoomStatus.NON_EXIST;
         }
@@ -230,8 +223,7 @@ public class ServerRunner {
     public boolean kickPerson(String roomCode, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                return roomNumbers.get(roomNumber).kickPerson(userID);
+                return getRoom(roomCode).kickPerson(userID);
             }
             return false;
         }
@@ -240,8 +232,7 @@ public class ServerRunner {
     public boolean serverStartRoom(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                roomNumbers.get(roomNumber).startRoom();
+                getRoom(roomCode).startRoom();
                 return true;
             }
             return false;
@@ -251,8 +242,7 @@ public class ServerRunner {
     public boolean checkPlayerInfoComplete(String roomCode, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                return roomNumbers.get(roomNumber).checkPlayerInfoComplete(userID);
+                return getRoom(roomCode).checkPlayerInfoComplete(userID);
             }
             return false;
         }
@@ -261,8 +251,7 @@ public class ServerRunner {
     public boolean changeRoomStatus(String roomCode, RoomStatus roomStatus) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                roomNumbers.get(roomNumber).setRoomStatus(roomStatus);
+                getRoom(roomCode).setRoomStatus(roomStatus);
                 return true;
             }
             return false;
@@ -272,8 +261,7 @@ public class ServerRunner {
     public boolean changePresenter(String roomCode, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                return roomNumbers.get(roomNumber).setPresenter(userID);
+                return getRoom(roomCode).setPresenter(userID);
             }
             return false;
         }
@@ -282,8 +270,7 @@ public class ServerRunner {
     public List<Person> getNotPresentedPeople(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                return roomNumbers.get(roomNumber).getNotPresentedPeople();
+                return getRoom(roomCode).getNotPresentedPeople();
             }
             return null;
         }
@@ -292,8 +279,7 @@ public class ServerRunner {
     public boolean setTargetInRoom(String roomCode, String target) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                roomNumbers.get(roomNumber).setTarget(target);
+                getRoom(roomCode).setTarget(target);
                 return true;
             }
             return false;
@@ -303,8 +289,7 @@ public class ServerRunner {
     public List<GameType> availableGames(String roomCode, String userID, String fieldName) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                return roomNumbers.get(roomNumber).getAvailableGames(userID, fieldName);
+                return getRoom(roomCode).getAvailableGames(userID, fieldName);
             }
             return null;
         }
@@ -313,9 +298,8 @@ public class ServerRunner {
     public boolean addToPresentedList(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
                 Person newPresenter = getNotPresentedPeople(roomCode).get(0);
-                return roomNumbers.get(roomNumber).addToPresentedList(newPresenter);
+                return getRoom(roomCode).addToPresentedList(newPresenter);
             }
             return false;
         }
@@ -324,20 +308,31 @@ public class ServerRunner {
     public String getFieldValue(String roomCode, String userID, String fieldName) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
-                return roomNumbers.get(roomNumber).getFieldValue(userID, fieldName);
+                return getRoom(roomCode).getFieldValue(userID, fieldName);
             }
             return null;
         }
     }
 
     public PresentRoomInfo getPresentRoomInfo(String roomCode) {
-        Room room = getRoom(roomCode);
-        return room.getPresentRoomInfo();
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                return room.getPresentRoomInfo();
+            }
+            return null;
+        }
     }
 
-    public void setPresentRoomInfo(String roomCode, PresentRoomInfo presentRoomInfo) {
-        Room room = getRoom(roomCode);
-        room.setPresentRoomInfo(presentRoomInfo);
+
+    public boolean setPresentRoomInfo(String roomCode, PresentRoomInfo presentRoomInfo) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                room.setPresentRoomInfo(presentRoomInfo);
+                return true;
+            }
+            return false;
+        }
     }
 }

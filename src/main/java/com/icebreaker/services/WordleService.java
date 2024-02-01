@@ -35,6 +35,14 @@ public class WordleService {
         return false;
     }
 
+    public String getAnswer(String roomCode) {
+        return answers.get(roomCode);
+    }
+
+    public boolean roomExist(String roomCode) {
+        return answers.containsKey(roomCode);
+    }
+
     private boolean checkCorrectness(String roomCode, WordleMessage message) {
         boolean isCorrect = true;
         if (message.getIsCheck()) {

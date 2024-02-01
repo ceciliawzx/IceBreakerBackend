@@ -316,9 +316,17 @@ public class HttpRequestsHandler {
         System.out.println("Start Wordle: " + roomCode + " " + userID + " " + field);
         ServerRunner runner = ServerRunner.getInstance();
         if (runner.changeRoomStatus(roomCode, RoomStatus.WORDLING)) {
-            String word = "POWER"; // TODO Should be getField.
+            String word = runner.getFieldValue(roomCode, userID, field);
             return wordleService.setAnswers(roomCode, word);
         }
         return false;
+    }
+
+    @GetMapping("/getWordleInfo")
+    public int getWordleInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        if (wordleService.roomExist(roomCode)) {
+            return wordleService.getAnswer(roomCode).length();
+        }
+        return -1;
     }
 }

@@ -33,6 +33,9 @@ public class Room {
     @Getter
     @Setter
     private String target;
+    @Getter
+    @Setter
+    private PresentRoomInfo presentRoomInfo;
 
     public Room(int roomNumber, String roomCode, Admin host, ChatService chatService) {
         this.roomNumber = roomNumber;
@@ -155,7 +158,7 @@ public class Room {
 
     public List<GameType> getAvailableGames(String userID, String fieldName) {
         Person person = null;
-        for (Person player: players) {
+        for (Person player : players) {
             if (player.getUserID().equals(userID)) {
                 person = player;
                 break;
@@ -167,8 +170,7 @@ public class Room {
             field.setAccessible(true);
             Object fieldValue = field.get(person);
 
-            if (fieldValue instanceof String) {
-                String value = (String) fieldValue;
+            if (fieldValue instanceof String value) {
                 return checkGames(fieldName, value);
             } else {
                 return null;
@@ -182,8 +184,7 @@ public class Room {
     public List<GameType> checkGames(String fieldName, String value) {
         List<GameType> games = new ArrayList<>();
         switch (fieldName) {
-            case "country" :
-            case "city" :
+            case "country", "city" -> {
                 games.add(GameType.GEOGUESSER);
                 if (value.length() <= 7 && value.length() >= 4) {
                     games.add(GameType.WORDLE);
@@ -191,18 +192,18 @@ public class Room {
                 games.add(GameType.PICTIONARY);
                 games.add(GameType.SHAREBOARD);
                 games.add(GameType.HANGMAN);
-                break;
-            case "favFood" :
-            case "favActivity" :
+            }
+            case "favFood", "favActivity" -> {
                 if (value.length() <= 7 && value.length() >= 4) {
                     games.add(GameType.WORDLE);
                 }
                 games.add(GameType.PICTIONARY);
                 games.add(GameType.SHAREBOARD);
                 games.add(GameType.HANGMAN);
-                break;
-            default:
+            }
+            default -> {
                 return null;
+            }
         }
         return games;
     }

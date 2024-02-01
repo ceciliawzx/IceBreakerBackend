@@ -3,6 +3,7 @@ package com.icebreaker.controllers;
 import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;
 import com.icebreaker.room.GameType;
+import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
@@ -304,4 +305,20 @@ public class HttpRequestsHandler {
         ServerRunner runner = ServerRunner.getInstance();
         return runner.availableGames(roomCode, userID, fieldName);
     }
+
+    // Get PresentRoomInfo of a Room
+    @GetMapping("/getPresentPageInfo")
+    public PresentRoomInfo getPresentPageInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        ServerRunner runner = ServerRunner.getInstance();
+        return runner.getPresentRoomInfo(roomCode);
+    }
+
+    // Set PresentRoomInfo of a Room
+    @PostMapping("/setPresentPageInfo")
+    public void setPresentPageInfo(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                   @RequestParam(name = "presentPageInfo", required = true) PresentRoomInfo presentRoomInfo ) {
+        ServerRunner runner = ServerRunner.getInstance();
+        runner.setPresentRoomInfo(roomCode, presentRoomInfo);
+    }
+
 }

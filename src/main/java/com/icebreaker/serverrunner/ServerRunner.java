@@ -4,6 +4,7 @@ import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
 import com.icebreaker.room.GameType;
+import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.utils.RoomCodeGenerator;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ServerRunner {
+
     private static ServerRunner instance;
     @Getter
     private final RoomCodeGenerator roomCodeGenerator = new RoomCodeGenerator();
@@ -306,5 +308,15 @@ public class ServerRunner {
             }
             return null;
         }
+    }
+
+    public PresentRoomInfo getPresentRoomInfo(String roomCode) {
+        Room room = getRoom(roomCode);
+        return room.getPresentRoomInfo();
+    }
+
+    public void setPresentRoomInfo(String roomCode, PresentRoomInfo presentRoomInfo) {
+        Room room = getRoom(roomCode);
+        room.setPresentRoomInfo(presentRoomInfo);
     }
 }

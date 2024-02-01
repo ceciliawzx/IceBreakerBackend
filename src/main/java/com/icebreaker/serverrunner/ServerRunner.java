@@ -4,6 +4,7 @@ import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
 import com.icebreaker.room.GameType;
+import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.utils.RoomCodeGenerator;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ServerRunner {
+
     private static ServerRunner instance;
     @Getter
     private final RoomCodeGenerator roomCodeGenerator = new RoomCodeGenerator();
@@ -34,6 +36,28 @@ public class ServerRunner {
         }
         return instance;
     }
+
+
+    // Return the room with roomNumber
+    public Room getRoom(Integer roomNumber) {
+        if (containsRoom(roomNumber)) {
+            return roomNumbers.get(roomNumber);
+        } else {
+            System.out.printf("Cannot find the room with roomNumber %d", roomNumber);
+            return null;
+        }
+    }
+
+    // Return the room with roomCode
+    public Room getRoom(String roomCode) {
+        if (containsRoom(roomCode)) {
+            return (roomNumbers.get(codeNumberMapping.get(roomCode)));
+        } else {
+            System.out.printf("Cannot find the room with roomCode %s", roomCode);
+            return null;
+        }
+    }
+
 
     public boolean containsRoom(Room room) {
         synchronized (this) {
@@ -294,5 +318,15 @@ public class ServerRunner {
             }
             return null;
         }
+    }
+
+    public PresentRoomInfo getPresentRoomInfo(String roomCode) {
+        Room room = getRoom(roomCode);
+        return room.getPresentRoomInfo();
+    }
+
+    public void setPresentRoomInfo(String roomCode, PresentRoomInfo presentRoomInfo) {
+        Room room = getRoom(roomCode);
+        room.setPresentRoomInfo(presentRoomInfo);
     }
 }

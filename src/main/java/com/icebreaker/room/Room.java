@@ -30,6 +30,7 @@ public class Room {
     @Setter
     private RoomStatus roomStatus;
     private final ChatService chatService;
+    @Getter
     @Setter
     private String target;
 

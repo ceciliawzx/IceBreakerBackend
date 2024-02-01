@@ -35,6 +35,28 @@ public class ServerRunner {
         return instance;
     }
 
+
+    // Return the room with roomNumber
+    public Room getRoom(Integer roomNumber) {
+        if (containsRoom(roomNumber)) {
+            return roomNumbers.get(roomNumber);
+        } else {
+            System.out.printf("Cannot find the room with roomNumber %d", roomNumber);
+            return null;
+        }
+    }
+
+    // Return the room with roomCode
+    public Room getRoom(String roomCode) {
+        if (containsRoom(roomCode)) {
+            return (roomNumbers.get(codeNumberMapping.get(roomCode)));
+        } else {
+            System.out.printf("Cannot find the room with roomCode %s", roomCode);
+            return null;
+        }
+    }
+
+
     public boolean containsRoom(Room room) {
         synchronized (this) {
             return activeRooms.containsKey(room);

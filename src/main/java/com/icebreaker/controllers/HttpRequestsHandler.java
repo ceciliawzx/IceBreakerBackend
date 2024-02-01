@@ -317,6 +317,7 @@ public class HttpRequestsHandler {
         ServerRunner runner = ServerRunner.getInstance();
         if (runner.changeRoomStatus(roomCode, RoomStatus.WORDLING)) {
             String word = runner.getFieldValue(roomCode, userID, field);
+            System.out.println("The word is: " + word);
             return wordleService.setAnswers(roomCode, word);
         }
         return false;
@@ -325,6 +326,8 @@ public class HttpRequestsHandler {
     @GetMapping("/getWordleInfo")
     public int getWordleInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
         if (wordleService.roomExist(roomCode)) {
+            System.out.println("The word is: " + wordleService.getAnswer(roomCode));
+            System.out.println("With length: " + wordleService.getAnswer(roomCode).length());
             return wordleService.getAnswer(roomCode).length();
         }
         return -1;

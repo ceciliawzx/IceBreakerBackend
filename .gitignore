@@ -11,7 +11,7 @@
 *.jar
 
 # applications.properties
-#src/main/resources/
+src/main/resources/
 
 # cicd
 .gitlab-ci.yml

@@ -2,6 +2,7 @@ package com.icebreaker.controllers;
 
 import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;
+import com.icebreaker.room.GameType;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
@@ -159,18 +160,18 @@ public class HttpRequestsHandler {
     @GetMapping("/getPlayers")
     public String getPlayersInARoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
-        List<Person> players = runner.getPlayersInRoom(roomCode);
+        ObjectMapper objectMapper = new ObjectMapper();
         System.out.printf("Get Players in room: %s%n", roomCode);
-        if (players != null && !players.isEmpty()) {
-            Person admin = players.get(0);
+        if (runner.containsRoom(roomCode)) {
+            Person admin = runner.getAdminInRoom(roomCode);
             Person presenter = runner.getPresenterInRoom(roomCode);
-            List<Person> users = players.subList(1, players.size());
             RoomStatus status = runner.getStatus(roomCode);
-            ObjectMapper objectMapper = new ObjectMapper();
+            List<Person> otherPlayers = runner.getOtherPlayersInRoom(roomCode);
+
             String json;
 
             try {
-                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", users, "presenter", presenter, "roomStatus", status));
+                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", otherPlayers, "presenter", presenter, "roomStatus", status));
             } catch (Exception e) {
                 // Handle exception if JSON serialization fails
                 e.printStackTrace();
@@ -179,7 +180,17 @@ public class HttpRequestsHandler {
 
             return json;
         }
-        return "Room can not be found";
+
+        String jsonError;
+        try {
+            jsonError = objectMapper.writeValueAsString(Map.of("error", "Room not found"));
+        } catch (Exception e) {
+            // Handle exception if JSON serialization fails
+            e.printStackTrace();
+            jsonError = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+        }
+
+        return jsonError;
     }
     // Im: userID    Out: User class
 
@@ -187,26 +198,40 @@ public class HttpRequestsHandler {
     public String getPlayerInARoom(@RequestParam(name = "roomCode", required = true) String roomCode,
                                    @RequestParam(name = "userID", required = true) String userID) {
         ServerRunner runner = ServerRunner.getInstance();
+        ObjectMapper objectMapper = new ObjectMapper();
         if (!runner.containsRoom(roomCode)) {
-            return "Room Not found";
+            String jsonRoomError;
+            try {
+                jsonRoomError = objectMapper.writeValueAsString(Map.of("error", "Room Not Found"));
+            } catch (Exception e) {
+                e.printStackTrace();
+                jsonRoomError = "{\"error\": \"Serialization error\"}";
+            }
+            return jsonRoomError;
         }
         Person person = runner.getOnePlayerInfo(roomCode, userID);
         System.out.printf("Get Player: %s, %s%n", userID, roomCode);
         if (person != null) {
-            ObjectMapper objectMapper = new ObjectMapper();
             String json;
 
             try {
                 json = objectMapper.writeValueAsString(Map.of("userInfo", person));
             } catch (Exception e) {
-                // Handle exception if JSON serialization fails
                 e.printStackTrace();
-                json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+                json = "{\"error\": \"Serialization error\"}";
             }
 
             return json;
         }
-        return "Person Not Found";
+
+        String jsonPersonError;
+        try {
+            jsonPersonError = objectMapper.writeValueAsString(Map.of("error", "Person Not Found"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonPersonError = "{\"error\": \"Serialization error\"}";
+        }
+        return jsonPersonError;
     }
 
     @PostMapping("/startInput")
@@ -228,9 +253,11 @@ public class HttpRequestsHandler {
     }
 
     @PostMapping("/startDrawAndGuess")
-    public String startDrawAndGuess(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String startDrawAndGuess(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                    @RequestParam(name = "target", required = true) String target) {
         ServerRunner runner = ServerRunner.getInstance();
         if (runner.changeRoomStatus(roomCode, RoomStatus.PICTURING)) {
+            runner.setTargetInRoom(roomCode, target);
             return "Success";
         }
         return "Fail";
@@ -247,9 +274,9 @@ public class HttpRequestsHandler {
     public String getNotPresentedPeople(@RequestParam(name = "roomCode", required = true) String roomCode) {
         ServerRunner runner = ServerRunner.getInstance();
         List<Person> notPresentedPeople = runner.getNotPresentedPeople(roomCode);
+        ObjectMapper objectMapper = new ObjectMapper();
 
         if (notPresentedPeople != null && !notPresentedPeople.isEmpty()) {
-            ObjectMapper objectMapper = new ObjectMapper();
             String json;
 
             try {
@@ -261,7 +288,25 @@ public class HttpRequestsHandler {
 
             return json;
         }
-        return "Room can not be found";
+
+        String jsonError;
+        try {
+            jsonError = objectMapper.writeValueAsString(Map.of("error", "Room not found"));
+        } catch (Exception e) {
+            // Handle exception if JSON serialization fails
+            e.printStackTrace();
+            jsonError = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+        }
+
+        return jsonError;
+    }
+
+    @GetMapping("/availableGames")
+    public List<GameType> availableGames(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                         @RequestParam(name = "userID", required = true) String userID,
+                                         @RequestParam(name = "fieldName", required = true) String fieldName) {
+        ServerRunner runner = ServerRunner.getInstance();
+        return runner.availableGames(roomCode, userID, fieldName);
     }
 
     @PostMapping("/startWordle")

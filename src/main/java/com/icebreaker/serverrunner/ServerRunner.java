@@ -310,6 +310,17 @@ public class ServerRunner {
         }
     }
 
+    public boolean addToPresentedList(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
+                Person newPresenter = getNotPresentedPeople(roomCode).get(0);
+                return roomNumbers.get(roomNumber).addToPresentedList(newPresenter);
+            }
+            return false;
+        }
+    }
+
     public String getFieldValue(String roomCode, String userID, String fieldName) {
         synchronized (this) {
             if (containsRoom(roomCode)) {

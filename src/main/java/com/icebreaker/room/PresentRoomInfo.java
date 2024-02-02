@@ -42,4 +42,19 @@ public class PresentRoomInfo {
         this.favActivity = favActivity;
     }
 
+    public PresentRoomInfo() {
+        this.firstName = false;
+        this.lastName = false;
+        this.country = false;
+        this.city = false;
+        this.feeling = false;
+        this.favFood = false;
+        this.favActivity = false;
+    }
+
+    @Override
+    public String toString() {
+        return "PresentRoomInfo, firstName " + firstName + " lastName " + lastName + " country " + country + "city " + city + " feeling" +
+                feeling + " favFood " + favFood + "favActivity " + favActivity;
+    }
 }

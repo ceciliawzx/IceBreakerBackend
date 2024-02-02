@@ -43,8 +43,9 @@ public class Room {
         this.host = host;
         this.presenter = host;
         this.chatService = chatService;
-        players.add(host);
+        this.players.add(host);
         this.roomStatus = RoomStatus.WAITING;
+        this.presentRoomInfo = new PresentRoomInfo();
     }
 
     public void startRoom() {
@@ -188,6 +189,7 @@ public class Room {
 
     public List<GameType> checkGames(String fieldName, String value) {
         List<GameType> games = new ArrayList<>();
+        games.add(GameType.REVEAL);
         switch (fieldName) {
             case "country", "city" -> {
                 games.add(GameType.GEOGUESSER);

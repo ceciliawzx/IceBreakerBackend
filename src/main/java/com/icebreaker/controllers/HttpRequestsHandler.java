@@ -58,7 +58,7 @@ public class HttpRequestsHandler {
         StringBuilder usb = hashUserId(name, md, newUserID);
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
         Admin admin = new Admin(name, roomCode, usb.toString());
-        Room newRoom = new Room(newRoomNumber, roomCode, admin, chatService);
+        Room newRoom = new Room(newRoomNumber, roomCode, admin);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;

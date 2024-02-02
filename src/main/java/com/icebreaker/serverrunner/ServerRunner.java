@@ -7,6 +7,7 @@ import com.icebreaker.room.GameType;
 import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
+import com.icebreaker.utils.Constants;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
 
@@ -27,6 +28,33 @@ public class ServerRunner {
     private final Map<Integer, String> numberCodeMapping = new HashMap<>();
 
     private ServerRunner() {
+        int mockRoomNumber = -1;
+        String mockRoomCode = "TEST";
+        Admin mockAdminBob = new Admin("Bobby", mockRoomCode, "1", Constants.getYellowDuck(),
+                "Bob", "Li", "China", "Beijing", "Sad",
+                "Steak", "Travel", true);
+        Room mockRoom = new Room(mockRoomNumber, mockRoomCode, mockAdminBob);
+        addRoom(mockRoom, mockRoomCode);
+        Person mockAlex = new User("Alexy", mockRoomCode, "2", Constants.getYellowDuck(),
+                "Alex", "Yang", "China", "Shanghai", "Sleepy",
+                "Sweet and sour chicken", "Sleep", true);
+        Person mockMohammed = new User("Moha", mockRoomCode, "3", Constants.getYellowDuck(),
+                "Mohammed", "Lee", "Syria", "Damascus", "Excited",
+                "Baked Potato", "Fight", true);
+        Person mockYHB = new User("Andersuki", mockRoomCode, "4", Constants.getYellowDuck(),
+                "Yu", "HongBo", "China", "Harbin", "Tired",
+                "Steak", "Gaming", true);
+        Person mockWSY = new User("SelinaWan666", mockRoomCode, "5", Constants.getYellowDuck(),
+                "Wan", "Siyu", "Maldives", "Olhuveli", "Happy",
+                "Nang", "Sing", true);
+        joinRoom(mockRoomCode, "Alexy", "2");
+        joinRoom(mockRoomCode, "Moha", "3");
+        joinRoom(mockRoomCode, "Andersuki", "4");
+        joinRoom(mockRoomCode, "SelinaWan666", "5");
+        roomUpdateUser(mockAlex);
+        roomUpdateUser(mockMohammed);
+        roomUpdateUser(mockYHB);
+        roomUpdateUser(mockWSY);
     }
 
     public static ServerRunner getInstance() {
@@ -289,6 +317,7 @@ public class ServerRunner {
     public List<GameType> availableGames(String roomCode, String userID, String fieldName) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
                 return getRoom(roomCode).getAvailableGames(userID, fieldName);
             }
             return null;

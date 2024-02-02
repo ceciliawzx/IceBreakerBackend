@@ -17,6 +17,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,6 +82,7 @@ public class HttpRequestsHandler {
     public String handleJoinRoom(@RequestParam(name = "roomCode", required = true) String code,
                                  @RequestParam(name = "name", required = true) String name)
             throws NoSuchAlgorithmException {
+
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         int newUserID = userID.getAndIncrement();
@@ -384,5 +386,11 @@ public class HttpRequestsHandler {
             return wordleService.getAnswer(roomCode).length();
         }
         return -1;
+    }
+
+    @PostMapping("/restartMockRoom")
+    public boolean restartMockRoom() {
+        System.out.println("Restart Mock Room");
+        return runner.restartMockRoom();
     }
 }

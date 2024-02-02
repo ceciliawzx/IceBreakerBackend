@@ -24,6 +24,7 @@ public class WordleService {
     public boolean setAnswers(String roomCode, String answer) {
         if (!answers.containsKey(roomCode)) {
             answers.put(roomCode, answer.toUpperCase());
+            System.out.println("Set Answer: " + roomCode + " " + answer.toUpperCase());
             List<WordleStateCode> code = new ArrayList<>();
             for (int i = 0; i < 26; i++) {
                 code.add(WordleStateCode.UNCHECKED);
@@ -45,10 +46,12 @@ public class WordleService {
     private boolean checkCorrectness(String roomCode, WordleMessage message) {
         boolean isCorrect = true;
         if (message.getIsCheck()) {
-            List<WordleMessage.Letters> guess = message.getLetters();
+            List<List<WordleMessage.WordleLetter>> guesses = message.getLetters();
+            int currentRound = message.getCurrentAttempt();
+            List<WordleMessage.WordleLetter> guess = guesses.get(currentRound);
             String answer = answers.get(roomCode);
             for (int i = 0; i < answer.length(); i++) {
-                Character currentChar = guess.get(i).getLetter();
+                Character currentChar = guess.get(i).getLetter().charAt(0);
                 if (currentChar.equals(answer.charAt(i))) {
                     guess.get(i).setState(WordleStateCode.GREEN);
                     letterStates.get(roomCode).set(currentChar - 'A', WordleStateCode.GREEN);
@@ -74,8 +77,10 @@ public class WordleService {
     }
 
     public void broadcastResult(String roomCode, WordleMessage message) {
+        boolean isCorrect = checkCorrectness(roomCode, message);
 
         message.setAllLetterStat(letterStates.get(roomCode));
+        message.setIsCorrect(isCorrect);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -88,9 +93,9 @@ public class WordleService {
             json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
         }
         System.out.println(json);
-        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", json);
-        if (checkCorrectness(roomCode, message)) {
-            message.setIsCorrect(true);
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", message);
+        if (isCorrect) {
+            System.out.println("Remove Answer: " + roomCode);
             answers.remove(roomCode);
             letterStates.remove(roomCode);
         }

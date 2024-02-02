@@ -1,15 +1,13 @@
 package com.icebreaker.room;
 
 import com.icebreaker.services.ChatService;
-import com.icebreaker.utils.Constants;
-import com.icebreaker.websocket.ChatMessage;
+import com.icebreaker.utils.Geoguesser;
+import com.icebreaker.utils.GeoguesserStatus;
 import lombok.Getter;
 import com.icebreaker.person.*;
-import lombok.NonNull;
 import lombok.Setter;
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +34,7 @@ public class Room {
     @Getter
     @Setter
     private PresentRoomInfo presentRoomInfo;
+    private Geoguesser geoguesser;
 
     public Room(int roomNumber, String roomCode, Admin host, ChatService chatService) {
         this.roomNumber = roomNumber;
@@ -46,6 +45,7 @@ public class Room {
         this.players.add(host);
         this.roomStatus = RoomStatus.WAITING;
         this.presentRoomInfo = new PresentRoomInfo();
+        this.geoguesser = new Geoguesser();
     }
 
     public void startRoom() {
@@ -238,5 +238,25 @@ public class Room {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public boolean setLocation(String location, String userID) {
+        if (userID.equals(this.presenter.getUserID())) {
+            return this.geoguesser.startGame(location);
+        } else {
+            boolean result = this.geoguesser.makeGuess(userID, location);
+            if (geoguesser.answersSumitted() >= players.size() - 2) {
+                setGeoStatus(GeoguesserStatus.SUBMITTED);
+            }
+            return result;
+        }
+    }
+
+    public void setGeoStatus(GeoguesserStatus status) {
+        this.geoguesser.setStatus(status);
+    }
+
+    public GeoguesserStatus getGeoStatus() {
+        return this.geoguesser.getStatus();
     }
 }

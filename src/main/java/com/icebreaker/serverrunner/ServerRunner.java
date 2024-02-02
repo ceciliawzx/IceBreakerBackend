@@ -7,8 +7,10 @@ import com.icebreaker.room.GameType;
 import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
+import com.icebreaker.utils.GeoguesserStatus;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -286,6 +288,16 @@ public class ServerRunner {
         }
     }
 
+    public boolean setGeoStatusInRoom(String roomCode, GeoguesserStatus status) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                getRoom(roomCode).setGeoStatus(status);
+                return true;
+            }
+            return false;
+        }
+    }
+
     public List<GameType> availableGames(String roomCode, String userID, String fieldName) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
@@ -324,13 +336,32 @@ public class ServerRunner {
         }
     }
 
-
     public boolean setPresentRoomInfo(String roomCode, PresentRoomInfo presentRoomInfo) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
                 Room room = getRoom(roomCode);
                 room.setPresentRoomInfo(presentRoomInfo);
                 return true;
+            }
+            return false;
+        }
+    }
+
+    public GeoguesserStatus getGeoguesserStatus(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                return room.getGeoStatus();
+            }
+            return null;
+        }
+    }
+
+    public boolean setTargetLocation(String roomCode, String location, String userID) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                return room.setLocation(location, userID);
             }
             return false;
         }

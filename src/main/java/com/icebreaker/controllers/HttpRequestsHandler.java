@@ -9,6 +9,7 @@ import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.ChatService;
 import com.icebreaker.services.WordleService;
+import com.icebreaker.utils.GeoguesserStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -377,5 +378,26 @@ public class HttpRequestsHandler {
             return wordleService.getAnswer(roomCode).length();
         }
         return -1;
+    }
+
+    @PostMapping("startGeoguesser")
+    public String startGeoguesser(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        if (runner.changeRoomStatus(roomCode, RoomStatus.GEO_GUESSING)) {
+            runner.setGeoStatusInRoom(roomCode, GeoguesserStatus.PRE_CHOOSE);
+            return "Success";
+        }
+        return "Fail";
+    }
+
+    @GetMapping("getGeoguesserStatus")
+    public GeoguesserStatus getGeoguesserStatus(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        return runner.getGeoguesserStatus(roomCode);
+    }
+
+    @PostMapping("setTargetLocation")
+    public boolean setTargetLocation(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                    @RequestParam(name = "location", required = true) String location,
+                                    @RequestParam(name = "userID", required = true) String userID) {
+        return runner.setTargetLocation(roomCode, location, userID);
     }
 }

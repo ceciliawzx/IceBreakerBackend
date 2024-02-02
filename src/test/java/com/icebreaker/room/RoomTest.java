@@ -55,12 +55,13 @@ public class RoomTest {
         List<GameType> result = room.getAvailableGames(userID, fieldName);
 
         assertNotNull(result);
-        assertEquals(5, result.size());
+        assertEquals(6, result.size());
         assertTrue(result.contains(GameType.GEOGUESSER));
         assertTrue(result.contains(GameType.WORDLE));
         assertTrue(result.contains(GameType.PICTIONARY));
         assertTrue(result.contains(GameType.SHAREBOARD));
         assertTrue(result.contains(GameType.HANGMAN));
+        assertTrue(result.contains(GameType.REVEAL));
     }
 
     @Test
@@ -71,11 +72,13 @@ public class RoomTest {
         List<GameType> result = room.getAvailableGames(userID, fieldName);
 
         assertNotNull(result);
-        assertEquals(4, result.size());
+        assertEquals(5, result.size());
         assertTrue(result.contains(GameType.WORDLE));
         assertTrue(result.contains(GameType.PICTIONARY));
         assertTrue(result.contains(GameType.SHAREBOARD));
         assertTrue(result.contains(GameType.HANGMAN));
+        assertTrue(result.contains(GameType.REVEAL));
+
     }
 
 }

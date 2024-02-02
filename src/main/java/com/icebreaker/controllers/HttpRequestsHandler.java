@@ -45,6 +45,8 @@ public class HttpRequestsHandler {
         return "Received message: " + message;
     }
 
+
+    /**  Room CRUD **/
     @PostMapping("/createRoom")
     public String handleRoomCreation(@RequestParam(name = "name", required = true) String name)
             throws NoSuchAlgorithmException {
@@ -108,6 +110,9 @@ public class HttpRequestsHandler {
         return runner.destroyRoom(roomCode);
     }
 
+
+    /** Person Status **/
+
     @GetMapping("/isAdmin")
     public boolean isAdmin(@RequestParam("userID") String userID,
                            @RequestParam("roomCode") String roomCode) {
@@ -150,6 +155,7 @@ public class HttpRequestsHandler {
         System.out.printf("Kick Person: %s, %s%n", userID, roomCode);
         return runner.kickPerson(roomCode, userID);
     }
+
 
     @GetMapping("/getPlayers")
     public String getPlayersInARoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
@@ -205,14 +211,12 @@ public class HttpRequestsHandler {
         System.out.printf("Get Player: %s, %s%n", userID, roomCode);
         if (person != null) {
             String json;
-
             try {
                 json = objectMapper.writeValueAsString(Map.of("userInfo", person));
             } catch (Exception e) {
                 e.printStackTrace();
                 json = "{\"error\": \"Serialization error\"}";
             }
-
             return json;
         }
 
@@ -226,6 +230,7 @@ public class HttpRequestsHandler {
         return jsonPersonError;
     }
 
+    /** Input Phase **/
     @PostMapping("/startInput")
     public String startInput(@RequestParam(name = "roomCode", required = true) String roomCode) {
         System.out.printf("Start Room: %s%n", roomCode);
@@ -242,6 +247,8 @@ public class HttpRequestsHandler {
         return runner.checkPlayerInfoComplete(roomCode, userID);
     }
 
+
+    /** Draw&Guess **/
     @PostMapping("/startDrawAndGuess")
     public String startDrawAndGuess(@RequestParam(name = "roomCode", required = true) String roomCode,
                                     @RequestParam(name = "target", required = true) String target) {
@@ -251,6 +258,9 @@ public class HttpRequestsHandler {
         }
         return "Fail";
     }
+
+
+    /** Presenter **/
 
     @PostMapping("/changePresenter")
     public boolean changePresenter(@RequestParam(name = "roomCode", required = true) String roomCode,
@@ -288,6 +298,7 @@ public class HttpRequestsHandler {
         return jsonError;
     }
 
+    /** Games **/
     @GetMapping("/availableGames")
     public List<GameType> availableGames(@RequestParam(name = "roomCode", required = true) String roomCode,
                                          @RequestParam(name = "userID", required = true) String userID,
@@ -295,6 +306,7 @@ public class HttpRequestsHandler {
         return runner.availableGames(roomCode, userID, fieldName);
     }
 
+    /** WaitRoom **/
     @PostMapping("/backToWaitRoom")
     public String backToWaitRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
         if (runner.changeRoomStatus(roomCode, RoomStatus.WAITING)) {
@@ -305,19 +317,45 @@ public class HttpRequestsHandler {
         return "Fail";
     }
 
+    /** PresentRoom **/
     // Get PresentRoomInfo of a Room
-    @GetMapping("/getPresentPageInfo")
-    public PresentRoomInfo getPresentPageInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        return runner.getPresentRoomInfo(roomCode);
+    @GetMapping("/getPresentRoomInfo")
+    public String getPresentRoomInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        PresentRoomInfo presentRoomInfo =  runner.getPresentRoomInfo(roomCode);
+        if (presentRoomInfo != null) {
+            String json;
+            try {
+                json = objectMapper.writeValueAsString(Map.of("presentRoomInfo", presentRoomInfo));
+            } catch (Exception e) {
+                e.printStackTrace();
+                json = "{\"error\": \"Serialization error\"}";
+            }
+            return json;
+        }
+        String jsonError;
+        try {
+            jsonError = objectMapper.writeValueAsString(Map.of("error", "error fetching presentRoomInfo"));
+        } catch (Exception e) {
+            // Handle exception if JSON serialization fails
+            e.printStackTrace();
+            jsonError = "{\"error\": \"Serialization error\"}";
+        }
+        return jsonError;
     }
 
     // Set PresentRoomInfo of a Room
-    @PostMapping("/setPresentPageInfo")
-    public void setPresentPageInfo(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                   @RequestParam(name = "presentPageInfo", required = true) PresentRoomInfo presentRoomInfo) {
-        runner.setPresentRoomInfo(roomCode, presentRoomInfo);
+    @PostMapping(path="/setPresentRoomInfo", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public boolean setPresentRoomInfo(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                   @RequestBody PresentRoomInfo presentRoomInfo) {
+
+        System.out.println("setPresentRoomInfo, receives " + presentRoomInfo);
+        return runner.setPresentRoomInfo(roomCode, presentRoomInfo);
     }
 
+
+    /** Wordle **/
     @PostMapping("/startWordle")
     public boolean startDrawAndGuess(@RequestParam(name = "roomCode", required = true) String roomCode,
                                      @RequestParam(name = "userID", required = true) String userID,

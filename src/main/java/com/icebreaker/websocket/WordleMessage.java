@@ -2,7 +2,6 @@ package com.icebreaker.websocket;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -31,29 +30,34 @@ public class WordleMessage {
     // Correct?
 
     @Data
-    public static class Letters {
-        private Character letter;
+    public static class WordleLetter {
+        private String letter;
         private WordleStateCode state;
-        public Letters(char l, WordleStateCode s) {
+        public WordleLetter(String l, WordleStateCode s) {
             letter = l;
             state = s;
         }
 
         @Override
         public String toString() {
-            return "{ Letter: " + letter.toString() + " State: " + state.toString() + " }";
+            if (letter != null) {
+                return "{ Letter: " + letter.toString() + " State: " + state.toString() + " }";
+            } else {
+                return "{null}";
+            }
         }
     }
-
-
+    private Integer currentAttempt;
+    private Integer totalAttempt;
     private Boolean isCheck;
-    private List<Letters> letters;
+    private List<List<WordleLetter>> letters;
     private String roomCode;
     private Boolean isCorrect;
     private List<WordleStateCode> allLetterStat;
     @Override
     public String toString() {
-        return "Is Check: " + isCheck + " Letters: " + letters.toString() + " RoomCode: " + roomCode;
+        return "Total Attempts: " + totalAttempt + " Current Attempt: " + currentAttempt + " Is Check: " + isCheck +
+                " Letters: " + letters.toString() + " RoomCode: " + roomCode;
     }
 }
 

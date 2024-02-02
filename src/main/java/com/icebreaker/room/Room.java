@@ -207,7 +207,7 @@ public class Room {
                 games.add(GameType.HANGMAN);
             }
             default -> {
-                return null;
+                return games;
             }
         }
         return games;

@@ -30,6 +30,8 @@ public class ServerRunner {
         Admin mockAdminBob = new Admin("Bobby", mockRoomCode, "1", null,
                 "Bob", "Li", "China", "Beijing", "Sad",
                 "Steak", "Travel", true);
+        Room mockRoom = new Room(mockRoomNumber, mockRoomCode, mockAdminBob);
+        addRoom(mockRoom, mockRoomCode);
         Person mockAlex = new User("Alexy", mockRoomCode, "2", null,
                 "Alex", "Yang", "China", "Shanghai", "Sleepy",
                 "Sweet and sour chicken", "Sleep", true);
@@ -50,8 +52,6 @@ public class ServerRunner {
         roomUpdateUser(mockMohammed);
         roomUpdateUser(mockYHB);
         roomUpdateUser(mockWSY);
-        Room mockRoom = new Room(mockRoomNumber, mockRoomCode, mockAdminBob);
-        addRoom(mockRoom, mockRoomCode);
     }
 
     public static ServerRunner getInstance() {

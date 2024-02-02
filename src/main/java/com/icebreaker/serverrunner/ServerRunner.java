@@ -6,6 +6,7 @@ import com.icebreaker.person.User;
 import com.icebreaker.room.GameType;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
+import com.icebreaker.utils.Constants;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
 
@@ -27,21 +28,21 @@ public class ServerRunner {
     private ServerRunner() {
         int mockRoomNumber = -1;
         String mockRoomCode = "TEST";
-        Admin mockAdminBob = new Admin("Bobby", mockRoomCode, "1", null,
+        Admin mockAdminBob = new Admin("Bobby", mockRoomCode, "1", Constants.getYellowDuck(),
                 "Bob", "Li", "China", "Beijing", "Sad",
                 "Steak", "Travel", true);
         Room mockRoom = new Room(mockRoomNumber, mockRoomCode, mockAdminBob);
         addRoom(mockRoom, mockRoomCode);
-        Person mockAlex = new User("Alexy", mockRoomCode, "2", null,
+        Person mockAlex = new User("Alexy", mockRoomCode, "2", Constants.getYellowDuck(),
                 "Alex", "Yang", "China", "Shanghai", "Sleepy",
                 "Sweet and sour chicken", "Sleep", true);
-        Person mockMohammed = new User("Moha", mockRoomCode, "3", null,
+        Person mockMohammed = new User("Moha", mockRoomCode, "3", Constants.getYellowDuck(),
                 "Mohammed", "Lee", "Syria", "Damascus", "Excited",
                 "Baked Potato", "Fight", true);
-        Person mockYHB = new User("Andersuki", mockRoomCode, "4", null,
+        Person mockYHB = new User("Andersuki", mockRoomCode, "4", Constants.getYellowDuck(),
                 "Yu", "HongBo", "China", "Harbin", "Tired",
                 "Steak", "Gaming", true);
-        Person mockWSY = new User("SelinaWan666", mockRoomCode, "5", null,
+        Person mockWSY = new User("SelinaWan666", mockRoomCode, "5", Constants.getYellowDuck(),
                 "Wan", "Siyu", "Maldives", "Olhuveli", "Happy",
                 "Nang", "Sing", true);
         joinRoom(mockRoomCode, "Alexy", "2");

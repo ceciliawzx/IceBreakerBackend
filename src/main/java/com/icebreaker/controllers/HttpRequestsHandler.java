@@ -160,7 +160,6 @@ public class HttpRequestsHandler {
     @GetMapping("/getPlayers")
     public String getPlayersInARoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
         ObjectMapper objectMapper = new ObjectMapper();
-        System.out.printf("Get Players in room: %s%n", roomCode);
         if (runner.containsRoom(roomCode)) {
             Person admin = runner.getAdminInRoom(roomCode);
             Person presenter = runner.getPresenterInRoom(roomCode);
@@ -208,7 +207,6 @@ public class HttpRequestsHandler {
             return jsonRoomError;
         }
         Person person = runner.getOnePlayerInfo(roomCode, userID);
-        System.out.printf("Get Player: %s, %s%n", userID, roomCode);
         if (person != null) {
             String json;
             try {

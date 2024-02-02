@@ -57,4 +57,14 @@ public class Geoguesser {
         return Math.sqrt(Math.pow(lat1 - lat2, 2) + Math.pow(lon1 - lon2, 2));
     }
 
+    public boolean checkNotSubmitted(String userID) {
+        for (Pair<String, Double> pair : guesses) {
+            if (pair.getFirst().equals(userID)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }

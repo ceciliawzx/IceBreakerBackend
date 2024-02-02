@@ -259,4 +259,8 @@ public class Room {
     public GeoguesserStatus getGeoStatus() {
         return this.geoguesser.getStatus();
     }
+
+    public boolean checkSubmitted(String userID) {
+        return this.geoguesser.checkNotSubmitted(userID);
+    }
 }

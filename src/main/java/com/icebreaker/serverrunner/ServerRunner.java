@@ -366,4 +366,14 @@ public class ServerRunner {
             return false;
         }
     }
+
+    public boolean checkUserNotSubmission(String roomCode, String userID) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                return room.checkSubmitted(userID);
+            }
+            return false;
+        }
+    }
 }

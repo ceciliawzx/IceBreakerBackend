@@ -29,16 +29,21 @@ public class Room {
     @Getter
     @Setter
     private RoomStatus roomStatus;
+    @Getter
     @Setter
     private String target;
+    @Getter
+    @Setter
+    private PresentRoomInfo presentRoomInfo;
 
     public Room(int roomNumber, String roomCode, Admin host) {
         this.roomNumber = roomNumber;
         this.roomCode = roomCode;
         this.host = host;
         this.presenter = host;
-        players.add(host);
+        this.players.add(host);
         this.roomStatus = RoomStatus.WAITING;
+        this.presentRoomInfo = new PresentRoomInfo();
     }
 
     public void startRoom() {
@@ -132,11 +137,16 @@ public class Room {
         for (Person person : players) {
             if (person.getUserID().equals(userID)) {
                 presenter = person;
-                presentedList.add(person);
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean addToPresentedList(Person newPresenter) {
+        presentedList.add(presenter);
+        this.presenter = newPresenter;
+        return true;
     }
 
     public List<Person> getNotPresentedPeople() {
@@ -152,7 +162,7 @@ public class Room {
 
     public List<GameType> getAvailableGames(String userID, String fieldName) {
         Person person = null;
-        for (Person player: players) {
+        for (Person player : players) {
             if (player.getUserID().equals(userID)) {
                 person = player;
                 break;
@@ -164,8 +174,7 @@ public class Room {
             field.setAccessible(true);
             Object fieldValue = field.get(person);
 
-            if (fieldValue instanceof String) {
-                String value = (String) fieldValue;
+            if (fieldValue instanceof String value) {
                 return checkGames(fieldName, value);
             } else {
                 return null;
@@ -178,9 +187,9 @@ public class Room {
 
     public List<GameType> checkGames(String fieldName, String value) {
         List<GameType> games = new ArrayList<>();
+        games.add(GameType.REVEAL);
         switch (fieldName) {
-            case "country" :
-            case "city" :
+            case "country", "city" -> {
                 games.add(GameType.GEOGUESSER);
                 if (value.length() <= 7 && value.length() >= 4) {
                     games.add(GameType.WORDLE);
@@ -188,18 +197,18 @@ public class Room {
                 games.add(GameType.PICTIONARY);
                 games.add(GameType.SHAREBOARD);
                 games.add(GameType.HANGMAN);
-                break;
-            case "favFood" :
-            case "favActivity" :
+            }
+            case "favFood", "favActivity" -> {
                 if (value.length() <= 7 && value.length() >= 4) {
                     games.add(GameType.WORDLE);
                 }
                 games.add(GameType.PICTIONARY);
                 games.add(GameType.SHAREBOARD);
                 games.add(GameType.HANGMAN);
-                break;
-            default:
+            }
+            default -> {
                 return null;
+            }
         }
         return games;
     }

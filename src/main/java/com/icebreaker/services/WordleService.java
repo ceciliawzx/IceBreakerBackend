@@ -23,7 +23,7 @@ public class WordleService {
 
     public boolean setAnswers(String roomCode, String answer) {
         if (!answers.containsKey(roomCode)) {
-            answers.put(roomCode, answer);
+            answers.put(roomCode, answer.toUpperCase());
             List<WordleStateCode> code = new ArrayList<>();
             for (int i = 0; i < 26; i++) {
                 code.add(WordleStateCode.UNCHECKED);

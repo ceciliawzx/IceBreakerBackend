@@ -315,6 +315,15 @@ public class HttpRequestsHandler {
         return "Fail";
     }
 
+    @PostMapping("/backToPresentRoom")
+    public String backToPresentRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        if (runner.changeRoomStatus(roomCode, RoomStatus.PRESENTING)) {
+            runner.setTargetInRoom(roomCode, null);
+            return "Success";
+        }
+        return "Fail";
+    }
+
     /** PresentRoom **/
     // Get PresentRoomInfo of a Room
     @GetMapping("/getPresentRoomInfo")

@@ -45,7 +45,7 @@ public class Room {
         this.players.add(host);
         this.roomStatus = RoomStatus.WAITING;
         this.presentRoomInfo = new PresentRoomInfo();
-        this.geoguesser = new Geoguesser();
+        this.geoguesser = new Geoguesser(GeoguesserStatus.PRE_CHOOSE);
     }
 
     public void startRoom() {

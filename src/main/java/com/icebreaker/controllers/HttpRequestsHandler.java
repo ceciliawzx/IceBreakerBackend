@@ -380,15 +380,6 @@ public class HttpRequestsHandler {
         return -1;
     }
 
-    @PostMapping("startGeoguesser")
-    public String startGeoguesser(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        if (runner.changeRoomStatus(roomCode, RoomStatus.GEO_GUESSING)) {
-            runner.setGeoStatusInRoom(roomCode, GeoguesserStatus.PRE_CHOOSE);
-            return "Success";
-        }
-        return "Fail";
-    }
-
     @GetMapping("getGeoguesserStatus")
     public GeoguesserStatus getGeoguesserStatus(@RequestParam(name = "roomCode", required = true) String roomCode) {
         return runner.getGeoguesserStatus(roomCode);

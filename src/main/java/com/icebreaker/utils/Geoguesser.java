@@ -1,15 +1,14 @@
 package com.icebreaker.utils;
 
 import groovy.transform.Sealed;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.glassfish.grizzly.utils.Pair;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class Geoguesser {
 
     private int score = 0;
@@ -18,6 +17,7 @@ public class Geoguesser {
 
     @Setter
     @Getter
+    @NonNull
     private GeoguesserStatus status;
 
     private List<Pair<String, Double>> guesses;

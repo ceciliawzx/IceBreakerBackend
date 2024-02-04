@@ -137,6 +137,8 @@ public class Room {
         for (Person person : players) {
             if (person.getUserID().equals(userID)) {
                 presenter = person;
+                // Reset presentRoomInfo when change a presenter
+                presentRoomInfo = new PresentRoomInfo();
                 return true;
             }
         }

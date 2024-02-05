@@ -434,4 +434,9 @@ public class HttpRequestsHandler {
         System.out.println("Restart Mock Room");
         return runner.restartMockRoom();
     }
+
+    @GetMapping("/geoGuesserWinner")
+    public List<Person> geoGuesserWinner(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        return runner.geoGuesserWinner(roomCode);
+    }
 }

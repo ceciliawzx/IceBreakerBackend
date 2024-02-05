@@ -1,5 +1,6 @@
 package com.icebreaker.utils;
 
+import com.icebreaker.person.Person;
 import groovy.transform.Sealed;
 import lombok.*;
 import org.glassfish.grizzly.utils.Pair;
@@ -65,6 +66,29 @@ public class Geoguesser {
         }
 
         return true;
+    }
+
+    public List<String> geoGuesserWinner() {
+        if (guesses == null || guesses.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        double minDouble = guesses.get(0).getSecond();
+        List<String> minStrings = new ArrayList<>();
+
+        for (Pair<String, Double> pair : guesses) {
+            double currentDouble = pair.getSecond();
+
+            if (currentDouble < minDouble) {
+                minDouble = currentDouble;
+                minStrings.clear();
+                minStrings.add(pair.getFirst());
+            } else if (currentDouble == minDouble) {
+                minStrings.add(pair.getFirst());
+            }
+        }
+
+        return minStrings;
     }
 
 }

@@ -263,4 +263,27 @@ public class Room {
     public boolean checkSubmitted(String userID) {
         return this.geoguesser.checkNotSubmitted(userID);
     }
+
+    public List<Person> geoGuesserWinner() {
+        List<String> winnerIDs = this.geoguesser.geoGuesserWinner();
+        List<Person> winners = new ArrayList<>();
+
+        for (String winnerID : winnerIDs) {
+            Person person = findPersonByID(winnerID);
+            if (person != null) {
+                winners.add(person);
+            }
+        }
+
+        return winners;
+    }
+
+    private Person findPersonByID(String id) {
+        for (Person person : players) {
+            if (person.getUserID().equals(id)) {
+                return person;
+            }
+        }
+        return null;
+    }
 }

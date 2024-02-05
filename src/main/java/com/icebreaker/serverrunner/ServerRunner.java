@@ -440,4 +440,14 @@ public class ServerRunner {
         }
         return false;
     }
+
+    public List<Person> geoGuesserWinner(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                return room.geoGuesserWinner();
+            }
+            return null;
+        }
+    }
 }

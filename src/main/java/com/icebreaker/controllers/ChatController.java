@@ -20,7 +20,6 @@ public class ChatController {
     public ChatController(ChatService chatService) {
         this.chatService = chatService;
     }
-
     private final ServerRunner serverRunner = ServerRunner.getInstance();
 
     @MessageMapping("/room/{roomCode}/sendMessage")

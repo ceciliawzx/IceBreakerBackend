@@ -8,6 +8,7 @@ import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.utils.GeoguesserStatus;
+import com.icebreaker.utils.Constants;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,8 +28,58 @@ public class ServerRunner {
     private final Map<Integer, Room> roomNumbers = new HashMap<>();
     private final Map<String, Integer> codeNumberMapping = new HashMap<>();
     private final Map<Integer, String> numberCodeMapping = new HashMap<>();
+    private final int mockRoomNumber = -1;
+    private final String mockRoomCode = "TEST";
+    private Room mockRoom;
+    private final Person mockAlex = new User("Alexy", mockRoomCode, "2", Constants.getYellowDuck(),
+            "Alex", "Yang", "China", "Shanghai", "Sleepy",
+            "Sweet and sour chicken", "Sleep", true);
+    private final Person mockMohammed = new User("Moha", mockRoomCode, "3", Constants.getYellowDuck(),
+            "Mohammed", "Lee", "Syria", "Damascus", "Excited",
+            "Baked Potato", "Fight", true);
+    private final Person mockYHB = new User("Andersuki", mockRoomCode, "4", Constants.getYellowDuck(),
+            "Yu", "HongBo", "China", "Harbin", "Tired",
+            "Steak", "Gaming", true);
+    private final Person mockWSY = new User("SelinaWan666", mockRoomCode, "5", Constants.getYellowDuck(),
+            "Wan", "Siyu", "Maldives", "Olhuveli", "Happy",
+            "Nang", "Sing", true);
+    private final Admin mockAdminBob = new Admin("Bobby", mockRoomCode, "1", Constants.getYellowDuck(),
+            "Bob", "Li", "China", "Beijing", "Sad",
+            "Steak", "Travel", true);
+    private final Map<String, Person> mockRoomUserIDMap = new HashMap<>();
 
     private ServerRunner() {
+        this.mockRoom = createMockRoom();
+        mockRoomUserIDMap.put("2", mockAlex);
+        mockRoomUserIDMap.put("3", mockMohammed);
+        mockRoomUserIDMap.put("4", mockYHB);
+        mockRoomUserIDMap.put("5", mockWSY);
+    }
+
+    private Room createMockRoom() {
+        Room mockRoom = new Room(mockRoomNumber, mockRoomCode, mockAdminBob);
+        addRoom(mockRoom, mockRoomCode);
+        joinRoom(mockRoomCode, "Alexy", "2");
+        joinRoom(mockRoomCode, "Moha", "3");
+        joinRoom(mockRoomCode, "Andersuki", "4");
+        joinRoom(mockRoomCode, "SelinaWan666", "5");
+        roomUpdateUser(mockAlex);
+        roomUpdateUser(mockMohammed);
+        roomUpdateUser(mockYHB);
+        roomUpdateUser(mockWSY);
+        return mockRoom;
+    }
+
+    public boolean rejoinMockRoom(String userID) {
+        if (mockRoom.getPlayer(userID) == null) {
+            if (mockRoomUserIDMap.containsKey(userID)) {
+                Person person = mockRoomUserIDMap.get(userID);
+                joinRoom(mockRoomCode, person.getDisplayName(), userID);
+                roomUpdateUser(person);
+                return true;
+            }
+        }
+        return false;
     }
 
     public static ServerRunner getInstance() {
@@ -301,6 +352,7 @@ public class ServerRunner {
     public List<GameType> availableGames(String roomCode, String userID, String fieldName) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
+                int roomNumber = codeNumberMapping.get(roomCode);
                 return getRoom(roomCode).getAvailableGames(userID, fieldName);
             }
             return null;
@@ -310,8 +362,12 @@ public class ServerRunner {
     public boolean addToPresentedList(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                Person newPresenter = getNotPresentedPeople(roomCode).get(0);
-                return getRoom(roomCode).addToPresentedList(newPresenter);
+                if (!getNotPresentedPeople(roomCode).isEmpty()) {
+                    Person newPresenter = getNotPresentedPeople(roomCode).get(0);
+                    return getRoom(roomCode).addToPresentedList(newPresenter);
+                } else {
+                    return true;
+                }
             }
             return false;
         }
@@ -375,5 +431,13 @@ public class ServerRunner {
             }
             return false;
         }
+    }
+
+    public boolean restartMockRoom() {
+        if (destroyRoom("TEST")) {
+            this.mockRoom = createMockRoom();
+            return true;
+        }
+        return false;
     }
 }

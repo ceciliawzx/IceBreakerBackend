@@ -27,7 +27,6 @@ public class Room {
     @Getter
     @Setter
     private RoomStatus roomStatus;
-    private final ChatService chatService;
     @Getter
     @Setter
     private String target;
@@ -36,12 +35,11 @@ public class Room {
     private PresentRoomInfo presentRoomInfo;
     private Geoguesser geoguesser;
 
-    public Room(int roomNumber, String roomCode, Admin host, ChatService chatService) {
+    public Room(int roomNumber, String roomCode, Admin host) {
         this.roomNumber = roomNumber;
         this.roomCode = roomCode;
         this.host = host;
         this.presenter = host;
-        this.chatService = chatService;
         this.players.add(host);
         this.roomStatus = RoomStatus.WAITING;
         this.presentRoomInfo = new PresentRoomInfo();
@@ -139,6 +137,8 @@ public class Room {
         for (Person person : players) {
             if (person.getUserID().equals(userID)) {
                 presenter = person;
+                // Reset presentRoomInfo when change a presenter
+                presentRoomInfo = new PresentRoomInfo();
                 return true;
             }
         }
@@ -209,7 +209,7 @@ public class Room {
                 games.add(GameType.HANGMAN);
             }
             default -> {
-                return null;
+                return games;
             }
         }
         return games;

@@ -30,6 +30,6 @@ public class WordleController {
     public void handleMessage(@Payload WordleMessage message) {
         System.out.println("Received: " + message);
         String roomCode = String.valueOf(message.getRoomCode());
-        wordleService.broadcastResult("1234", message);
+        wordleService.broadcastResult(roomCode, message);
     }
 }

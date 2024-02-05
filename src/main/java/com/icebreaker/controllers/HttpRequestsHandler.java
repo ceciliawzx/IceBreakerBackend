@@ -18,6 +18,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,7 +60,7 @@ public class HttpRequestsHandler {
         StringBuilder usb = hashUserId(name, md, newUserID);
         String roomCode = runner.getRoomCodeGenerator().generateUniqueCode();
         Admin admin = new Admin(name, roomCode, usb.toString());
-        Room newRoom = new Room(newRoomNumber, roomCode, admin, chatService);
+        Room newRoom = new Room(newRoomNumber, roomCode, admin);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -82,6 +83,7 @@ public class HttpRequestsHandler {
     public String handleJoinRoom(@RequestParam(name = "roomCode", required = true) String code,
                                  @RequestParam(name = "name", required = true) String name)
             throws NoSuchAlgorithmException {
+
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
         int newUserID = userID.getAndIncrement();
@@ -161,7 +163,6 @@ public class HttpRequestsHandler {
     @GetMapping("/getPlayers")
     public String getPlayersInARoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
         ObjectMapper objectMapper = new ObjectMapper();
-        System.out.printf("Get Players in room: %s%n", roomCode);
         if (runner.containsRoom(roomCode)) {
             Person admin = runner.getAdminInRoom(roomCode);
             Person presenter = runner.getPresenterInRoom(roomCode);
@@ -209,7 +210,6 @@ public class HttpRequestsHandler {
             return jsonRoomError;
         }
         Person person = runner.getOnePlayerInfo(roomCode, userID);
-        System.out.printf("Get Player: %s, %s%n", userID, roomCode);
         if (person != null) {
             String json;
             try {
@@ -318,6 +318,15 @@ public class HttpRequestsHandler {
         return "Fail";
     }
 
+    @PostMapping("/backToPresentRoom")
+    public String backToPresentRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        if (runner.changeRoomStatus(roomCode, RoomStatus.PRESENTING)) {
+            runner.setTargetInRoom(roomCode, null);
+            return "Success";
+        }
+        return "Fail";
+    }
+
     /** PresentRoom **/
     // Get PresentRoomInfo of a Room
     @GetMapping("/getPresentRoomInfo")
@@ -418,5 +427,11 @@ public class HttpRequestsHandler {
     public boolean getUserGeoSubmission(@RequestParam(name = "roomCode", required = true) String roomCode,
                                         @RequestParam(name = "userID", required = true) String userID) {
         return !runner.checkUserNotSubmission(roomCode, userID);
+    }
+
+    @PostMapping("/restartMockRoom")
+    public boolean restartMockRoom() {
+        System.out.println("Restart Mock Room");
+        return runner.restartMockRoom();
     }
 }

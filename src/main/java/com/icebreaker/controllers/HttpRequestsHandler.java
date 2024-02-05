@@ -8,6 +8,7 @@ import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.ChatService;
+import com.icebreaker.services.HangmanService;
 import com.icebreaker.services.WordleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -29,12 +30,14 @@ public class HttpRequestsHandler {
 
     private final ChatService chatService;
     private final WordleService wordleService;
+    private final HangmanService hangmanService;
     private final ServerRunner runner = ServerRunner.getInstance();
 
     @Autowired
-    public HttpRequestsHandler(ChatService chatService, WordleService wordleService) {
+    public HttpRequestsHandler(ChatService chatService, WordleService wordleService, HangmanService hangmanService) {
         this.chatService = chatService;
         this.wordleService = wordleService;
+        this.hangmanService = hangmanService;
     }
 
     private final AtomicInteger roomNumber = new AtomicInteger(0);
@@ -319,8 +322,14 @@ public class HttpRequestsHandler {
 
     @PostMapping("/backToPresentRoom")
     public String backToPresentRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        RoomStatus currentStat = runner.getStatus(roomCode);
         if (runner.changeRoomStatus(roomCode, RoomStatus.PRESENTING)) {
             runner.setTargetInRoom(roomCode, null);
+            if (currentStat == RoomStatus.WORDLING) {
+                wordleService.returnToPresentingRoom(roomCode);
+            } else if (currentStat == RoomStatus.HANGINGMAN) {
+                hangmanService.returnToPresentingRoom(roomCode);
+            }
             return "Success";
         }
         return "Fail";
@@ -366,13 +375,13 @@ public class HttpRequestsHandler {
 
     /** Wordle **/
     @PostMapping("/startWordle")
-    public boolean startDrawAndGuess(@RequestParam(name = "roomCode", required = true) String roomCode,
+    public boolean startWordle(@RequestParam(name = "roomCode", required = true) String roomCode,
                                      @RequestParam(name = "userID", required = true) String userID,
                                      @RequestParam(name = "field", required = true) String field) {
         System.out.println("Start Wordle: " + roomCode + " " + userID + " " + field);
         if (runner.changeRoomStatus(roomCode, RoomStatus.WORDLING)) {
             String word = runner.getFieldValue(roomCode, userID, field);
-            System.out.println("The word is: " + word);
+            System.out.println("The wordle word is: " + word);
             return wordleService.setAnswers(roomCode, word);
         }
         return false;
@@ -381,16 +390,60 @@ public class HttpRequestsHandler {
     @GetMapping("/getWordleInfo")
     public int getWordleInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
         if (wordleService.roomExist(roomCode)) {
-            System.out.println("The word is: " + wordleService.getAnswer(roomCode));
+            System.out.println("The wordle word is: " + wordleService.getAnswer(roomCode));
             System.out.println("With length: " + wordleService.getAnswer(roomCode).length());
             return wordleService.getAnswer(roomCode).length();
         }
         return -1;
     }
 
+    @GetMapping("/getWordleAnswer")
+    public String getWordleAnswer(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        if (wordleService.roomExist(roomCode)) {
+            System.out.println("The word is: " + wordleService.getAnswer(roomCode));
+            System.out.println("With length: " + wordleService.getAnswer(roomCode).length());
+            return wordleService.getAnswer(roomCode);
+        }
+        return "Error";
+    }
+
     @PostMapping("/restartMockRoom")
     public boolean restartMockRoom() {
         System.out.println("Restart Mock Room");
         return runner.restartMockRoom();
+    }
+
+    /** Hangman **/
+    @PostMapping("/startHangman")
+    public boolean startHangman(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                     @RequestParam(name = "userID", required = true) String userID,
+                                     @RequestParam(name = "field", required = true) String field) {
+        System.out.println("Start Hangman: " + roomCode + " " + userID + " " + field);
+        if (runner.changeRoomStatus(roomCode, RoomStatus.HANGINGMAN)) {
+            String word = runner.getFieldValue(roomCode, userID, field);
+            System.out.println("The hangman word is: " + word);
+            return hangmanService.setAnswers(roomCode, word);
+        }
+        return false;
+    }
+
+    @GetMapping("/getHangmanInfo")
+    public int getHangmanInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        if (hangmanService.roomExist(roomCode)) {
+            System.out.println("The hangman word is: " + hangmanService.getAnswer(roomCode));
+            System.out.println("With length: " + hangmanService.getAnswer(roomCode).length());
+            return hangmanService.getAnswer(roomCode).length();
+        }
+        return -1;
+    }
+
+    @GetMapping("/getHangmanAnswer")
+    public String getHangmanAnswer(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        if (hangmanService.roomExist(roomCode)) {
+            System.out.println("The word is: " + hangmanService.getAnswer(roomCode));
+            System.out.println("With length: " + hangmanService.getAnswer(roomCode).length());
+            return hangmanService.getAnswer(roomCode);
+        }
+        return "Error";
     }
 }

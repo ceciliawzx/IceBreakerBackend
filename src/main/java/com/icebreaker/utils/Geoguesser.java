@@ -7,6 +7,8 @@ import org.glassfish.grizzly.utils.Pair;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -93,6 +95,11 @@ public class Geoguesser {
         }
 
         return minStrings;
+    }
+
+    public List<Pair<String, Double>> geoGuesserRank() {
+        Collections.sort(guesses, Comparator.comparingDouble(Pair::getSecond));
+        return guesses;
     }
 
 }

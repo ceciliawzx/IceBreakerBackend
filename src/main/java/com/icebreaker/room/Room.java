@@ -6,6 +6,7 @@ import com.icebreaker.utils.GeoguesserStatus;
 import lombok.Getter;
 import com.icebreaker.person.*;
 import lombok.Setter;
+import org.glassfish.grizzly.utils.Pair;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -289,5 +290,34 @@ public class Room {
             }
         }
         return null;
+    }
+
+    public List<Person> geoGuesserPersonRank() {
+        List<Pair<String, Double>> rank = this.geoguesser.geoGuesserRank();
+        List<String> playerIDs = new ArrayList<>();
+        List<Person> playerRankList = new ArrayList<>();
+
+        for (int i = 0; i < rank.size(); i++) {
+            playerIDs.add(rank.get(i).getFirst());
+        }
+
+        for (int i = 0; i < playerIDs.size(); i++) {
+            Person person = findPersonByID(playerIDs.get(i));
+            if (person != null) {
+                playerRankList.add(person);
+            }
+        }
+        return playerRankList;
+    }
+
+    public List<Double> geoGuesserDistanceRank() {
+        List<Pair<String, Double>> rank = this.geoguesser.geoGuesserRank();
+        List<Double> distances = new ArrayList<>();
+
+        for (int i = 0; i < rank.size(); i++) {
+            distances.add(rank.get(i).getSecond());
+        }
+
+        return distances;
     }
 }

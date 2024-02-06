@@ -11,6 +11,7 @@ import com.icebreaker.utils.GeoguesserStatus;
 import com.icebreaker.utils.Constants;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
+import org.glassfish.grizzly.utils.Pair;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
@@ -446,6 +447,26 @@ public class ServerRunner {
             if (containsRoom(roomCode)) {
                 Room room = getRoom(roomCode);
                 return room.geoGuesserWinner();
+            }
+            return null;
+        }
+    }
+
+    public List<Person> geoGuesserPersonRank(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                return room.geoGuesserPersonRank();
+            }
+            return null;
+        }
+    }
+
+    public List<Double> geoGuesserDistanceRank(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                return room.geoGuesserDistanceRank();
             }
             return null;
         }

@@ -435,8 +435,30 @@ public class HttpRequestsHandler {
         return runner.restartMockRoom();
     }
 
-    @GetMapping("/geoGuesserWinner")
-    public List<Person> geoGuesserWinner(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        return runner.geoGuesserWinner(roomCode);
+    @GetMapping("/geoGuesserRank")
+    public String geoGuesserRank(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        if (runner.containsRoom(roomCode)) {
+            String json;
+
+            try {
+                json = objectMapper.writeValueAsString(Map.of("winner", runner.geoGuesserWinner(roomCode), "rankPerson", runner.geoGuesserPersonRank(roomCode), "rankDistance", runner.geoGuesserDistanceRank(roomCode)));
+            } catch (Exception e) {
+                e.printStackTrace();
+                json = "{\"error\": \"Serialization error\"}";
+            }
+
+            return json;
+        }
+
+        String jsonError;
+        try {
+            jsonError = objectMapper.writeValueAsString(Map.of("error", "Room not found"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonError = "{\"error\": \"Serialization error\"}";
+        }
+
+        return jsonError;
     }
 }

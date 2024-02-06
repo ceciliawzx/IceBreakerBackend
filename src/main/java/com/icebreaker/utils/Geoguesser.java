@@ -11,9 +11,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static java.lang.Math.toRadians;
+
 @RequiredArgsConstructor
 public class Geoguesser {
 
+    private static final double EARTH_RADIUS = 6371;
     private int score = 0;
     private double correctLatitude;
     private double correctLongitude;
@@ -57,7 +60,23 @@ public class Geoguesser {
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        return Math.sqrt(Math.pow(lat1 - lat2, 2) + Math.pow(lon1 - lon2, 2));
+        lat1 = toRadians(lat1);
+        lon1 = toRadians(lon1);
+        lat2 = toRadians(lat2);
+        lon2 = toRadians(lon2);
+
+        // Calculate the differences in latitude and longitude
+        double dLat = lat2 - lat1;
+        double dLon = lon2 - lon1;
+
+        // Calculate the distance using Haversine formula
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1) * Math.cos(lat2) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = EARTH_RADIUS * c;
+
+        return distance;
     }
 
     public boolean checkNotSubmitted(String userID) {

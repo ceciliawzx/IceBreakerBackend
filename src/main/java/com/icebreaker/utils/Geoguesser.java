@@ -59,6 +59,10 @@ public class Geoguesser {
     }
 
     public boolean checkNotSubmitted(String userID) {
+        if (guesses.isEmpty()) {
+            return true;
+        }
+
         for (Pair<String, Double> pair : guesses) {
             if (pair.getFirst().equals(userID)) {
                 return false;

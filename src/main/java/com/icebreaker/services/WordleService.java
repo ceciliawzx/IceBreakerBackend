@@ -44,6 +44,15 @@ public class WordleService {
         return answers.containsKey(roomCode);
     }
 
+    public boolean resetSession(String roomCode) {
+        if (answers.containsKey(roomCode)) {
+            answers.remove(roomCode);
+            letterStates.remove(roomCode);
+            return true;
+        }
+        return false;
+    }
+
     private boolean checkCorrectness(String roomCode, WordleMessage message) {
         boolean isCorrect = true;
         if (message.getIsCheck()) {
@@ -79,6 +88,7 @@ public class WordleService {
 
     public void returnToPresentingRoom(String roomCode) {
         BackMessage backMessage = new BackMessage(roomCode);
+        System.out.println("Send return to presenting room wordle back message");
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", backMessage);
     }
 
@@ -100,10 +110,9 @@ public class WordleService {
         }
         System.out.println(json);
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", message);
-        if (isCorrect) {
+        if (isCorrect || (message.getCurrentAttempt() == message.getTotalAttempt() && message.getIsCheck())) {
             System.out.println("Remove Answer: " + roomCode);
-            answers.remove(roomCode);
-            letterStates.remove(roomCode);
+            returnToPresentingRoom(roomCode);
         }
     }
 }

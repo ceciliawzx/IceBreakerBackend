@@ -78,6 +78,7 @@ public class Room {
                 if (person.getUserID().equals(players.get(i).getUserID())) {
                     players.remove(i);
                     players.add(person);
+                    break;
                 }
             }
         }

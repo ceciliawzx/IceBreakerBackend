@@ -19,7 +19,6 @@ public class WordleService {
     @Autowired
     public WordleService(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
-        // answers.put("1234", "GET");
     }
 
     public boolean setAnswers(String roomCode, String answer) {

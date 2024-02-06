@@ -22,7 +22,6 @@ public class HangmanService {
     @Autowired
     public HangmanService(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
-        // setAnswers("1234", "GOOD");
     }
 
     public boolean setAnswers(String roomCode, String answer) {

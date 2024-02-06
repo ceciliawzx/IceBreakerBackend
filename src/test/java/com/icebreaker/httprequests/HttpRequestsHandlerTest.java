@@ -1,7 +1,6 @@
 package com.icebreaker.httprequests;
 
-import com.icebreaker.controllers.ChatController;
-import com.icebreaker.controllers.HttpRequestsHandler;
+import com.icebreaker.controllers.httphandlers.HttpRequestsHandler;
 import com.icebreaker.services.ChatService;
 import com.icebreaker.services.HangmanService;
 import com.icebreaker.services.WordleService;
@@ -23,7 +22,7 @@ public class HttpRequestsHandlerTest {
     @Test
     public void handlerCanReceiveRequestAndReply() {
         HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
-        HttpRequestsHandler handler = new HttpRequestsHandler(chatService, wordleService, hangmanService);
+        HttpRequestsHandler handler = new HttpRequestsHandler();
 
         // Test with a null message
         String responseNull = handler.handleRequest(null);

@@ -260,8 +260,12 @@ public class Room {
         return this.geoguesser.getStatus();
     }
 
-    public boolean checkSubmitted(String userID) {
-        return this.geoguesser.checkNotSubmitted(userID);
+    public boolean checkNotSubmitted(String userID) {
+        if (userID.equals(this.host.getUserID())) {
+            return this.geoguesser.getStatus().equals(GeoguesserStatus.PRE_CHOOSE);
+        } else {
+            return this.geoguesser.checkNotSubmitted(userID);
+        }
     }
 
     public List<Person> geoGuesserWinner() {
@@ -285,9 +289,5 @@ public class Room {
             }
         }
         return null;
-    }
-
-    public boolean checkPresenterNotSubmitted(String userID) {
-        return this.geoguesser.getStatus().equals(GeoguesserStatus.PRE_CHOOSE);
     }
 }

@@ -426,7 +426,7 @@ public class HttpRequestsHandler {
     @GetMapping("getUserGeoSubmission")
     public boolean getUserGeoSubmission(@RequestParam(name = "roomCode", required = true) String roomCode,
                                         @RequestParam(name = "userID", required = true) String userID) {
-        return !runner.checkUserNotSubmission(roomCode, userID);
+        return !runner.checkNotSubmission(roomCode, userID);
     }
 
     @PostMapping("/restartMockRoom")
@@ -438,11 +438,5 @@ public class HttpRequestsHandler {
     @GetMapping("/geoGuesserWinner")
     public List<Person> geoGuesserWinner(@RequestParam(name = "roomCode", required = true) String roomCode) {
         return runner.geoGuesserWinner(roomCode);
-    }
-
-    @GetMapping("/getPresenterGeoSubmission")
-    public boolean getPresenterGeoSubmission(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                             @RequestParam(name = "userID", required = true) String userID) {
-        return !runner.getPresenterGeoSubmission(roomCode, userID);
     }
 }

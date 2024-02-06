@@ -423,13 +423,13 @@ public class ServerRunner {
         }
     }
 
-    public boolean checkUserNotSubmission(String roomCode, String userID) {
+    public boolean checkNotSubmission(String roomCode, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
                 Room room = getRoom(roomCode);
-                return room.checkSubmitted(userID);
+                return room.checkNotSubmitted(userID);
             }
-            return false;
+            return true;
         }
     }
 
@@ -448,16 +448,6 @@ public class ServerRunner {
                 return room.geoGuesserWinner();
             }
             return null;
-        }
-    }
-
-    public boolean getPresenterGeoSubmission(String roomCode, String userID) {
-        synchronized (this) {
-            if (containsRoom(roomCode)) {
-                Room room = getRoom(roomCode);
-                return room.checkPresenterNotSubmitted(userID);
-            }
-            return true;
         }
     }
 }

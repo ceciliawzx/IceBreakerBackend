@@ -13,26 +13,26 @@ import java.util.*;
 
 @Service
 public class HangmanService {
-    private final Map<String, String> answers = new HashMap<String, String>();
-    private final Map<String, Character[]> guessedLetters = new HashMap<>();
-    private final Map<String, List<WordleStateCode>> letterStates = new HashMap<>();
+//    private final Map<String, String> answers = new HashMap<String, String>();
+//    private final Map<String, Character[]> guessedLetters = new HashMap<>();
+//    private final Map<String, List<WordleStateCode>> letterStates = new HashMap<>();
+    private final Map<String, HangmanData> gameData = new HashMap<>();
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
     public HangmanService(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
-        setAnswers("1234", "GOOD");
+        // setAnswers("1234", "GOOD");
     }
 
     public boolean setAnswers(String roomCode, String answer) {
-        if (!answers.containsKey(roomCode)) {
-            answers.put(roomCode, answer.toUpperCase());
-            guessedLetters.put(roomCode, new Character[answer.length()]);
+        if (!gameData.containsKey(roomCode)) {
             List<WordleStateCode> code = new ArrayList<>();
             for (int i = 0; i < 26; i++) {
                 code.add(WordleStateCode.UNCHECKED);
             }
-            letterStates.put(roomCode, code);
+            gameData.put(roomCode, new HangmanData(
+                    roomCode, answer.toUpperCase(), new Character[answer.length()], code, 0));
             System.out.println("Set Hangman Answer: " + roomCode + " " + answer.toUpperCase());
             return true;
         }
@@ -40,32 +40,32 @@ public class HangmanService {
     }
 
     public String getAnswer(String roomCode) {
-        return answers.get(roomCode);
+        return gameData.get(roomCode).getAnswer();
     }
 
     public boolean roomExist(String roomCode) {
-        return answers.containsKey(roomCode);
+        return gameData.containsKey(roomCode);
     }
 
     private List<Integer> checkLetter(String roomCode, Character guessLetter) {
         if (roomExist(roomCode)) {
+            HangmanData data = gameData.get(roomCode);
             String answer = getAnswer(roomCode);
             List<Integer> positions = new ArrayList<>();
             for (int i = 0; i < answer.length(); i++) {
                 if (guessLetter.equals(answer.charAt(i))) {
                     positions.add(i);
-                    guessedLetters.get(roomCode)[i] = guessLetter;
+                    data.getGuessedLetters()[i] = guessLetter;
                 }
             }
 
             if (positions.isEmpty()) {
-                letterStates.get(roomCode).set(guessLetter - 'A', WordleStateCode.GREY);
+                data.getLetterStates().set(guessLetter - 'A', WordleStateCode.GREY);
             } else {
-                letterStates.get(roomCode).set(guessLetter - 'A', WordleStateCode.GREEN);
+                data.getLetterStates().set(guessLetter - 'A', WordleStateCode.GREEN);
             }
             return positions.isEmpty() ? null : positions;
         }
-        letterStates.get(roomCode).set(guessLetter - 'A', WordleStateCode.GREY);
         return null;
     }
 
@@ -74,28 +74,43 @@ public class HangmanService {
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/hangman", backMessage);
     }
 
+    public boolean resetSession(String roomCode) {
+        if (gameData.containsKey(roomCode)) {
+            gameData.remove(roomCode);
+            return true;
+        }
+        return false;
+    }
+
     public void broadcastResult(String roomCode, HangmanMessage message) {
         Character guessLetter = message.getGuessLetter();
         List<Integer> correctPositions = checkLetter(roomCode, guessLetter);
-        boolean isCorrect = correctPositions != null;
-
-
+        boolean isThisLetterCorrect = correctPositions != null;
 
         message.setCorrectPositions(correctPositions);
-        message.setIsCorrect(isCorrect);
 
-        Character[] currentStages = guessedLetters.get(roomCode);
-        boolean isFinish = true;
+        HangmanData data = gameData.get(roomCode);
+
+        Character[] currentStages = data.getGuessedLetters();
+        boolean isWordCorrect = true;
         for (Character c : currentStages) {
             if (c == null) {
-                isFinish = false;
+                isWordCorrect = false;
                 break;
             }
         }
 
+        if (!isThisLetterCorrect) {
+            data.setCurrentWrongGuesses(data.getCurrentWrongGuesses() + 1);
+        }
+
+        boolean isFinish = data.getCurrentWrongGuesses() == data.MAX_WRONG_GUESSES || isWordCorrect;
+
+        message.setIsCorrect(isWordCorrect);
         message.setIsFinished(isFinish);
-        message.setAllLetterStat(letterStates.get(roomCode));
+        message.setAllLetterStat(data.getLetterStates());
         message.setCurrentStages(currentStages);
+        message.setCurrentWrongGuesses(data.getCurrentWrongGuesses());
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;
@@ -109,11 +124,9 @@ public class HangmanService {
         }
         System.out.println(json);
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/hangman", message);
-        if (isFinish) {
+        if (isWordCorrect) {
             System.out.println("Remove Hangman Answer: " + roomCode);
-            answers.remove(roomCode);
-            guessedLetters.remove(roomCode);
-            letterStates.remove(roomCode);
+            resetSession(roomCode);
         }
     }
 }

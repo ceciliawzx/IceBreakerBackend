@@ -18,7 +18,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -330,8 +329,10 @@ public class HttpRequestsHandler {
                 wordleService.returnToPresentingRoom(roomCode);
                 wordleService.resetSession(roomCode);
                 System.out.println("Reseting Wordle");
-            } else if (currentStat == RoomStatus.HANGINGMAN) {
+            } else if (currentStat == RoomStatus.HANGMAN) {
                 hangmanService.returnToPresentingRoom(roomCode);
+                hangmanService.resetSession(roomCode);
+                System.out.println("Reseting Hangman");
             }
             return "Success";
         }
@@ -421,8 +422,8 @@ public class HttpRequestsHandler {
     public boolean startHangman(@RequestParam(name = "roomCode", required = true) String roomCode,
                                      @RequestParam(name = "userID", required = true) String userID,
                                      @RequestParam(name = "field", required = true) String field) {
-//        System.out.println("Start Hangman: " + roomCode + " " + userID + " " + field);
-        if (runner.changeRoomStatus(roomCode, RoomStatus.HANGINGMAN)) {
+        // System.out.println("Start Hangman: " + roomCode + " " + userID + " " + field);
+        if (runner.changeRoomStatus(roomCode, RoomStatus.HANGMAN)) {
             String word = runner.getFieldValue(roomCode, userID, field);
             System.out.println("The hangman word is: " + word);
             return hangmanService.setAnswers(roomCode, word);

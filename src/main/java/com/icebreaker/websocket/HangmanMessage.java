@@ -19,4 +19,5 @@ public class HangmanMessage {
     private List<WordleStateCode> allLetterStat;
     private Boolean isFinished;
     private String roomCode;
+    private Integer currentWrongGuesses;
 }

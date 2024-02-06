@@ -439,4 +439,10 @@ public class HttpRequestsHandler {
     public List<Person> geoGuesserWinner(@RequestParam(name = "roomCode", required = true) String roomCode) {
         return runner.geoGuesserWinner(roomCode);
     }
+
+    @GetMapping("/getPresenterGeoSubmission")
+    public boolean getPresenterGeoSubmission(@RequestParam(name = "roomCode", required = true) String roomCode,
+                                             @RequestParam(name = "userID", required = true) String userID) {
+        return !runner.getPresenterGeoSubmission(roomCode, userID);
+    }
 }

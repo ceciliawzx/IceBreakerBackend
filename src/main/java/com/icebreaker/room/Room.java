@@ -286,4 +286,8 @@ public class Room {
         }
         return null;
     }
+
+    public boolean checkPresenterNotSubmitted(String userID) {
+        return this.geoguesser.getStatus().equals(GeoguesserStatus.PRE_CHOOSE);
+    }
 }

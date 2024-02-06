@@ -450,4 +450,14 @@ public class ServerRunner {
             return null;
         }
     }
+
+    public boolean getPresenterGeoSubmission(String roomCode, String userID) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                return room.checkPresenterNotSubmitted(userID);
+            }
+            return true;
+        }
+    }
 }

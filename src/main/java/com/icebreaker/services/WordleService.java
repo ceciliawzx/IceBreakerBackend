@@ -111,7 +111,7 @@ public class WordleService {
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", message);
         if (isCorrect || (message.getCurrentAttempt() == message.getTotalAttempt() && message.getIsCheck())) {
             System.out.println("Remove Answer: " + roomCode);
-            returnToPresentingRoom(roomCode);
+            resetSession(roomCode);
         }
     }
 }

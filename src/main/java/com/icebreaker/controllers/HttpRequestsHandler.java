@@ -322,11 +322,14 @@ public class HttpRequestsHandler {
 
     @PostMapping("/backToPresentRoom")
     public String backToPresentRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        System.out.println("Back To Presenting Room");
         RoomStatus currentStat = runner.getStatus(roomCode);
         if (runner.changeRoomStatus(roomCode, RoomStatus.PRESENTING)) {
             runner.setTargetInRoom(roomCode, null);
             if (currentStat == RoomStatus.WORDLING) {
                 wordleService.returnToPresentingRoom(roomCode);
+                wordleService.resetSession(roomCode);
+                System.out.println("Reseting Wordle");
             } else if (currentStat == RoomStatus.HANGINGMAN) {
                 hangmanService.returnToPresentingRoom(roomCode);
             }

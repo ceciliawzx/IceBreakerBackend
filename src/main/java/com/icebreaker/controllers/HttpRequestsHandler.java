@@ -449,4 +449,11 @@ public class HttpRequestsHandler {
         }
         return "Error";
     }
+
+    @GetMapping("/getTarget")
+    public String getTarget(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        Room room = runner.getRoom(roomCode);
+        System.out.println("getTarget: " + room.getTarget());
+        return room.getTarget();
+    }
 }

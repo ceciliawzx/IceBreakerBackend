@@ -31,7 +31,7 @@ public class Room {
     private RoomStatus roomStatus;
     @Getter
     @Setter
-    private String target;
+    private String target = "";
     @Getter
     @Setter
     private PresentRoomInfo presentRoomInfo;

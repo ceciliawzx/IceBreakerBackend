@@ -45,7 +45,7 @@ public class HttpRequestsHandler {
 
     @GetMapping("/myEndpoint")
     public String handleRequest(@RequestParam(name = "message", required = false) String message) {
-        System.out.println("My endPoint " + message);
+//        System.out.println("My endPoint " + message);
         return "Received message: " + message;
     }
 
@@ -75,7 +75,7 @@ public class HttpRequestsHandler {
             json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
         }
 
-        System.out.printf("Create Room: %s, %s, %s%n", name, usb.toString(), roomCode);
+//        System.out.printf("Create Room: %s, %s, %s%n", name, usb.toString(), roomCode);
 
         return runner.addRoom(newRoom, roomCode) ? json : "Room Creation Failed";
     }
@@ -102,7 +102,7 @@ public class HttpRequestsHandler {
             json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
         }
 
-        System.out.printf("Join Room: %s, %s, %s%n", name, usb.toString(), code);
+//        System.out.printf("Join Room: %s, %s, %s%n", name, usb.toString(), code);
 
         return runner.joinRoom(code, name, usb.toString()) ?
                 json :
@@ -111,7 +111,7 @@ public class HttpRequestsHandler {
 
     @DeleteMapping("/destroyRoom")
     public boolean handleDestroyRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        System.out.printf("Destroy Room: %s%n", roomCode);
+//        System.out.printf("Destroy Room: %s%n", roomCode);
         return runner.destroyRoom(roomCode);
     }
 
@@ -121,7 +121,7 @@ public class HttpRequestsHandler {
     @GetMapping("/isAdmin")
     public boolean isAdmin(@RequestParam("userID") String userID,
                            @RequestParam("roomCode") String roomCode) {
-        System.out.printf("Check Admin: %s, %s%n", userID, roomCode);
+//        System.out.printf("Check Admin: %s, %s%n", userID, roomCode);
         try {
             return runner.isAdmin(userID, roomCode);
         } catch (Exception e) {
@@ -133,7 +133,7 @@ public class HttpRequestsHandler {
     @GetMapping("/isPresenter")
     public boolean isPresenter(@RequestParam("userID") String userID,
                                @RequestParam("roomCode") String roomCode) {
-        System.out.printf("Check Presenter: %s, %s%n", userID, roomCode);
+//        System.out.printf("Check Presenter: %s, %s%n", userID, roomCode);
 
         try {
             return runner.isPresenter(userID, roomCode);
@@ -146,7 +146,7 @@ public class HttpRequestsHandler {
     @PostMapping(path = "/updatePerson", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public String updatePerson(@RequestBody Person person) {
-        System.out.printf("Update Person: %s, %s%n", person.getUserID(), person.getRoomCode());
+//        System.out.printf("Update Person: %s, %s%n", person.getUserID(), person.getRoomCode());
         if (runner.roomUpdateUser(person)) {
             return "Success";
         } else {
@@ -157,7 +157,7 @@ public class HttpRequestsHandler {
     @DeleteMapping("/kickPerson")
     public boolean kickPerson(@RequestParam(name = "userID", required = true) String userID,
                               @RequestParam(name = "roomCode", required = true) String roomCode) {
-        System.out.printf("Kick Person: %s, %s%n", userID, roomCode);
+//        System.out.printf("Kick Person: %s, %s%n", userID, roomCode);
         return runner.kickPerson(roomCode, userID);
     }
 
@@ -236,7 +236,7 @@ public class HttpRequestsHandler {
     /** Input Phase **/
     @PostMapping("/startInput")
     public String startInput(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        System.out.printf("Start Room: %s%n", roomCode);
+//        System.out.printf("Start Room: %s%n", roomCode);
         if (runner.serverStartRoom(roomCode)) {
             return "Success";
         }
@@ -246,7 +246,7 @@ public class HttpRequestsHandler {
     @GetMapping("/infoComplete")
     public boolean checkPlayerInfoComplete(@RequestParam(name = "roomCode", required = true) String roomCode,
                                            @RequestParam(name = "userID", required = true) String userID) {
-        System.out.printf("Info Complete: %s, %s%n", userID, roomCode);
+//        System.out.printf("Info Complete: %s, %s%n", userID, roomCode);
         return runner.checkPlayerInfoComplete(roomCode, userID);
     }
 
@@ -381,7 +381,7 @@ public class HttpRequestsHandler {
     public boolean startWordle(@RequestParam(name = "roomCode", required = true) String roomCode,
                                      @RequestParam(name = "userID", required = true) String userID,
                                      @RequestParam(name = "field", required = true) String field) {
-        System.out.println("Start Wordle: " + roomCode + " " + userID + " " + field);
+//        System.out.println("Start Wordle: " + roomCode + " " + userID + " " + field);
         if (runner.changeRoomStatus(roomCode, RoomStatus.WORDLING)) {
             String word = runner.getFieldValue(roomCode, userID, field);
             System.out.println("The wordle word is: " + word);
@@ -393,8 +393,8 @@ public class HttpRequestsHandler {
     @GetMapping("/getWordleInfo")
     public int getWordleInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
         if (wordleService.roomExist(roomCode)) {
-            System.out.println("The wordle word is: " + wordleService.getAnswer(roomCode));
-            System.out.println("With length: " + wordleService.getAnswer(roomCode).length());
+//            System.out.println("The wordle word is: " + wordleService.getAnswer(roomCode));
+//            System.out.println("With length: " + wordleService.getAnswer(roomCode).length());
             return wordleService.getAnswer(roomCode).length();
         }
         return -1;
@@ -403,8 +403,8 @@ public class HttpRequestsHandler {
     @GetMapping("/getWordleAnswer")
     public String getWordleAnswer(@RequestParam(name = "roomCode", required = true) String roomCode) {
         if (wordleService.roomExist(roomCode)) {
-            System.out.println("The word is: " + wordleService.getAnswer(roomCode));
-            System.out.println("With length: " + wordleService.getAnswer(roomCode).length());
+//            System.out.println("The word is: " + wordleService.getAnswer(roomCode));
+//            System.out.println("With length: " + wordleService.getAnswer(roomCode).length());
             return wordleService.getAnswer(roomCode);
         }
         return "Error";
@@ -421,7 +421,7 @@ public class HttpRequestsHandler {
     public boolean startHangman(@RequestParam(name = "roomCode", required = true) String roomCode,
                                      @RequestParam(name = "userID", required = true) String userID,
                                      @RequestParam(name = "field", required = true) String field) {
-        System.out.println("Start Hangman: " + roomCode + " " + userID + " " + field);
+//        System.out.println("Start Hangman: " + roomCode + " " + userID + " " + field);
         if (runner.changeRoomStatus(roomCode, RoomStatus.HANGINGMAN)) {
             String word = runner.getFieldValue(roomCode, userID, field);
             System.out.println("The hangman word is: " + word);
@@ -433,8 +433,8 @@ public class HttpRequestsHandler {
     @GetMapping("/getHangmanInfo")
     public int getHangmanInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
         if (hangmanService.roomExist(roomCode)) {
-            System.out.println("The hangman word is: " + hangmanService.getAnswer(roomCode));
-            System.out.println("With length: " + hangmanService.getAnswer(roomCode).length());
+//            System.out.println("The hangman word is: " + hangmanService.getAnswer(roomCode));
+//            System.out.println("With length: " + hangmanService.getAnswer(roomCode).length());
             return hangmanService.getAnswer(roomCode).length();
         }
         return -1;
@@ -443,8 +443,8 @@ public class HttpRequestsHandler {
     @GetMapping("/getHangmanAnswer")
     public String getHangmanAnswer(@RequestParam(name = "roomCode", required = true) String roomCode) {
         if (hangmanService.roomExist(roomCode)) {
-            System.out.println("The word is: " + hangmanService.getAnswer(roomCode));
-            System.out.println("With length: " + hangmanService.getAnswer(roomCode).length());
+//            System.out.println("The word is: " + hangmanService.getAnswer(roomCode));
+//            System.out.println("With length: " + hangmanService.getAnswer(roomCode).length());
             return hangmanService.getAnswer(roomCode);
         }
         return "Error";

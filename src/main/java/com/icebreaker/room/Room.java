@@ -147,7 +147,9 @@ public class Room {
     }
 
     public boolean addToPresentedList(Person newPresenter) {
-        presentedList.add(presenter);
+        if (checkPlayerInfoComplete(this.presenter.getUserID())) {
+            presentedList.add(presenter);
+        }
         this.presenter = newPresenter;
         return true;
     }

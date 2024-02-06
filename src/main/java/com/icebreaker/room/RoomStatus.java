@@ -9,5 +9,6 @@ public enum RoomStatus {
     WORDLING,
     GAMING,
     NON_EXIST,
-    HANGMAN
+    HANGMAN,
+    SHAREBOARD
 }

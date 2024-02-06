@@ -312,7 +312,7 @@ public class HttpRequestsHandler {
     @PostMapping("/backToWaitRoom")
     public String backToWaitRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
         if (runner.changeRoomStatus(roomCode, RoomStatus.WAITING)) {
-            runner.setTargetInRoom(roomCode, null);
+            runner.setTargetInRoom(roomCode, "");
             runner.addToPresentedList(roomCode);
             return "Success";
         }
@@ -324,7 +324,7 @@ public class HttpRequestsHandler {
         System.out.println("Back To Presenting Room");
         RoomStatus currentStat = runner.getStatus(roomCode);
         if (runner.changeRoomStatus(roomCode, RoomStatus.PRESENTING)) {
-            runner.setTargetInRoom(roomCode, null);
+            runner.setTargetInRoom(roomCode, "");
             if (currentStat == RoomStatus.WORDLING) {
                 wordleService.returnToPresentingRoom(roomCode);
                 wordleService.resetSession(roomCode);
@@ -387,6 +387,16 @@ public class HttpRequestsHandler {
             String word = runner.getFieldValue(roomCode, userID, field);
             System.out.println("The wordle word is: " + word);
             return wordleService.setAnswers(roomCode, word);
+        }
+        return false;
+    }
+
+    /** Shareboard **/
+    @PostMapping("/startShareBoard")
+    public boolean startShareBoard(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        if (runner.changeRoomStatus(roomCode, RoomStatus.SHAREBOARD)) {
+            runner.setTargetInRoom(roomCode, "");
+            return true;
         }
         return false;
     }

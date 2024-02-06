@@ -59,7 +59,7 @@ public class Geoguesser {
     }
 
     public boolean checkNotSubmitted(String userID) {
-        if (guesses.isEmpty()) {
+        if (guesses == null || guesses.isEmpty()) {
             return true;
         }
 

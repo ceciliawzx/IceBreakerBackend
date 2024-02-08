@@ -1,18 +1,19 @@
 package com.icebreaker.controllers;
 
-import com.icebreaker.room.Room;
-import com.icebreaker.room.RoomStatus;
+import com.icebreaker.services.DrawingService;
+import com.icebreaker.services.HangmanService;
 import com.icebreaker.services.TimerService;
+import com.icebreaker.services.WordleService;
 import com.icebreaker.websocket.TimerMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class TimerController {
 
     private final TimerService timerService;
+
 
     public TimerController(TimerService timerService) {
         this.timerService = timerService;
@@ -36,7 +37,7 @@ public class TimerController {
     @MessageMapping("/room/{roomCode}/stopTimer")
     public void stopTimer(@Payload TimerMessage timerMessage) {
         System.out.println("Server receives timerMessage in stopTimer: " + timerMessage);
-
         timerService.stopTimer(timerMessage);
     }
+
 }

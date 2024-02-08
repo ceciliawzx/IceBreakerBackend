@@ -1,6 +1,5 @@
 package com.icebreaker.services;
 
-import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.websocket.TimerMessage;
@@ -22,10 +21,16 @@ public class TimerService {
     private ScheduledFuture<?> future;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private int countdown;
-    private final ServerRunner serverRunner = ServerRunner.getInstance();
+    private final DrawingService drawingService;
+    private final WordleService wordleService;
+    private final HangmanService hangmanService;
+    private final ServerRunner runner = ServerRunner.getInstance();
 
-    public TimerService(SimpMessagingTemplate messagingTemplate) {
+    public TimerService(SimpMessagingTemplate messagingTemplate, DrawingService drawingService, WordleService wordleService, HangmanService hangmanService) {
         this.messagingTemplate = messagingTemplate;
+        this.drawingService = drawingService;
+        this.wordleService = wordleService;
+        this.hangmanService = hangmanService;
     }
 
     public void startTimer(TimerMessage timerMessage) {
@@ -56,19 +61,22 @@ public class TimerService {
     // Stop the timer and notify frontend to navigate back to present room (when payload == 0)
     public void stopTimer(TimerMessage timerMessage) {
         String roomCode = timerMessage.getRoomCode();
-        RoomStatus roomStatus = timerMessage.getRoomStatus();
+        RoomStatus currentStat = runner.getStatus(roomCode);
         if (future != null) {
             future.cancel(false);
-            // Set the roomStatus
-            Room room = serverRunner.getRoom(roomCode);
-            if (room != null) {
-                room.setRoomStatus(roomStatus);
-            } else {
-                System.out.printf("Error finding the room with roomCode %s", roomCode);
-            }
             // Broadcast navigation message or any other final action
             countdown = 0;
             messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", countdown);
+            // Send showModal message
+            if (currentStat == RoomStatus.PICTURING) {
+                drawingService.showModal(roomCode);
+            } else if (currentStat == RoomStatus.WORDLING) {
+                wordleService.showModal(roomCode);
+            } else if (currentStat == RoomStatus.HANGMAN) {
+                hangmanService.showModal(roomCode);
+            } else {
+                System.out.println("Uncaught case in stopTimer");
+            }
         }
     }
 }

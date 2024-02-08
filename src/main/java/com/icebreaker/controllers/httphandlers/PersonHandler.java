@@ -18,7 +18,7 @@ public class PersonHandler {
     @GetMapping("/isAdmin")
     public boolean isAdmin(@RequestParam("userID") String userID,
                            @RequestParam("roomCode") String roomCode) {
-        System.out.printf("Check Admin, User: %s, Room: %s%n", userID, roomCode);
+//        System.out.printf("Check Admin, User: %s, Room: %s%n", userID, roomCode);
         try {
             return runner.isAdmin(userID, roomCode);
         } catch (Exception e) {
@@ -30,7 +30,7 @@ public class PersonHandler {
     @GetMapping("/isPresenter")
     public boolean isPresenter(@RequestParam("userID") String userID,
                                @RequestParam("roomCode") String roomCode) {
-        System.out.printf("Check Presenter, User: %s, Room: %s%n", userID, roomCode);
+//        System.out.printf("Check Presenter, User: %s, Room: %s%n", userID, roomCode);
 
         try {
             return runner.isPresenter(userID, roomCode);
@@ -61,7 +61,7 @@ public class PersonHandler {
 
     @GetMapping("/getPlayers")
     public String getPlayersInARoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        System.out.println("Get players in room: " + roomCode);
+//        System.out.println("Get players in room: " + roomCode);
         ObjectMapper objectMapper = new ObjectMapper();
         if (runner.containsRoom(roomCode)) {
             Person admin = runner.getAdminInRoom(roomCode);
@@ -97,7 +97,7 @@ public class PersonHandler {
     @GetMapping("/getPlayer")
     public String getPlayerInARoom(@RequestParam(name = "roomCode", required = true) String roomCode,
                                    @RequestParam(name = "userID", required = true) String userID) {
-        System.out.println("Ger player: " + userID + " in Room: " + roomCode);
+//        System.out.println("Ger player: " + userID + " in Room: " + roomCode);
         ObjectMapper objectMapper = new ObjectMapper();
         if (!runner.containsRoom(roomCode)) {
             String jsonRoomError;

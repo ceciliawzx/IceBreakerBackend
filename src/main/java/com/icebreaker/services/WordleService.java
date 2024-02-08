@@ -2,6 +2,7 @@ package com.icebreaker.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.websocket.BackMessage;
+import com.icebreaker.websocket.ModalMessage;
 import com.icebreaker.websocket.WordleMessage;
 import com.icebreaker.websocket.WordleStateCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,12 @@ public class WordleService {
         BackMessage backMessage = new BackMessage(roomCode);
         System.out.println("Send return to presenting room wordle back message");
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", backMessage);
+    }
+
+    public void showModal(String roomCode) {
+        ModalMessage modalMessage = new ModalMessage(roomCode, true);
+        System.out.println("Send show modal message to Wordle Room");
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", modalMessage);
     }
 
     public void broadcastResult(String roomCode, WordleMessage message) {

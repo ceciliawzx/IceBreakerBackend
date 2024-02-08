@@ -1,10 +1,7 @@
 package com.icebreaker.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.icebreaker.websocket.BackMessage;
-import com.icebreaker.websocket.HangmanMessage;
-import com.icebreaker.websocket.WordleMessage;
-import com.icebreaker.websocket.WordleStateCode;
+import com.icebreaker.websocket.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -71,6 +68,12 @@ public class HangmanService {
     public void returnToPresentingRoom(String roomCode) {
         BackMessage backMessage = new BackMessage(roomCode);
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/hangman", backMessage);
+    }
+
+    public void showModal(String roomCode) {
+        ModalMessage modalMessage = new ModalMessage(roomCode, true);
+        System.out.println("Send show modal message to Hangman Room");
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/hangman", modalMessage);
     }
 
     public boolean resetSession(String roomCode) {

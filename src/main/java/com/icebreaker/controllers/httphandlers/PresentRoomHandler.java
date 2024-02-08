@@ -2,8 +2,10 @@ package com.icebreaker.controllers.httphandlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.room.PresentRoomInfo;
+import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.services.DrawingService;
 import com.icebreaker.services.HangmanService;
 import com.icebreaker.services.WordleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +18,14 @@ import java.util.Map;
 public class PresentRoomHandler {
     private final WordleService wordleService;
     private final HangmanService hangmanService;
+    private final DrawingService drawingService;
     private final ServerRunner runner = ServerRunner.getInstance();
 
     @Autowired
-    public PresentRoomHandler(WordleService wordleService, HangmanService hangmanService) {
+    public PresentRoomHandler(WordleService wordleService, HangmanService hangmanService, DrawingService drawingService) {
         this.wordleService = wordleService;
         this.hangmanService = hangmanService;
+        this.drawingService = drawingService;
     }
 
     @GetMapping("/getPresentRoomInfo")
@@ -50,19 +54,28 @@ public class PresentRoomHandler {
         return jsonError;
     }
 
-    @PostMapping(path="/setPresentRoomInfo", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("setPresentRoomInfo")
     public boolean setPresentRoomInfo(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                      @RequestBody PresentRoomInfo presentRoomInfo) {
-
-        System.out.println("SetPresentRoomInfo in room " + roomCode + " receives " + presentRoomInfo);
+                                      @RequestParam(name = "field", required = true) String field) {
+        Room room = runner.getRoom(roomCode);
+        PresentRoomInfo presentRoomInfo = room.getPresentRoomInfo();
+        switch (field) {
+            case "firstName" -> presentRoomInfo.setFirstName(true);
+            case "lastName" -> presentRoomInfo.setLastName(true);
+            case "country" -> presentRoomInfo.setCountry(true);
+            case "city" -> presentRoomInfo.setCity(true);
+            case "feeling" -> presentRoomInfo.setFeeling(true);
+            case "favFood" -> presentRoomInfo.setFavFood(true);
+            case "favActivity" -> presentRoomInfo.setFavActivity(true);
+        }
+        System.out.println("SetPresentRoomInfo in room " + roomCode + " receives ");
         return runner.setPresentRoomInfo(roomCode, presentRoomInfo);
     }
 
     @PostMapping("/backToPresentRoom")
     public String backToPresentRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        System.out.println("Back To Presenting Room");
         RoomStatus currentStat = runner.getStatus(roomCode);
+        System.out.println("Back To Presenting Room, curStat " + currentStat);
         if (runner.changeRoomStatus(roomCode, RoomStatus.PRESENTING)) {
             runner.setTargetInRoom(roomCode, "");
             if (currentStat == RoomStatus.WORDLING) {
@@ -73,9 +86,13 @@ public class PresentRoomHandler {
                 hangmanService.returnToPresentingRoom(roomCode);
                 hangmanService.resetSession(roomCode);
                 System.out.println("Reseting Hangman");
+            } else if (currentStat == RoomStatus.PICTURING) {
+                drawingService.returnToPresentingRoom(roomCode);
+                System.out.println("Reseting Pictionary");
             }
             return "Success";
         }
         return "Fail";
     }
+
 }

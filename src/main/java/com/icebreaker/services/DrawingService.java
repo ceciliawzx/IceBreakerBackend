@@ -1,6 +1,8 @@
 package com.icebreaker.services;
 
+import com.icebreaker.websocket.BackMessage;
 import com.icebreaker.websocket.DrawingMessage;
+import com.icebreaker.websocket.ModalMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -19,4 +21,17 @@ public class DrawingService {
         System.out.println("Broadcast drawing to room " + roomCode + ": " + message.toString());
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/drawing", message);
     }
+
+    public void returnToPresentingRoom(String roomCode) {
+        BackMessage backMessage = new BackMessage(roomCode);
+        System.out.println("Send return to presenting room back message to Pictionary Room");
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/drawing", backMessage);
+    }
+
+    public void showModal(String roomCode) {
+        ModalMessage  modalMessage = new ModalMessage(roomCode, true);
+        System.out.println("Send show modal message to Pictionary Room");
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/drawing", modalMessage);
+    }
+
 }

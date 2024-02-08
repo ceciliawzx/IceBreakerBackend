@@ -320,4 +320,8 @@ public class Room {
 
         return distances;
     }
+
+    public String presenterLocation() {
+        return this.geoguesser.getLocation();
+    }
 }

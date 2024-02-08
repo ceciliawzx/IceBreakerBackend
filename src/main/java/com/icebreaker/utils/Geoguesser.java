@@ -20,6 +20,8 @@ public class Geoguesser {
     private int score = 0;
     private double correctLatitude;
     private double correctLongitude;
+    @Getter
+    private String location;
 
     @Setter
     @Getter
@@ -35,6 +37,7 @@ public class Geoguesser {
         this.correctLatitude = Double.parseDouble(parts[0].trim());
         this.correctLongitude = Double.parseDouble(parts[1].trim());
         this.status = GeoguesserStatus.PLAYER_CHOOSE;
+        this.location = location;
         return true;
     }
 

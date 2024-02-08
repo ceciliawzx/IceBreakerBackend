@@ -471,4 +471,14 @@ public class ServerRunner {
             return null;
         }
     }
+
+    public String presenterLocation(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                return room.presenterLocation();
+            }
+            return "Room Not Found";
+        }
+    }
 }

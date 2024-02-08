@@ -461,4 +461,9 @@ public class HttpRequestsHandler {
 
         return jsonError;
     }
+
+    @GetMapping("/presenterLocation")
+    public String presenterLocation(@RequestParam(name = "roomCode", required = true) String roomCode) {
+        return runner.presenterLocation(roomCode);
+    }
 }

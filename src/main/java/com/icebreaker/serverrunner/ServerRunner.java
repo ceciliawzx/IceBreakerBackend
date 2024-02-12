@@ -393,10 +393,8 @@ public class ServerRunner {
     }
 
     public boolean restartMockRoom() {
-        if (destroyRoom("TEST")) {
-            this.mockRoom = createMockRoom();
-            return true;
-        }
-        return false;
+        destroyRoom("TEST");
+        this.mockRoom = createMockRoom();
+        return true;
     }
 }

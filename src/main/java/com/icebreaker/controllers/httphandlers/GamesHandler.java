@@ -13,9 +13,9 @@ public class GamesHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
 
     @GetMapping("/availableGames")
-    public List<GameType> availableGames(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                         @RequestParam(name = "userID", required = true) String userID,
-                                         @RequestParam(name = "fieldName", required = true) String fieldName) {
+    public List<GameType> availableGames(@RequestParam(name = "roomCode") String roomCode,
+                                         @RequestParam(name = "userID") String userID,
+                                         @RequestParam(name = "fieldName") String fieldName) {
         System.out.println("Get available in room:" + roomCode + " User:" + userID + " Field:" + fieldName);
         return runner.availableGames(roomCode, userID, fieldName);
     }

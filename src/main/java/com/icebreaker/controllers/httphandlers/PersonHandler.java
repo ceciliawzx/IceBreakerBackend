@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.person.Person;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -52,51 +53,29 @@ public class PersonHandler {
     }
 
     @DeleteMapping("/kickPerson")
-    public boolean kickPerson(@RequestParam(name = "userID", required = true) String userID,
-                              @RequestParam(name = "roomCode", required = true) String roomCode) {
+    public boolean kickPerson(@RequestParam(name = "userID") String userID,
+                              @RequestParam(name = "roomCode") String roomCode) {
         System.out.printf("Kick Person: %s, In room: %s%n", userID, roomCode);
         return runner.kickPerson(roomCode, userID);
     }
 
 
     @GetMapping("/getPlayers")
-    public String getPlayersInARoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String getPlayersInARoom(@RequestParam(name = "roomCode") String roomCode) {
 //        System.out.println("Get players in room: " + roomCode);
-        ObjectMapper objectMapper = new ObjectMapper();
         if (runner.containsRoom(roomCode)) {
             Person admin = runner.getAdminInRoom(roomCode);
             Person presenter = runner.getPresenterInRoom(roomCode);
             RoomStatus status = runner.getStatus(roomCode);
             List<Person> otherPlayers = runner.getOtherPlayersInRoom(roomCode);
-
-            String json;
-
-            try {
-                json = objectMapper.writeValueAsString(Map.of("admin", admin, "otherPlayers", otherPlayers, "presenter", presenter, "roomStatus", status));
-            } catch (Exception e) {
-                // Handle exception if JSON serialization fails
-                e.printStackTrace();
-                json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
-            }
-
-            return json;
+            return JsonUtils.returnJson(Map.of("admin", admin, "otherPlayers", otherPlayers, "presenter", presenter, "roomStatus", status), "Room not found");
         }
-
-        String jsonError;
-        try {
-            jsonError = objectMapper.writeValueAsString(Map.of("error", "Room not found"));
-        } catch (Exception e) {
-            // Handle exception if JSON serialization fails
-            e.printStackTrace();
-            jsonError = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
-        }
-
-        return jsonError;
+        return null;
     }
 
     @GetMapping("/getPlayer")
-    public String getPlayerInARoom(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                   @RequestParam(name = "userID", required = true) String userID) {
+    public String getPlayerInARoom(@RequestParam(name = "roomCode") String roomCode,
+                                   @RequestParam(name = "userID") String userID) {
 //        System.out.println("Ger player: " + userID + " in Room: " + roomCode);
         ObjectMapper objectMapper = new ObjectMapper();
         if (!runner.containsRoom(roomCode)) {

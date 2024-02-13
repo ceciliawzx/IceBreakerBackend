@@ -16,14 +16,14 @@ public class PresenterHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
 
     @PostMapping("/changePresenter")
-    public boolean changePresenter(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                   @RequestParam(name = "userID", required = true) String userID) {
+    public boolean changePresenter(@RequestParam(name = "roomCode") String roomCode,
+                                   @RequestParam(name = "userID") String userID) {
         System.out.println("Change Presenter in room: " + roomCode + " to User: " + userID);
         return runner.changePresenter(roomCode, userID);
     }
 
     @GetMapping("/notPresentedPeople")
-    public String getNotPresentedPeople(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String getNotPresentedPeople(@RequestParam(name = "roomCode") String roomCode) {
         System.out.println("Get not presented people in room: " + roomCode);
         List<Person> notPresentedPeople = runner.getNotPresentedPeople(roomCode);
         ObjectMapper objectMapper = new ObjectMapper();

@@ -1,6 +1,5 @@
 package com.icebreaker.controllers.httphandlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
@@ -9,10 +8,12 @@ import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.DrawingService;
 import com.icebreaker.services.HangmanService;
 import com.icebreaker.services.WordleService;
+import com.icebreaker.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+
 
 @RestController
 public class PresentRoomHandler {
@@ -29,34 +30,15 @@ public class PresentRoomHandler {
     }
 
     @GetMapping("/getPresentRoomInfo")
-    public String getPresentRoomInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String getPresentRoomInfo(@RequestParam(name = "roomCode") String roomCode) {
         System.out.println("Get Present Room Info, Room Code: " + roomCode);
-        ObjectMapper objectMapper = new ObjectMapper();
         PresentRoomInfo presentRoomInfo =  runner.getPresentRoomInfo(roomCode);
-        if (presentRoomInfo != null) {
-            String json;
-            try {
-                json = objectMapper.writeValueAsString(Map.of("presentRoomInfo", presentRoomInfo));
-            } catch (Exception e) {
-                e.printStackTrace();
-                json = "{\"error\": \"Serialization error\"}";
-            }
-            return json;
-        }
-        String jsonError;
-        try {
-            jsonError = objectMapper.writeValueAsString(Map.of("error", "error fetching presentRoomInfo"));
-        } catch (Exception e) {
-            // Handle exception if JSON serialization fails
-            e.printStackTrace();
-            jsonError = "{\"error\": \"Serialization error\"}";
-        }
-        return jsonError;
+        return JsonUtils.returnJson(Map.of("presentRoomInfo", presentRoomInfo), "Room not found");
     }
 
     @PostMapping("setPresentRoomInfo")
-    public boolean setPresentRoomInfo(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                      @RequestParam(name = "field", required = true) String field) {
+    public boolean setPresentRoomInfo(@RequestParam(name = "roomCode") String roomCode,
+                                      @RequestParam(name = "field") String field) {
         Room room = runner.getRoom(roomCode);
         PresentRoomInfo presentRoomInfo = room.getPresentRoomInfo();
         switch (field) {
@@ -73,7 +55,7 @@ public class PresentRoomHandler {
     }
 
     @PostMapping("/backToPresentRoom")
-    public String backToPresentRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String backToPresentRoom(@RequestParam(name = "roomCode") String roomCode) {
         RoomStatus currentStat = runner.getStatus(roomCode);
         System.out.println("Back To Presenting Room, curStat " + currentStat);
         if (runner.changeRoomStatus(roomCode, RoomStatus.PRESENTING)) {

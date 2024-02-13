@@ -15,6 +15,7 @@ import java.util.List;
 public class HangmanData {
     public final int MAX_WRONG_GUESSES = 6;
     private String roomCode;
+    private String fieldName;
     private String answer;
     private Character[] guessedLetters;
     private List<WordleStateCode> letterStates;

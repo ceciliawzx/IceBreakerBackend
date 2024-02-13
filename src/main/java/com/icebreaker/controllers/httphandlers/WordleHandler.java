@@ -22,9 +22,9 @@ public class WordleHandler {
     }
 
     @PostMapping("/startWordle")
-    public boolean startWordle(@RequestParam(name = "roomCode", required = true) String roomCode,
-                               @RequestParam(name = "userID", required = true) String userID,
-                               @RequestParam(name = "field", required = true) String field) {
+    public boolean startWordle(@RequestParam(name = "roomCode") String roomCode,
+                               @RequestParam(name = "userID") String userID,
+                               @RequestParam(name = "field") String field) {
         System.out.println("Start Wordle in room:" + roomCode + " User:" + userID + " Field:" + field);
         if (runner.changeRoomStatus(roomCode, RoomStatus.WORDLING)) {
             String word = runner.getFieldValue(roomCode, userID, field);
@@ -35,7 +35,7 @@ public class WordleHandler {
     }
 
     @GetMapping("/getWordleInfo")
-    public int getWordleInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public int getWordleInfo(@RequestParam(name = "roomCode") String roomCode) {
         if (wordleService.roomExist(roomCode)) {
             System.out.println("Get wordle info, the word is: " + wordleService.getAnswer(roomCode) +
                     " With length: " + wordleService.getAnswer(roomCode).getTargetWord().length());
@@ -45,11 +45,11 @@ public class WordleHandler {
     }
 
     @GetMapping("/getWordleAnswer")
-    public String getWordleAnswer(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String getWordleAnswer(@RequestParam(name = "roomCode") String roomCode) {
         if (wordleService.roomExist(roomCode)) {
             System.out.println("Get wordle answer, the answer is: " + wordleService.getAnswer(roomCode));
             Target target = wordleService.getAnswer(roomCode);
-            return JsonUtils.returnJson("target", target);
+            return JsonUtils.returnJson(Map.of("target", target), "Error fetching Wordle answer");
         }
         return "Error";
     }

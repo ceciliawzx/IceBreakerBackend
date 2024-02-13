@@ -1,6 +1,7 @@
 package com.icebreaker.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icebreaker.room.Target;
 import com.icebreaker.websocket.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -10,9 +11,7 @@ import java.util.*;
 
 @Service
 public class HangmanService {
-//    private final Map<String, String> answers = new HashMap<String, String>();
-//    private final Map<String, Character[]> guessedLetters = new HashMap<>();
-//    private final Map<String, List<WordleStateCode>> letterStates = new HashMap<>();
+
     private final Map<String, HangmanData> gameData = new HashMap<>();
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -21,22 +20,25 @@ public class HangmanService {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public boolean setAnswers(String roomCode, String answer) {
+    public boolean setAnswers(String roomCode, String answer, String fieldName) {
         if (!gameData.containsKey(roomCode)) {
             List<WordleStateCode> code = new ArrayList<>();
             for (int i = 0; i < 26; i++) {
                 code.add(WordleStateCode.UNCHECKED);
             }
             gameData.put(roomCode, new HangmanData(
-                    roomCode, answer.toUpperCase(), new Character[answer.length()], code, 0));
+                    roomCode, fieldName, answer.toUpperCase(), new Character[answer.length()], code, 0));
             System.out.println("Set Hangman Answer: " + roomCode + " " + answer.toUpperCase());
             return true;
         }
         return false;
     }
 
-    public String getAnswer(String roomCode) {
-        return gameData.get(roomCode).getAnswer();
+    public Target getAnswer(String roomCode) {
+        String fieldName = gameData.get(roomCode).getFieldName();
+        String answer = gameData.get(roomCode).getAnswer();
+        Target target = new Target(fieldName, answer);
+        return target;
     }
 
     public boolean roomExist(String roomCode) {
@@ -46,7 +48,7 @@ public class HangmanService {
     private List<Integer> checkLetter(String roomCode, Character guessLetter) {
         if (roomExist(roomCode)) {
             HangmanData data = gameData.get(roomCode);
-            String answer = getAnswer(roomCode);
+            String answer = getAnswer(roomCode).getTargetWord();
             List<Integer> positions = new ArrayList<>();
             for (int i = 0; i < answer.length(); i++) {
                 if (guessLetter.equals(answer.charAt(i))) {

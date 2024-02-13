@@ -377,17 +377,27 @@ public class ServerRunner {
         }
     }
 
-
-    public boolean setPresentRoomInfo(String roomCode, PresentRoomInfo presentRoomInfo) {
+    public boolean setPresentRoomInfo(String roomCode, String field) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
                 Room room = getRoom(roomCode);
+                PresentRoomInfo presentRoomInfo = room.getPresentRoomInfo();
+                switch (field) {
+                    case "firstName" -> presentRoomInfo.setFirstName(true);
+                    case "lastName" -> presentRoomInfo.setLastName(true);
+                    case "country" -> presentRoomInfo.setCountry(true);
+                    case "city" -> presentRoomInfo.setCity(true);
+                    case "feeling" -> presentRoomInfo.setFeeling(true);
+                    case "favFood" -> presentRoomInfo.setFavFood(true);
+                    case "favActivity" -> presentRoomInfo.setFavActivity(true);
+                }
                 room.setPresentRoomInfo(presentRoomInfo);
                 return true;
             }
             return false;
         }
     }
+
 
     public boolean restartMockRoom() {
         destroyRoom("TEST");

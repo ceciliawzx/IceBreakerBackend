@@ -12,7 +12,7 @@ public class WaitRoomHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
 
     @PostMapping("/backToWaitRoom")
-    public String backToWaitRoom(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String backToWaitRoom(@RequestParam(name = "roomCode") String roomCode) {
         System.out.println("Back to wait room: " + roomCode);
         if (runner.changeRoomStatus(roomCode, RoomStatus.WAITING)) {
             runner.setTargetInRoom(roomCode, new Target("", ""));

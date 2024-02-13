@@ -30,7 +30,6 @@ public class PresenterHandler {
 
         if (notPresentedPeople != null && !notPresentedPeople.isEmpty()) {
             String json;
-
             try {
                 json = objectMapper.writeValueAsString(Map.of("notPresentedPeople", notPresentedPeople));
             } catch (Exception e) {

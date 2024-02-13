@@ -1,19 +1,14 @@
 package com.icebreaker.room;
 
-import com.icebreaker.services.ChatService;
-import com.icebreaker.utils.Constants;
-import com.icebreaker.websocket.ChatMessage;
-import lombok.Getter;
+import lombok.*;
 import com.icebreaker.person.*;
-import lombok.NonNull;
-import lombok.Setter;
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
+
     private final int MAX_CAPACITY = 10;
     @Getter
     private final int roomNumber;
@@ -31,7 +26,7 @@ public class Room {
     private RoomStatus roomStatus;
     @Getter
     @Setter
-    private String target = "";
+    private Target target = new Target("", "");
     @Getter
     @Setter
     private PresentRoomInfo presentRoomInfo;

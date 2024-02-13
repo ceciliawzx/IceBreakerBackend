@@ -3,10 +3,7 @@ package com.icebreaker.serverrunner;
 import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
-import com.icebreaker.room.GameType;
-import com.icebreaker.room.PresentRoomInfo;
-import com.icebreaker.room.Room;
-import com.icebreaker.room.RoomStatus;
+import com.icebreaker.room.*;
 import com.icebreaker.utils.Constants;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
@@ -327,7 +324,7 @@ public class ServerRunner {
         }
     }
 
-    public boolean setTargetInRoom(String roomCode, String target) {
+    public boolean setTargetInRoom(String roomCode, Target target) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
                 getRoom(roomCode).setTarget(target);

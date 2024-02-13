@@ -1,10 +1,16 @@
 package com.icebreaker.controllers.httphandlers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.room.RoomStatus;
+import com.icebreaker.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.WordleService;
+import com.icebreaker.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 public class WordleHandler {
@@ -23,7 +29,7 @@ public class WordleHandler {
         if (runner.changeRoomStatus(roomCode, RoomStatus.WORDLING)) {
             String word = runner.getFieldValue(roomCode, userID, field);
             System.out.println("The wordle word is: " + word);
-            return wordleService.setAnswers(roomCode, word);
+            return wordleService.setAnswers(roomCode, field, word);
         }
         return false;
     }
@@ -32,8 +38,8 @@ public class WordleHandler {
     public int getWordleInfo(@RequestParam(name = "roomCode", required = true) String roomCode) {
         if (wordleService.roomExist(roomCode)) {
             System.out.println("Get wordle info, the word is: " + wordleService.getAnswer(roomCode) +
-                    " With length: " + wordleService.getAnswer(roomCode).length());
-            return wordleService.getAnswer(roomCode).length();
+                    " With length: " + wordleService.getAnswer(roomCode).getTargetWord().length());
+            return wordleService.getAnswer(roomCode).getTargetWord().length();
         }
         return -1;
     }
@@ -42,7 +48,8 @@ public class WordleHandler {
     public String getWordleAnswer(@RequestParam(name = "roomCode", required = true) String roomCode) {
         if (wordleService.roomExist(roomCode)) {
             System.out.println("Get wordle answer, the answer is: " + wordleService.getAnswer(roomCode));
-            return wordleService.getAnswer(roomCode);
+            Target target = wordleService.getAnswer(roomCode);
+            return JsonUtils.returnJson("target", target);
         }
         return "Error";
     }

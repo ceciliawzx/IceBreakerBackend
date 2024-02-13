@@ -2,6 +2,7 @@ package com.icebreaker.controllers;
 
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
+import com.icebreaker.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.ChatService;
 import com.icebreaker.websocket.ChatMessage;
@@ -30,9 +31,9 @@ public class ChatController {
         String roomCode = message.getRoomCode();
         if (serverRunner.getStatus(roomCode) == RoomStatus.PICTURING) {
             Room room = serverRunner.getRoom(roomCode);
-            String target = room.getTarget();
+            Target target = room.getTarget();
             // If the guess is correct, only broadcast who has guessed correct
-            if (target.equalsIgnoreCase(message.getContent())) {
+            if (target.getTargetWord().equalsIgnoreCase(message.getContent())) {
                 message.setContent(message.getSender() + " has guessed right!");
                 message.setSender("System");
                 // TODO: Somehow notify the frontend to change the display ig?

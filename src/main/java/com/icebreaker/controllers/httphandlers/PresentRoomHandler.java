@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
+import com.icebreaker.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.DrawingService;
 import com.icebreaker.services.HangmanService;
 import com.icebreaker.services.WordleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -77,7 +77,8 @@ public class PresentRoomHandler {
         RoomStatus currentStat = runner.getStatus(roomCode);
         System.out.println("Back To Presenting Room, curStat " + currentStat);
         if (runner.changeRoomStatus(roomCode, RoomStatus.PRESENTING)) {
-            runner.setTargetInRoom(roomCode, "");
+            // Reset target
+            runner.setTargetInRoom(roomCode, new Target("", ""));
             if (currentStat == RoomStatus.WORDLING) {
                 wordleService.returnToPresentingRoom(roomCode);
                 wordleService.resetSession(roomCode);
@@ -86,9 +87,9 @@ public class PresentRoomHandler {
                 hangmanService.returnToPresentingRoom(roomCode);
                 hangmanService.resetSession(roomCode);
                 System.out.println("Reseting Hangman");
-            } else if (currentStat == RoomStatus.PICTURING) {
+            } else if (currentStat == RoomStatus.PICTURING || currentStat == RoomStatus.SHAREBOARD) {
                 drawingService.returnToPresentingRoom(roomCode);
-                System.out.println("Reseting Pictionary");
+                System.out.println("Reseting Pictionary/Shareboard");
             }
             return "Success";
         }

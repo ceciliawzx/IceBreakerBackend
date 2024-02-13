@@ -68,7 +68,7 @@ public class TimerService {
             countdown = 0;
             messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", countdown);
             // Send showModal message
-            if (currentStat == RoomStatus.PICTURING) {
+            if (currentStat == RoomStatus.PICTURING || currentStat == RoomStatus.SHAREBOARD) {
                 drawingService.showModal(roomCode);
             } else if (currentStat == RoomStatus.WORDLING) {
                 wordleService.showModal(roomCode);

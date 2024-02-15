@@ -78,9 +78,12 @@ public class PersonHandler {
                                    @RequestParam(name = "userID") String userID) {
 //        System.out.println("Ger player: " + userID + " in Room: " + roomCode);
         if (!runner.containsRoom(roomCode)) {
-           return JsonUtils.returnRoomNotFoundJsonError();
+            return JsonUtils.returnRoomNotFoundJsonError();
         }
         Person person = runner.getOnePlayerInfo(roomCode, userID);
-        return JsonUtils.returnJson(Map.of("userInfo", person), JsonUtils.personNotFound);
+        if (person != null) {
+            return JsonUtils.returnJson(Map.of("userInfo", person), JsonUtils.personNotFound);
+        }
+        return JsonUtils.returnPersonNotFoundJsonError();
     }
 }

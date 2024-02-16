@@ -347,12 +347,7 @@ public class ServerRunner {
     public boolean addToPresentedList(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                if (!getNotPresentedPeople(roomCode).isEmpty()) {
-                    Person newPresenter = getNotPresentedPeople(roomCode).get(0);
-                    return getRoom(roomCode).addToPresentedList(newPresenter);
-                } else {
-                    return true;
-                }
+                return getRoom(roomCode).addToPresentedList();
             }
             return false;
         }

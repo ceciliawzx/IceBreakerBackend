@@ -86,4 +86,16 @@ public class PersonHandler {
         }
         return JsonUtils.returnPersonNotFoundJsonError();
     }
+
+    @GetMapping("/getPresenter")
+    public String getPresenterInARoom(@RequestParam(name = "roomCode") String roomCode) {
+        if (!runner.containsRoom(roomCode)) {
+            return JsonUtils.returnRoomNotFoundJsonError();
+        }
+        Person presenter = runner.getPresenterInRoom(roomCode);
+        if (presenter != null) {
+            return JsonUtils.returnJson(Map.of("presenter", presenter), JsonUtils.personNotFound);
+        }
+        return JsonUtils.returnPersonNotFoundJsonError();
+    }
 }

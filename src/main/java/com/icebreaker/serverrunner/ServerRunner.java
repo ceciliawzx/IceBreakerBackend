@@ -393,6 +393,20 @@ public class ServerRunner {
         }
     }
 
+    public boolean revealAllFields(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                room.setPresentRoomInfo(new PresentRoomInfo(
+                        true, true, true, true, true, true, true
+                ));
+                return true;
+            }
+            return false;
+        }
+    }
+
+
 
     public boolean restartMockRoom() {
         destroyRoom("TEST");

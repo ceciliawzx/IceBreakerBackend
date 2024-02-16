@@ -48,6 +48,13 @@ public class PresentRoomHandler {
         return runner.setPresentRoomInfo(roomCode, field);
     }
 
+    @PostMapping("revealAllPresentRoomInfo")
+    public boolean revealAllPresentRoomInfo(@RequestParam(name = "roomCode") String roomCode) {
+        System.out.println("revealAllPresentRoomInfo in room " + roomCode);
+        return runner.revealAllFields(roomCode);
+    }
+
+
     @PostMapping("/backToPresentRoom")
     public String backToPresentRoom(@RequestParam(name = "roomCode") String roomCode) {
         RoomStatus currentStat = runner.getStatus(roomCode);

@@ -26,8 +26,15 @@ public class HangmanService {
             for (int i = 0; i < 26; i++) {
                 code.add(WordleStateCode.UNCHECKED);
             }
+            Character[] currentStages = new Character[answer.length()];
+            for (int i = 0; i < answer.length(); i++) {
+                Character temp = answer.charAt(i);
+                if (!((temp >= 'a' && temp <= 'z') || (temp >= 'A' && temp <= 'Z'))) {
+                    currentStages[i] = temp;
+                }
+            }
             gameData.put(roomCode, new HangmanData(
-                    roomCode, fieldName, answer.toUpperCase(), new Character[answer.length()], code, 0));
+                    roomCode, fieldName, answer.toUpperCase(), currentStages, code, 0));
             System.out.println("Set Hangman Answer: " + roomCode + " " + answer.toUpperCase());
             return true;
         }

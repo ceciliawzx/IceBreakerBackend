@@ -28,13 +28,12 @@ public class HangmanService {
             }
             Character[] currentStages = new Character[answer.length()];
             for (int i = 0; i < answer.length(); i++) {
-                Character temp = answer.charAt(i);
+                char temp = answer.charAt(i);
                 if (!((temp >= 'a' && temp <= 'z') || (temp >= 'A' && temp <= 'Z'))) {
                     currentStages[i] = temp;
                 }
             }
-            gameData.put(roomCode, new HangmanData(
-                    roomCode, fieldName, answer.toUpperCase(), currentStages, code, 0));
+            gameData.put(roomCode, new HangmanData(roomCode, fieldName, answer.toUpperCase(), currentStages, code, 0));
             System.out.println("Set Hangman Answer: " + roomCode + " " + answer.toUpperCase());
             return true;
         }
@@ -44,8 +43,7 @@ public class HangmanService {
     public Target getAnswer(String roomCode) {
         String fieldName = gameData.get(roomCode).getFieldName();
         String answer = gameData.get(roomCode).getAnswer();
-        Target target = new Target(fieldName, answer);
-        return target;
+        return new Target(fieldName, answer);
     }
 
     public boolean roomExist(String roomCode) {

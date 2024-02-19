@@ -110,10 +110,4 @@ public class PersonHandler {
                               @RequestParam(name = "userID") String userID) {
         return runner.isNotified(roomCode, userID);
     }
-
-    @PostMapping("/acknowledgeNotification")
-    public boolean acknowledgeNotification(@RequestParam(name = "roomCode") String roomCode,
-                                           @RequestParam(name = "userID") String userID) {
-        return runner.acknowledgeNotification(roomCode, userID);
-    }
 }

@@ -406,7 +406,26 @@ public class ServerRunner {
         }
     }
 
+    public boolean notifyPeople(String roomCode, String userID) {
+        if (containsRoom(roomCode)) {
+            return getRoom(roomCode).notifyPeople(userID);
+        }
+        return false;
+    }
 
+    public boolean isNotified(String roomCode, String userID) {
+        if (containsRoom(roomCode)) {
+            return getRoom(roomCode).isNotified(userID);
+        }
+        return false;
+    }
+
+    public boolean acknowledgeNotification(String roomCode, String userID) {
+        if (containsRoom(roomCode)) {
+            return getRoom(roomCode).acknowledgeNotification(userID);
+        }
+        return false;
+    }
 
     public boolean restartMockRoom() {
         destroyRoom("TEST");

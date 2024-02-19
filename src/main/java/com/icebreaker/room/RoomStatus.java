@@ -10,5 +10,6 @@ public enum RoomStatus {
     GAMING,
     NON_EXIST,
     HANGMAN,
-    SHAREBOARD
+    SHAREBOARD,
+    ALL_PRESENTED
 }

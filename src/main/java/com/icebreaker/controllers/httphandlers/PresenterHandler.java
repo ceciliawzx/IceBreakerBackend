@@ -28,9 +28,10 @@ public class PresenterHandler {
         System.out.println("Get not presented people in room: " + roomCode);
         List<Person> notPresentedPeople = runner.getNotPresentedPeople(roomCode);
 
-        if (notPresentedPeople != null && !notPresentedPeople.isEmpty()) {
+        if (notPresentedPeople != null) {
             return JsonUtils.returnJson(Map.of("notPresentedPeople", notPresentedPeople), JsonUtils.unknownError);
         }
-        return JsonUtils.returnUnknownError();
+
+        return JsonUtils.returnJsonError("Room not found");
     }
 }

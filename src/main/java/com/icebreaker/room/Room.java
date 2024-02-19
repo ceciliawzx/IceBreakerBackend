@@ -153,11 +153,17 @@ public class Room {
 
     public List<Person> getNotPresentedPeople() {
         List<Person> difference = new ArrayList<>();
-        for (Person person : players) {
+        for (Person person : players.subList(1, players.size())) {
             if (!presentedList.contains(person)) {
                 difference.add(person);
             }
         }
+
+        if (difference.isEmpty()) {
+            this.roomStatus = RoomStatus.ALL_PRESENTED;
+        }
+
+        difference.add(this.host);
 
         return difference;
     }

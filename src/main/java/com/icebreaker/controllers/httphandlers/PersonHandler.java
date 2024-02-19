@@ -98,4 +98,22 @@ public class PersonHandler {
         }
         return JsonUtils.returnPersonNotFoundJsonError();
     }
+
+    @PostMapping("/pushNotification")
+    public boolean pushNotification(@RequestParam(name = "roomCode") String roomCode,
+                                    @RequestParam(name = "userID") String userID) {
+        return runner.notifyPeople(roomCode, userID);
+    }
+
+    @GetMapping("/isNotified")
+    public boolean isNotified(@RequestParam(name = "roomCode") String roomCode,
+                              @RequestParam(name = "userID") String userID) {
+        return runner.isNotified(roomCode, userID);
+    }
+
+    @PostMapping("/acknowledgeNotification")
+    public boolean acknowledgeNotification(@RequestParam(name = "roomCode") String roomCode,
+                                           @RequestParam(name = "userID") String userID) {
+        return runner.acknowledgeNotification(roomCode, userID);
+    }
 }

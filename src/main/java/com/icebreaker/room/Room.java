@@ -30,6 +30,7 @@ public class Room {
     @Getter
     @Setter
     private PresentRoomInfo presentRoomInfo;
+    private final List<String> notifyIDs = new ArrayList<>();
 
     public Room(int roomNumber, String roomCode, Admin host) {
         this.roomNumber = roomNumber;
@@ -235,5 +236,25 @@ public class Room {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public boolean notifyPeople(String userID) {
+        if (!notifyIDs.contains(userID)) {
+            notifyIDs.add(userID);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isNotified(String userID) {
+        return notifyIDs.contains(userID);
+    }
+
+    public boolean acknowledgeNotification(String userID) {
+        if (notifyIDs.contains(userID)) {
+            notifyIDs.remove(userID);
+            return true;
+        }
+        return false;
     }
 }

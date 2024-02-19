@@ -286,7 +286,7 @@ public class Room {
         return temp;
     }
 
-    public boolean acknowledgeNotification(String userID) {
+    private boolean acknowledgeNotification(String userID) {
         if (notifyIDs.contains(userID)) {
             notifyIDs.remove(userID);
             return true;

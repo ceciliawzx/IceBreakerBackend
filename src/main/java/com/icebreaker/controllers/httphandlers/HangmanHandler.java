@@ -34,13 +34,13 @@ public class HangmanHandler {
     }
 
     @GetMapping("/getHangmanInfo")
-    public int getHangmanInfo(@RequestParam(name = "roomCode") String roomCode) {
+    public Character[] getHangmanInfo(@RequestParam(name = "roomCode") String roomCode) {
         if (hangmanService.roomExist(roomCode)) {
             System.out.println("Get hangman info, the word is: " + hangmanService.getAnswer(roomCode) +
                     " With length: " + hangmanService.getAnswer(roomCode).getTargetWord().length());
-            return hangmanService.getAnswer(roomCode).getTargetWord().length();
+            return hangmanService.getCurrentStages(roomCode); // .getAnswer(roomCode).getTargetWord().length();
         }
-        return -1;
+        return null;
     }
 
     @GetMapping("/getHangmanAnswer")

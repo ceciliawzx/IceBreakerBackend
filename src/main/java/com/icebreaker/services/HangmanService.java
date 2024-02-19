@@ -46,6 +46,10 @@ public class HangmanService {
         return new Target(fieldName, answer);
     }
 
+    public Character[] getCurrentStages(String roomCode) {
+        return gameData.get(roomCode).getGuessedLetters();
+    }
+
     public boolean roomExist(String roomCode) {
         return gameData.containsKey(roomCode);
     }

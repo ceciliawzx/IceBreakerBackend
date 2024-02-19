@@ -276,7 +276,14 @@ public class Room {
     }
 
     public boolean isNotified(String userID) {
-        return notifyIDs.contains(userID);
+        boolean temp = notifyIDs.contains(userID);
+        if (temp) {
+            int count = 0;
+            while (!acknowledgeNotification(userID) && count < 100) {
+                count++;
+            }
+        }
+        return temp;
     }
 
     public boolean acknowledgeNotification(String userID) {

@@ -420,13 +420,6 @@ public class ServerRunner {
         return false;
     }
 
-    public boolean acknowledgeNotification(String roomCode, String userID) {
-        if (containsRoom(roomCode)) {
-            return getRoom(roomCode).acknowledgeNotification(userID);
-        }
-        return false;
-    }
-
     public boolean restartMockRoom() {
         destroyRoom("TEST");
         this.mockRoom = createMockRoom();

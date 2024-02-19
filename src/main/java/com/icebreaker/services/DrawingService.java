@@ -1,5 +1,7 @@
 package com.icebreaker.services;
 
+import com.icebreaker.room.Room;
+import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.websocket.BackMessage;
 import com.icebreaker.websocket.DrawingMessage;
 import com.icebreaker.websocket.ModalMessage;
@@ -7,14 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DrawingService {
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final ServerRunner runner;
 
     @Autowired
     public DrawingService(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
+        this.runner = ServerRunner.getInstance();
     }
 
     public void broadcastDrawing(String roomCode, DrawingMessage message) {
@@ -32,6 +38,16 @@ public class DrawingService {
         ModalMessage  modalMessage = new ModalMessage(roomCode, true);
         System.out.println("Send show modal message to Pictionary Room");
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/drawing", modalMessage);
+    }
+
+    public void addCorrectGuesser(String roomCode, String guesserId) {
+        Room room = runner.getRoom(roomCode);
+        List<String> correctlyGuessedPlayers = room.getCorrectlyGuessedPlayerIds();
+        if (correctlyGuessedPlayers.contains(guesserId)) return;
+        correctlyGuessedPlayers.add(guesserId);
+        if (room.allGuessed()) {
+            showModal(roomCode);
+        }
     }
 
 }

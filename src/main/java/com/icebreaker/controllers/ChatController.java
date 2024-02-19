@@ -30,14 +30,7 @@ public class ChatController {
         // When the RoomStatus changes to PICTURING, any message sent to server will be regarded as a guess
         String roomCode = message.getRoomCode();
         if (serverRunner.getStatus(roomCode) == RoomStatus.PICTURING) {
-            Room room = serverRunner.getRoom(roomCode);
-            Target target = room.getTarget();
-            // If the guess is correct, only broadcast who has guessed correct
-            if (target.getTargetWord().equalsIgnoreCase(message.getContent())) {
-                message.setContent(message.getSender() + " has guessed right!");
-                message.setSender("System");
-                // TODO: Somehow notify the frontend to change the display ig?
-            }
+            chatService.checkGuessWord(roomCode, message);
         } else {
             // Otherwise, don't do anything to the message
             System.out.println("handleMessage has been triggered, received message: " + message);

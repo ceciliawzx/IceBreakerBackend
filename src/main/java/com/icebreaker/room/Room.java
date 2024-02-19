@@ -18,6 +18,8 @@ public class Room {
     private final List<Person> players = new ArrayList<>(); // All players including the host. Host is at position 0
     private final List<Person> presentedList = new ArrayList<>();
     @Getter
+    private final List<String> correctlyGuessedPlayerIds = new ArrayList<>();
+    @Getter
     private final Admin host;
     @Getter
     private Person presenter;
@@ -236,6 +238,33 @@ public class Room {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public List<Person> getOtherPlayers() {
+        List<Person> res = new ArrayList<>();
+        for (Person player: players) {
+            if (!player.getUserID().equals(host.getUserID()) && !player.getUserID().equals(presenter.getUserID())) {
+                res.add(player);
+            }
+        }
+        return res;
+    }
+
+    public List<String> getOtherPlayersIds() {
+        List<String> res = new ArrayList<>();
+        for (Person player: getOtherPlayers()) {
+           res.add(player.getUserID());
+        }
+        return res;
+    }
+
+    public boolean allGuessed() {
+        for (String id: getOtherPlayersIds()) {
+            if (!correctlyGuessedPlayerIds.contains(id)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean notifyPeople(String userID) {

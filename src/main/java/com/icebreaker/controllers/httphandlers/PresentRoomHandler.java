@@ -1,7 +1,6 @@
 package com.icebreaker.controllers.httphandlers;
 
 import com.icebreaker.room.PresentRoomInfo;
-import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
@@ -14,7 +13,6 @@ import com.icebreaker.websocket.TimerMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Time;
 import java.util.Map;
 
 

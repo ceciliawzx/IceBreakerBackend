@@ -30,22 +30,21 @@ public class DrawingService {
 
     public void returnToPresentingRoom(String roomCode) {
         BackMessage backMessage = new BackMessage(roomCode);
+        // Reset guessedList
+        runner.resetGuessedList(roomCode);
         System.out.println("Send return to presenting room back message to Pictionary Room");
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/drawing", backMessage);
     }
 
     public void showModal(String roomCode) {
-        ModalMessage  modalMessage = new ModalMessage(roomCode, true);
+        ModalMessage modalMessage = new ModalMessage(roomCode, true);
         System.out.println("Send show modal message to Pictionary Room");
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/drawing", modalMessage);
     }
 
     public void addCorrectGuesser(String roomCode, String guesserId) {
-        Room room = runner.getRoom(roomCode);
-        List<String> correctlyGuessedPlayers = room.getCorrectlyGuessedPlayerIds();
-        if (correctlyGuessedPlayers.contains(guesserId)) return;
-        correctlyGuessedPlayers.add(guesserId);
-        if (room.allGuessed()) {
+        runner.addCorrectGuesser(roomCode, guesserId);
+        if (runner.allGuessed(roomCode)) {
             showModal(roomCode);
         }
     }

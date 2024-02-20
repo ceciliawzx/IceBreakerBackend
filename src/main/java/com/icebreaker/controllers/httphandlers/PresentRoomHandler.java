@@ -34,7 +34,7 @@ public class PresentRoomHandler {
 
     @GetMapping("/getPresentRoomInfo")
     public String getPresentRoomInfo(@RequestParam(name = "roomCode") String roomCode) {
-        System.out.println("Get Present Room Info, Room Code: " + roomCode);
+//        System.out.println("Get Present Room Info, Room Code: " + roomCode);
         PresentRoomInfo presentRoomInfo = runner.getPresentRoomInfo(roomCode);
         return JsonUtils.returnJson(Map.of("presentRoomInfo", presentRoomInfo), "Room not found");
     }

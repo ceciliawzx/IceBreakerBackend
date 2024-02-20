@@ -5,6 +5,7 @@ import com.icebreaker.person.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Room {
@@ -18,7 +19,7 @@ public class Room {
     private final List<Person> players = new ArrayList<>(); // All players including the host. Host is at position 0
     private final List<Person> presentedList = new ArrayList<>();
     @Getter
-    private final List<String> correctlyGuessedPlayerIds = new ArrayList<>();
+    private List<String> correctlyGuessedPlayerIds = new ArrayList<>();
     @Getter
     private final Admin host;
     @Getter
@@ -265,6 +266,7 @@ public class Room {
     }
 
     public boolean allGuessed() {
+        System.out.println("all guessed: other players, " + getOtherPlayersIds().toString() + "correctly guessed: " + correctlyGuessedPlayerIds.toString());
         for (String id: getOtherPlayersIds()) {
             if (!correctlyGuessedPlayerIds.contains(id)) {
                 return false;
@@ -298,5 +300,9 @@ public class Room {
             return true;
         }
         return false;
+    }
+
+    public void resetGuessedList() {
+        correctlyGuessedPlayerIds = new ArrayList<>();
     }
 }

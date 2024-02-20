@@ -75,7 +75,7 @@ public class TimerService {
             } else if (currentStat == RoomStatus.HANGMAN) {
                 hangmanService.showModal(roomCode);
             } else {
-                System.out.println("Uncaught case in stopTimer");
+                System.out.println("Uncaught case in stopTimer: " + currentStat);
             }
         }
     }

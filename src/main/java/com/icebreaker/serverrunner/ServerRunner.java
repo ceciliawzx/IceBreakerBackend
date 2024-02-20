@@ -407,22 +407,51 @@ public class ServerRunner {
     }
 
     public boolean notifyPeople(String roomCode, String userID) {
-        if (containsRoom(roomCode)) {
-            return getRoom(roomCode).notifyPeople(userID);
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                return getRoom(roomCode).notifyPeople(userID);
+            }
+            return false;
         }
-        return false;
     }
 
     public boolean isNotified(String roomCode, String userID) {
-        if (containsRoom(roomCode)) {
-            return getRoom(roomCode).isNotified(userID);
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                return getRoom(roomCode).isNotified(userID);
+            }
+            return false;
         }
-        return false;
     }
 
     public boolean restartMockRoom() {
-        destroyRoom("TEST");
-        this.mockRoom = createMockRoom();
-        return true;
+        synchronized (this) {
+            destroyRoom("TEST");
+            this.mockRoom = createMockRoom();
+            return true;
+        }
+    }
+
+    public void resetGuessedList(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                getRoom(roomCode).resetGuessedList();
+            }
+        }
+    }
+
+    public void addCorrectGuesser(String roomCode, String guesserId) {
+        synchronized (this) {
+            Room room = getRoom(roomCode);
+            List<String> correctlyGuessedPlayers = room.getCorrectlyGuessedPlayerIds();
+            if (correctlyGuessedPlayers.contains(guesserId)) return;
+            correctlyGuessedPlayers.add(guesserId);
+        }
+    }
+
+    public boolean allGuessed(String roomCode) {
+        synchronized (this) {
+            return getRoom(roomCode).allGuessed();
+        }
     }
 }

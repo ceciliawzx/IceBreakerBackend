@@ -15,7 +15,9 @@ public class WaitRoomHandler {
     public String backToWaitRoom(@RequestParam(name = "roomCode") String roomCode) {
         System.out.println("Back to wait room: " + roomCode);
         if (runner.changeRoomStatus(roomCode, RoomStatus.WAITING)) {
+            // Reset Target
             runner.setTargetInRoom(roomCode, new Target("", ""));
+            // add presented person to presentedList
             runner.addToPresentedList(roomCode);
             return "Success";
         }

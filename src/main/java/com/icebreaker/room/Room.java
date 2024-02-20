@@ -50,6 +50,9 @@ public class Room {
     }
 
     public boolean joinRoom(User user) {
+        if (roomStatus != RoomStatus.WAITING) {
+            return false;
+        }
         players.add(user);
         return true;
     }

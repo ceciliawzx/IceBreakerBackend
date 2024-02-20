@@ -166,8 +166,7 @@ public class ServerRunner {
     public boolean joinRoom(String roomCode, String nickname, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                getRoom(roomCode).joinRoom(new User(nickname, roomCode, userID));
-                return true;
+                return getRoom(roomCode).joinRoom(new User(nickname, roomCode, userID));
             }
             return false;
         }

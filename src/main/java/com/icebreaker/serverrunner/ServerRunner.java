@@ -7,6 +7,7 @@ import com.icebreaker.room.*;
 import com.icebreaker.utils.Constants;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -166,8 +167,7 @@ public class ServerRunner {
     public boolean joinRoom(String roomCode, String nickname, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                getRoom(roomCode).joinRoom(new User(nickname, roomCode, userID));
-                return true;
+                return getRoom(roomCode).joinRoom(new User(nickname, roomCode, userID));
             }
             return false;
         }
@@ -452,6 +452,17 @@ public class ServerRunner {
     public boolean allGuessed(String roomCode) {
         synchronized (this) {
             return getRoom(roomCode).allGuessed();
+        }
+    }
+
+    public boolean forceBackToAllPresentedRoom(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                room.setRoomStatus(RoomStatus.ALL_PRESENTED);
+                return true;
+            }
+            return false;
         }
     }
 }

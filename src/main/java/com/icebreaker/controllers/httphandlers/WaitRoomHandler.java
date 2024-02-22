@@ -23,4 +23,12 @@ public class WaitRoomHandler {
         }
         return "Fail";
     }
+
+    @PostMapping("/forceBackToAllPresentedRoom")
+    public String forceBackToAllPresentedRoom(@RequestParam(name = "roomCode") String roomCode) {
+        if (runner.forceBackToAllPresentedRoom(roomCode)) {
+            return "Success";
+        }
+        return "Fail";
+    }
 }

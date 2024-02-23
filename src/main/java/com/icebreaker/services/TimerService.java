@@ -36,7 +36,6 @@ public class TimerService {
     public void startTimer(TimerMessage timerMessage) {
         countdown = timerMessage.getSeconds();
         String roomCode = timerMessage.getRoomCode();
-        RoomStatus roomStatus = timerMessage.getRoomStatus();
         if (future != null) {
             future.cancel(false);
         }
@@ -64,19 +63,24 @@ public class TimerService {
         RoomStatus currentStat = runner.getStatus(roomCode);
         if (future != null) {
             future.cancel(false);
-            // Broadcast navigation message or any other final action
+            // Broadcast showModal message
             countdown = 0;
             messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", countdown);
             // Send showModal message
-            if (currentStat == RoomStatus.PICTURING || currentStat == RoomStatus.SHAREBOARD) {
+//            if (currentStat == RoomStatus.PICTURING || currentStat == RoomStatus.SHAREBOARD) {
                 drawingService.showModal(roomCode);
-            } else if (currentStat == RoomStatus.WORDLING) {
-                wordleService.showModal(roomCode);
-            } else if (currentStat == RoomStatus.HANGMAN) {
-                hangmanService.showModal(roomCode);
-            } else {
-                System.out.println("Uncaught case in stopTimer: " + currentStat);
-            }
+//            } else if (currentStat == RoomStatus.WORDLING) {
+//                wordleService.showModal(roomCode);
+//            } else if (currentStat == RoomStatus.HANGMAN) {
+//                hangmanService.showModal(roomCode);
+//            } else if (currentStat == RoomStatus.PRESENTING) {
+//            } else {
+//                System.out.println("Uncaught case in stopTimer: " + currentStat);
+//            }
         }
+    }
+
+    public void resetTimer() {
+        if (future != null) future.cancel(false);
     }
 }

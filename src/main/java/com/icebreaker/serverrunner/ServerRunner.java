@@ -465,4 +465,15 @@ public class ServerRunner {
             return false;
         }
     }
+
+    public boolean resetPresentRoomInfo(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                room.resetPresentRoomInfo();
+                return true;
+            }
+            return false;
+        }
+    }
 }

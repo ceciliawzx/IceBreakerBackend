@@ -25,7 +25,6 @@ public class PresenterHandler {
 
     @GetMapping("/notPresentedPeople")
     public String getNotPresentedPeople(@RequestParam(name = "roomCode") String roomCode) {
-        System.out.println("Get not presented people in room: " + roomCode);
         List<Person> notPresentedPeople = runner.getNotPresentedPeople(roomCode);
 
         if (notPresentedPeople != null) {

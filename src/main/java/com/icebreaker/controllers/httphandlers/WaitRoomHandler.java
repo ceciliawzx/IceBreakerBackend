@@ -19,7 +19,8 @@ public class WaitRoomHandler {
             runner.setTargetInRoom(roomCode, new Target("", ""));
             // add presented person to presentedList
             runner.addToPresentedList(roomCode);
-            return "Success";
+            // Reset presentRoomInfo when back to WaitRoom
+            return runner.resetPresentRoomInfo(roomCode) ? "Success" : "Fail";
         }
         return "Fail";
     }

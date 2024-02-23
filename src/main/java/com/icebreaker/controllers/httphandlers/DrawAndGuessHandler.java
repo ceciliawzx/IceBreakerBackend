@@ -30,9 +30,7 @@ public class DrawAndGuessHandler {
 
     @GetMapping("/getTarget")
     public String getTarget(@RequestParam(name = "roomCode") String roomCode) {
-        System.out.println("Get target in room: " + roomCode);
         Room room = runner.getRoom(roomCode);
-        System.out.println("getTarget: " + room.getTarget());
         Target target = room.getTarget();
         return JsonUtils.returnJson(Map.of("target", target), "Error fetching target of a room");
     }

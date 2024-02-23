@@ -96,13 +96,11 @@ public class Room {
     }
 
     public Person getPlayer(String userID) {
-        System.out.println(userID);
         for (Person p : players) {
             if (userID.equals(p.getUserID())) {
                 return p;
             }
         }
-        System.out.println("Fail");
         return null;
     }
 
@@ -141,7 +139,7 @@ public class Room {
             if (person.getUserID().equals(userID)) {
                 presenter = person;
                 // Reset presentRoomInfo when change a presenter
-                presentRoomInfo = new PresentRoomInfo();
+                resetPresentRoomInfo();
                 return true;
             }
         }
@@ -305,5 +303,10 @@ public class Room {
 
     public void resetGuessedList() {
         correctlyGuessedPlayerIds = new ArrayList<>();
+    }
+
+    public void resetPresentRoomInfo() {
+        System.out.println("Resetting presentRoomInfo in room " + roomCode);
+        this.presentRoomInfo = new PresentRoomInfo();
     }
 }

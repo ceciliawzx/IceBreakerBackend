@@ -72,10 +72,8 @@ public class PresentRoomHandler {
                 drawingService.returnToPresentingRoom(roomCode);
                 System.out.println("Reseting Pictionary/Shareboard");
             }
-
             // Reset Timer when return to present room
-            TimerMessage timerMessage = new TimerMessage(roomCode, RoomStatus.PRESENTING, 0);
-            timerService.startTimer(timerMessage);
+            timerService.resetTimer();
 
             return "Success";
         }

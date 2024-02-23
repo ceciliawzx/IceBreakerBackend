@@ -67,16 +67,16 @@ public class TimerService {
             countdown = 0;
             messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", countdown);
             // Send showModal message
-//            if (currentStat == RoomStatus.PICTURING || currentStat == RoomStatus.SHAREBOARD) {
+            if (currentStat == RoomStatus.PICTURING || currentStat == RoomStatus.SHAREBOARD) {
                 drawingService.showModal(roomCode);
-//            } else if (currentStat == RoomStatus.WORDLING) {
-//                wordleService.showModal(roomCode);
-//            } else if (currentStat == RoomStatus.HANGMAN) {
-//                hangmanService.showModal(roomCode);
-//            } else if (currentStat == RoomStatus.PRESENTING) {
-//            } else {
-//                System.out.println("Uncaught case in stopTimer: " + currentStat);
-//            }
+            } else if (currentStat == RoomStatus.WORDLING) {
+                wordleService.showModal(roomCode);
+            } else if (currentStat == RoomStatus.HANGMAN) {
+                hangmanService.showModal(roomCode);
+            } else if (currentStat == RoomStatus.PRESENTING) {
+            } else {
+                System.out.println("Uncaught case in stopTimer: " + currentStat);
+            }
         }
     }
 

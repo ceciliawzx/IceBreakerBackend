@@ -3,6 +3,7 @@ package com.icebreaker.serverrunner;
 import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
+
 import com.icebreaker.room.GameType;
 import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.room.Room;
@@ -11,8 +12,7 @@ import com.icebreaker.utils.GeoguesserStatus;
 import com.icebreaker.utils.Constants;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
-import org.glassfish.grizzly.utils.Pair;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.icebreaker.room.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -172,8 +172,7 @@ public class ServerRunner {
     public boolean joinRoom(String roomCode, String nickname, String userID) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                getRoom(roomCode).joinRoom(new User(nickname, roomCode, userID));
-                return true;
+                return getRoom(roomCode).joinRoom(new User(nickname, roomCode, userID));
             }
             return false;
         }
@@ -330,7 +329,7 @@ public class ServerRunner {
         }
     }
 
-    public boolean setTargetInRoom(String roomCode, String target) {
+    public boolean setTargetInRoom(String roomCode, Target target) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
                 getRoom(roomCode).setTarget(target);
@@ -363,12 +362,7 @@ public class ServerRunner {
     public boolean addToPresentedList(String roomCode) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                if (!getNotPresentedPeople(roomCode).isEmpty()) {
-                    Person newPresenter = getNotPresentedPeople(roomCode).get(0);
-                    return getRoom(roomCode).addToPresentedList(newPresenter);
-                } else {
-                    return true;
-                }
+                return getRoom(roomCode).addToPresentedList();
             }
             return false;
         }
@@ -393,10 +387,20 @@ public class ServerRunner {
         }
     }
 
-    public boolean setPresentRoomInfo(String roomCode, PresentRoomInfo presentRoomInfo) {
+    public boolean setPresentRoomInfo(String roomCode, String field) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
                 Room room = getRoom(roomCode);
+                PresentRoomInfo presentRoomInfo = room.getPresentRoomInfo();
+                switch (field) {
+                    case "firstName" -> presentRoomInfo.setFirstName(true);
+                    case "lastName" -> presentRoomInfo.setLastName(true);
+                    case "country" -> presentRoomInfo.setCountry(true);
+                    case "city" -> presentRoomInfo.setCity(true);
+                    case "feeling" -> presentRoomInfo.setFeeling(true);
+                    case "favFood" -> presentRoomInfo.setFavFood(true);
+                    case "favActivity" -> presentRoomInfo.setFavActivity(true);
+                }
                 room.setPresentRoomInfo(presentRoomInfo);
                 return true;
             }
@@ -420,6 +424,28 @@ public class ServerRunner {
                 Room room = getRoom(roomCode);
                 return room.setLocation(location, userID);
             }
+        }
+        return false;
+    }
+
+    public boolean revealAllFields(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                room.setPresentRoomInfo(new PresentRoomInfo(
+                        true, true, true, true, true, true, true
+                ));
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public boolean notifyPeople(String roomCode, String userID) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                return getRoom(roomCode).notifyPeople(userID);
+            }
             return false;
         }
     }
@@ -434,12 +460,66 @@ public class ServerRunner {
         }
     }
 
+    public boolean isNotified(String roomCode, String userID) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                return getRoom(roomCode).isNotified(userID);
+            }
+            return false;
+        }
+    }
+
     public boolean restartMockRoom() {
-        if (destroyRoom("TEST")) {
+        synchronized (this) {
+            destroyRoom("TEST");
             this.mockRoom = createMockRoom();
             return true;
         }
-        return false;
+    }
+
+    public void resetGuessedList(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                getRoom(roomCode).resetGuessedList();
+            }
+        }
+    }
+
+    public void addCorrectGuesser(String roomCode, String guesserId) {
+        synchronized (this) {
+            Room room = getRoom(roomCode);
+            List<String> correctlyGuessedPlayers = room.getCorrectlyGuessedPlayerIds();
+            if (correctlyGuessedPlayers.contains(guesserId)) return;
+            correctlyGuessedPlayers.add(guesserId);
+        }
+    }
+
+    public boolean allGuessed(String roomCode) {
+        synchronized (this) {
+            return getRoom(roomCode).allGuessed();
+        }
+    }
+
+    public boolean forceBackToAllPresentedRoom(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                room.setRoomStatus(RoomStatus.ALL_PRESENTED);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public boolean resetPresentRoomInfo(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                room.resetPresentRoomInfo();
+                return true;
+            }
+            return false;
+        }
     }
 
     public List<Person> geoGuesserWinner(String roomCode) {

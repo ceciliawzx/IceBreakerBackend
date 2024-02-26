@@ -1,6 +1,5 @@
 package com.icebreaker.room;
 
-import com.icebreaker.services.ChatService;
 import com.icebreaker.utils.Geoguesser;
 import com.icebreaker.utils.GeoguesserStatus;
 import lombok.Getter;
@@ -10,9 +9,11 @@ import org.glassfish.grizzly.utils.Pair;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Room {
+
     private final int MAX_CAPACITY = 10;
     @Getter
     private final int roomNumber;
@@ -22,6 +23,8 @@ public class Room {
     private final List<Person> players = new ArrayList<>(); // All players including the host. Host is at position 0
     private final List<Person> presentedList = new ArrayList<>();
     @Getter
+    private List<String> correctlyGuessedPlayerIds = new ArrayList<>();
+    @Getter
     private final Admin host;
     @Getter
     private Person presenter;
@@ -30,11 +33,12 @@ public class Room {
     private RoomStatus roomStatus;
     @Getter
     @Setter
-    private String target;
+    private Target target = new Target("", "");
     @Getter
     @Setter
     private PresentRoomInfo presentRoomInfo;
     private Geoguesser geoguesser;
+    private final List<String> notifyIDs = new ArrayList<>();
 
     public Room(int roomNumber, String roomCode, Admin host) {
         this.roomNumber = roomNumber;
@@ -52,6 +56,9 @@ public class Room {
     }
 
     public boolean joinRoom(User user) {
+        if (roomStatus != RoomStatus.WAITING) {
+            return false;
+        }
         players.add(user);
         return true;
     }
@@ -79,6 +86,7 @@ public class Room {
                 if (person.getUserID().equals(players.get(i).getUserID())) {
                     players.remove(i);
                     players.add(person);
+                    break;
                 }
             }
         }
@@ -94,13 +102,11 @@ public class Room {
     }
 
     public Person getPlayer(String userID) {
-        System.out.println(userID);
         for (Person p : players) {
             if (userID.equals(p.getUserID())) {
                 return p;
             }
         }
-        System.out.println("Fail");
         return null;
     }
 
@@ -139,16 +145,17 @@ public class Room {
             if (person.getUserID().equals(userID)) {
                 presenter = person;
                 // Reset presentRoomInfo when change a presenter
-                presentRoomInfo = new PresentRoomInfo();
+                resetPresentRoomInfo();
                 return true;
             }
         }
         return false;
     }
 
-    public boolean addToPresentedList(Person newPresenter) {
-        presentedList.add(presenter);
-        this.presenter = newPresenter;
+    public boolean addToPresentedList() {
+        if (checkPlayerInfoComplete(this.presenter.getUserID())) {
+            presentedList.add(presenter);
+        }
         return true;
     }
 
@@ -158,6 +165,10 @@ public class Room {
             if (!presentedList.contains(person)) {
                 difference.add(person);
             }
+        }
+
+        if (difference.isEmpty()) {
+            this.roomStatus = RoomStatus.ALL_PRESENTED;
         }
 
         return difference;
@@ -323,5 +334,69 @@ public class Room {
 
     public String presenterLocation() {
         return this.geoguesser.getLocation();
+    }
+
+    public List<Person> getOtherPlayers() {
+        List<Person> res = new ArrayList<>();
+        for (Person player: players) {
+            if (!player.getUserID().equals(host.getUserID()) && !player.getUserID().equals(presenter.getUserID())) {
+                res.add(player);
+            }
+        }
+        return res;
+    }
+
+    public List<String> getOtherPlayersIds() {
+        List<String> res = new ArrayList<>();
+        for (Person player: getOtherPlayers()) {
+           res.add(player.getUserID());
+        }
+        return res;
+    }
+
+    public boolean allGuessed() {
+        System.out.println("all guessed: other players, " + getOtherPlayersIds().toString() + "correctly guessed: " + correctlyGuessedPlayerIds.toString());
+        for (String id: getOtherPlayersIds()) {
+            if (!correctlyGuessedPlayerIds.contains(id)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean notifyPeople(String userID) {
+        if (!notifyIDs.contains(userID)) {
+            notifyIDs.add(userID);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isNotified(String userID) {
+        boolean temp = notifyIDs.contains(userID);
+        if (temp) {
+            int count = 0;
+            while (!acknowledgeNotification(userID) && count < 100) {
+                count++;
+            }
+        }
+        return temp;
+    }
+
+    private boolean acknowledgeNotification(String userID) {
+        if (notifyIDs.contains(userID)) {
+            notifyIDs.remove(userID);
+            return true;
+        }
+        return false;
+    }
+
+    public void resetGuessedList() {
+        correctlyGuessedPlayerIds = new ArrayList<>();
+    }
+
+    public void resetPresentRoomInfo() {
+        System.out.println("Resetting presentRoomInfo in room " + roomCode);
+        this.presentRoomInfo = new PresentRoomInfo();
     }
 }

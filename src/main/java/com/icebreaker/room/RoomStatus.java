@@ -8,5 +8,8 @@ public enum RoomStatus {
     GEO_GUESSING,
     WORDLING,
     GAMING,
-    NON_EXIST
+    NON_EXIST,
+    HANGMAN,
+    SHAREBOARD,
+    ALL_PRESENTED
 }

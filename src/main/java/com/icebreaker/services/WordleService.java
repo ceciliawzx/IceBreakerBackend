@@ -1,6 +1,9 @@
 package com.icebreaker.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icebreaker.room.Target;
+import com.icebreaker.websocket.BackMessage;
+import com.icebreaker.websocket.ModalMessage;
 import com.icebreaker.websocket.WordleMessage;
 import com.icebreaker.websocket.WordleStateCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,19 +14,18 @@ import java.util.*;
 
 @Service
 public class WordleService {
-    private final Map<String, String> answers = new HashMap<String, String>();
+    private final Map<String, Target> answers = new HashMap<>();
     private final Map<String, List<WordleStateCode>> letterStates = new HashMap<>();
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
     public WordleService(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
-        // answers.put("1234", "GET");
     }
 
-    public boolean setAnswers(String roomCode, String answer) {
+    public boolean setAnswers(String roomCode, String fieldName, String answer) {
         if (!answers.containsKey(roomCode)) {
-            answers.put(roomCode, answer.toUpperCase());
+            answers.put(roomCode, new Target(fieldName, answer.toUpperCase()));
             System.out.println("Set Answer: " + roomCode + " " + answer.toUpperCase());
             List<WordleStateCode> code = new ArrayList<>();
             for (int i = 0; i < 26; i++) {
@@ -35,12 +37,21 @@ public class WordleService {
         return false;
     }
 
-    public String getAnswer(String roomCode) {
+    public Target getAnswer(String roomCode) {
         return answers.get(roomCode);
     }
 
     public boolean roomExist(String roomCode) {
         return answers.containsKey(roomCode);
+    }
+
+    public boolean resetSession(String roomCode) {
+        if (answers.containsKey(roomCode)) {
+            answers.remove(roomCode);
+            letterStates.remove(roomCode);
+            return true;
+        }
+        return false;
     }
 
     private boolean checkCorrectness(String roomCode, WordleMessage message) {
@@ -49,13 +60,14 @@ public class WordleService {
             List<List<WordleMessage.WordleLetter>> guesses = message.getLetters();
             int currentRound = message.getCurrentAttempt();
             List<WordleMessage.WordleLetter> guess = guesses.get(currentRound);
-            String answer = answers.get(roomCode);
-            for (int i = 0; i < answer.length(); i++) {
+            Target answer = answers.get(roomCode);
+            String answerWord = answer.getTargetWord();
+            for (int i = 0; i < answerWord.length(); i++) {
                 Character currentChar = guess.get(i).getLetter().charAt(0);
-                if (currentChar.equals(answer.charAt(i))) {
+                if (currentChar.equals(answerWord.charAt(i))) {
                     guess.get(i).setState(WordleStateCode.GREEN);
                     letterStates.get(roomCode).set(currentChar - 'A', WordleStateCode.GREEN);
-                } else if (answer.contains(currentChar.toString())) {
+                } else if (answerWord.contains(currentChar.toString())) {
                     guess.get(i).setState(WordleStateCode.YELLOW);
                     if (!letterStates.get(roomCode).get(currentChar - 'A').equals(WordleStateCode.GREEN)) {
                         letterStates.get(roomCode).set(currentChar - 'A', WordleStateCode.YELLOW);
@@ -76,6 +88,18 @@ public class WordleService {
         return isCorrect;
     }
 
+    public void returnToPresentingRoom(String roomCode) {
+        BackMessage backMessage = new BackMessage(roomCode);
+        System.out.println("Send return to presenting room wordle back message");
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", backMessage);
+    }
+
+    public void showModal(String roomCode) {
+        ModalMessage modalMessage = new ModalMessage(roomCode, true);
+        System.out.println("Send show modal message to Wordle Room");
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", modalMessage);
+    }
+
     public void broadcastResult(String roomCode, WordleMessage message) {
         boolean isCorrect = checkCorrectness(roomCode, message);
 
@@ -94,10 +118,9 @@ public class WordleService {
         }
         System.out.println(json);
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", message);
-        if (isCorrect) {
+        if (isCorrect || (Objects.equals(message.getCurrentAttempt(), message.getTotalAttempt()) && message.getIsCheck())) {
             System.out.println("Remove Answer: " + roomCode);
-            answers.remove(roomCode);
-            letterStates.remove(roomCode);
+            resetSession(roomCode);
         }
     }
 }

@@ -8,6 +8,7 @@ import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.services.WordleService;
 import com.icebreaker.utils.JsonUtils;
+import com.icebreaker.websocket.WordleMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +56,18 @@ public class WordleHandler {
             System.out.println("Get wordle answer, the answer is: " + wordleService.getAnswer(roomCode));
             Target target = wordleService.getAnswer(roomCode);
             return JsonUtils.returnJson(Map.of("target", target), "Error fetching Wordle answer");
+        }
+        return "Error";
+    }
+
+    @GetMapping("/getWordleGameStatus")
+    public String getWordleGameStatus(@RequestParam(name = "roomCode") String roomCode) {
+        if (wordleService.roomExist(roomCode)) {
+            try {
+                return JsonUtils.returnJson(Map.of("wordlemessage", wordleService.getGameStatus(roomCode)), "Error fetching Wordle Status");
+            } catch (Exception e) {
+
+            }
         }
         return "Error";
     }

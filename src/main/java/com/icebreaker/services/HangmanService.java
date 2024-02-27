@@ -33,7 +33,8 @@ public class HangmanService {
                     currentStages[i] = temp;
                 }
             }
-            gameData.put(roomCode, new HangmanData(roomCode, fieldName, answer.toUpperCase(), currentStages, code, 0));
+            gameData.put(roomCode, new HangmanData(
+                    roomCode, fieldName, answer.toUpperCase(), currentStages, code, 0, 0, null));
             System.out.println("Set Hangman Answer: " + roomCode + " " + answer.toUpperCase());
             return true;
         }
@@ -95,6 +96,13 @@ public class HangmanService {
         return false;
     }
 
+    public HangmanMessage getGameStatus(String roomCode) {
+        if (gameData.containsKey(roomCode)) {
+            return gameData.get(roomCode).getPrevMessage();
+        }
+        return null;
+    }
+
     public void broadcastResult(String roomCode, HangmanMessage message) {
         Character guessLetter = message.getGuessLetter();
         List<Integer> correctPositions = checkLetter(roomCode, guessLetter);
@@ -103,6 +111,8 @@ public class HangmanService {
         message.setCorrectPositions(correctPositions);
 
         HangmanData data = gameData.get(roomCode);
+
+        data.setCurrentGuesses(data.getCurrentGuesses() + 1);
 
         Character[] currentStages = data.getGuessedLetters();
         boolean isWordCorrect = true;
@@ -124,6 +134,9 @@ public class HangmanService {
         message.setAllLetterStat(data.getLetterStates());
         message.setCurrentStages(currentStages);
         message.setCurrentWrongGuesses(data.getCurrentWrongGuesses());
+        message.setCurrentGuesses(data.getCurrentGuesses());
+
+        data.setPrevMessage(message);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json;

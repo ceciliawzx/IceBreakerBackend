@@ -58,4 +58,15 @@ public class HangmanHandler {
         return "Error";
     }
 
+    @GetMapping("/getHangmanGameStatus")
+    public String getHangmanGameStatus(@RequestParam(name = "roomCode") String roomCode) {
+        if (hangmanService.roomExist(roomCode)) {
+            try {
+                return JsonUtils.returnJson(Map.of("hangmanmessage", hangmanService.getGameStatus(roomCode)), "Error fetching Hangman Status");
+            } catch (Exception e) {
+
+            }
+        }
+        return "Error";
+    }
 }

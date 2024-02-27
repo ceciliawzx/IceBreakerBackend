@@ -4,6 +4,7 @@ import com.icebreaker.room.RoomStatus;
 import com.icebreaker.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.HangmanService;
+import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,11 @@ import java.util.Map;
 public class HangmanHandler {
     private final HangmanService hangmanService;
     private final ServerRunner runner = ServerRunner.getInstance();
+    private final WaitRoomService waitRoomService;
     @Autowired
-    public HangmanHandler(HangmanService hangmanService) {
+    public HangmanHandler(HangmanService hangmanService, WaitRoomService waitRoomService) {
         this.hangmanService = hangmanService;
+        this.waitRoomService = waitRoomService;
     }
 
 
@@ -28,7 +31,9 @@ public class HangmanHandler {
         if (runner.changeRoomStatus(roomCode, RoomStatus.HANGMAN)) {
             String word = runner.getFieldValue(roomCode, userID, field);
             System.out.println("The hangman word is: " + word);
-            return hangmanService.setAnswers(roomCode, word, field);
+            boolean result = hangmanService.setAnswers(roomCode, word, field);
+            waitRoomService.broadcastMessage(roomCode);
+            return result;
         }
         return false;
     }

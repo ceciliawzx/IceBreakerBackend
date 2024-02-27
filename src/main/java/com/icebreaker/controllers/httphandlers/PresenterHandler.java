@@ -1,8 +1,8 @@
 package com.icebreaker.controllers.httphandlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.person.Person;
 import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.utils.JsonUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,11 +15,16 @@ import java.util.Map;
 @RestController
 public class PresenterHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
+    private final WaitRoomService waitRoomService;
+    public PresenterHandler(WaitRoomService waitRoomService) {
+        this.waitRoomService = waitRoomService;
+    }
 
     @PostMapping("/changePresenter")
     public boolean changePresenter(@RequestParam(name = "roomCode") String roomCode,
                                    @RequestParam(name = "userID") String userID) {
         System.out.println("Change Presenter in room: " + roomCode + " to User: " + userID);
+        waitRoomService.broadcastPeopleInfoChange(roomCode);
         return runner.changePresenter(roomCode, userID);
     }
 

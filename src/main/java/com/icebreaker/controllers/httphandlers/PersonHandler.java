@@ -1,11 +1,10 @@
 package com.icebreaker.controllers.httphandlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.person.Person;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.utils.JsonUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +14,10 @@ import java.util.Map;
 @RestController
 public class PersonHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
+    private final WaitRoomService waitRoomService;
+    public PersonHandler(WaitRoomService waitRoomService) {
+        this.waitRoomService = waitRoomService;
+    }
 
     @GetMapping("/isAdmin")
     public boolean isAdmin(@RequestParam("userID") String userID,
@@ -46,6 +49,7 @@ public class PersonHandler {
     public String updatePerson(@RequestBody Person person) {
         System.out.printf("Update Person, User: %s, Room: %s%n", person.getUserID(), person.getRoomCode());
         if (runner.roomUpdateUser(person)) {
+            waitRoomService.broadcastPeopleInfoChange(person.getRoomCode());
             return "Success";
         } else {
             return "Fail";
@@ -56,7 +60,11 @@ public class PersonHandler {
     public boolean kickPerson(@RequestParam(name = "userID") String userID,
                               @RequestParam(name = "roomCode") String roomCode) {
         System.out.printf("Kick Person: %s, In room: %s%n", userID, roomCode);
-        return runner.kickPerson(roomCode, userID);
+        boolean result = runner.kickPerson(roomCode, userID);
+        if (result) {
+            waitRoomService.broadcastPeopleInfoChange(roomCode);
+        }
+        return result;
     }
 
 

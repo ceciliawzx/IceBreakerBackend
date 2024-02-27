@@ -3,6 +3,7 @@ package com.icebreaker.controllers.httphandlers;
 import com.icebreaker.person.Admin;
 import com.icebreaker.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.utils.JsonUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,10 @@ public class RoomHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final AtomicInteger roomNumber = new AtomicInteger(0);
     private final AtomicInteger userID = new AtomicInteger(0);
+    private final WaitRoomService waitRoomService;
+    public RoomHandler(WaitRoomService waitRoomService) {
+        this.waitRoomService = waitRoomService;
+    }
 
     @PostMapping("/createRoom")
     public String handleRoomCreation(@RequestParam(name = "name") String name)
@@ -35,9 +40,11 @@ public class RoomHandler {
         Admin admin = new Admin(name, roomCode, usb.toString());
         Room newRoom = new Room(newRoomNumber, roomCode, admin);
         System.out.printf("Create Room, Display Name: %s, UserID: %s, RoomCode: %s%n", name, usb, roomCode);
-        return runner.addRoom(newRoom, roomCode) ? JsonUtils.returnJson(
+        String result = runner.addRoom(newRoom, roomCode) ? JsonUtils.returnJson(
                 Map.of("userID", usb.toString(), "roomCode", roomCode), "Room Creation Failed"
         ) : "Room Creation Failed";
+        waitRoomService.broadcastPeopleInfoChange(roomCode);
+        return result;
     }
 
     @PostMapping("/joinRoom")
@@ -48,11 +55,13 @@ public class RoomHandler {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         int newUserID = userID.getAndIncrement();
         StringBuilder usb = hashUserId(name, md, newUserID);
-
-        return runner.joinRoom(code, name, usb.toString()) ? JsonUtils.returnJson(
-                Map.of("userID", usb.toString()), "Join Room Failed"
-        ) : "Join Room Failed";
-
+        if (runner.joinRoom(code, name, usb.toString())) {
+            waitRoomService.broadcastPeopleInfoChange(code);
+            return JsonUtils.returnJson(
+                    Map.of("userID", usb.toString()), "Join Room Failed");
+        } else {
+            return "Join Room Failed";
+        }
     }
 
     @DeleteMapping("/destroyRoom")

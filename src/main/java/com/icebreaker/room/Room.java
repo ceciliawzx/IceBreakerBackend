@@ -1,7 +1,11 @@
 package com.icebreaker.room;
 
-import lombok.*;
+import com.icebreaker.utils.Geoguesser;
+import com.icebreaker.utils.GeoguesserStatus;
+import lombok.Getter;
 import com.icebreaker.person.*;
+import lombok.Setter;
+import org.glassfish.grizzly.utils.Pair;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -33,6 +37,7 @@ public class Room {
     @Getter
     @Setter
     private PresentRoomInfo presentRoomInfo;
+    private Geoguesser geoguesser;
     private final List<String> notifyIDs = new ArrayList<>();
 
     public Room(int roomNumber, String roomCode, Admin host) {
@@ -43,6 +48,7 @@ public class Room {
         this.players.add(host);
         this.roomStatus = RoomStatus.WAITING;
         this.presentRoomInfo = new PresentRoomInfo();
+        this.geoguesser = new Geoguesser(GeoguesserStatus.PRE_CHOOSE);
     }
 
     public void startRoom() {
@@ -244,6 +250,90 @@ public class Room {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public boolean setLocation(String location, String userID) {
+        if (userID.equals(this.presenter.getUserID())) {
+            return this.geoguesser.startGame(location);
+        } else {
+            boolean result = this.geoguesser.makeGuess(userID, location);
+            if (geoguesser.answersSumitted() >= players.size() - 2) {
+                setGeoStatus(GeoguesserStatus.SUBMITTED);
+            }
+            return result;
+        }
+    }
+
+    public void setGeoStatus(GeoguesserStatus status) {
+        this.geoguesser.setStatus(status);
+    }
+
+    public GeoguesserStatus getGeoStatus() {
+        return this.geoguesser.getStatus();
+    }
+
+    public boolean checkNotSubmitted(String userID) {
+        if (userID.equals(this.host.getUserID())) {
+            return this.geoguesser.getStatus().equals(GeoguesserStatus.PRE_CHOOSE);
+        } else {
+            return this.geoguesser.checkNotSubmitted(userID);
+        }
+    }
+
+    public List<Person> geoGuesserWinner() {
+        List<String> winnerIDs = this.geoguesser.geoGuesserWinner();
+        List<Person> winners = new ArrayList<>();
+
+        for (String winnerID : winnerIDs) {
+            Person person = findPersonByID(winnerID);
+            if (person != null) {
+                winners.add(person);
+            }
+        }
+
+        return winners;
+    }
+
+    private Person findPersonByID(String id) {
+        for (Person person : players) {
+            if (person.getUserID().equals(id)) {
+                return person;
+            }
+        }
+        return null;
+    }
+
+    public List<Person> geoGuesserPersonRank() {
+        List<Pair<String, Double>> rank = this.geoguesser.geoGuesserRank();
+        List<String> playerIDs = new ArrayList<>();
+        List<Person> playerRankList = new ArrayList<>();
+
+        for (int i = 0; i < rank.size(); i++) {
+            playerIDs.add(rank.get(i).getFirst());
+        }
+
+        for (int i = 0; i < playerIDs.size(); i++) {
+            Person person = findPersonByID(playerIDs.get(i));
+            if (person != null) {
+                playerRankList.add(person);
+            }
+        }
+        return playerRankList;
+    }
+
+    public List<Double> geoGuesserDistanceRank() {
+        List<Pair<String, Double>> rank = this.geoguesser.geoGuesserRank();
+        List<Double> distances = new ArrayList<>();
+
+        for (int i = 0; i < rank.size(); i++) {
+            distances.add(rank.get(i).getSecond());
+        }
+
+        return distances;
+    }
+
+    public String presenterLocation() {
+        return this.geoguesser.getLocation();
     }
 
     public List<Person> getOtherPlayers() {

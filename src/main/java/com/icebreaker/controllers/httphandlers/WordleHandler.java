@@ -5,6 +5,7 @@ import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.services.WordleService;
 import com.icebreaker.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,12 @@ import java.util.Map;
 @RestController
 public class WordleHandler {
     private final WordleService wordleService;
+    private final WaitRoomService waitRoomService;
     private final ServerRunner runner = ServerRunner.getInstance();
     @Autowired
-    public WordleHandler(WordleService wordleService) {
+    public WordleHandler(WordleService wordleService, WaitRoomService waitRoomService) {
         this.wordleService = wordleService;
+        this.waitRoomService = waitRoomService;
     }
 
     @PostMapping("/startWordle")
@@ -29,7 +32,9 @@ public class WordleHandler {
         if (runner.changeRoomStatus(roomCode, RoomStatus.WORDLING)) {
             String word = runner.getFieldValue(roomCode, userID, field);
             System.out.println("The wordle word is: " + word);
-            return wordleService.setAnswers(roomCode, field, word);
+            boolean result = wordleService.setAnswers(roomCode, field, word);
+            waitRoomService.broadcastMessage(roomCode);
+            return result;
         }
         return false;
     }

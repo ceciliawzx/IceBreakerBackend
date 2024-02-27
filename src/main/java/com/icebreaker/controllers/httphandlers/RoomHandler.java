@@ -43,7 +43,7 @@ public class RoomHandler {
         String result = runner.addRoom(newRoom, roomCode) ? JsonUtils.returnJson(
                 Map.of("userID", usb.toString(), "roomCode", roomCode), "Room Creation Failed"
         ) : "Room Creation Failed";
-        waitRoomService.broadcastPeopleInfoChange(roomCode);
+        waitRoomService.broadcastMessage(roomCode);
         return result;
     }
 
@@ -56,7 +56,7 @@ public class RoomHandler {
         int newUserID = userID.getAndIncrement();
         StringBuilder usb = hashUserId(name, md, newUserID);
         if (runner.joinRoom(code, name, usb.toString())) {
-            waitRoomService.broadcastPeopleInfoChange(code);
+            waitRoomService.broadcastMessage(code);
             return JsonUtils.returnJson(
                     Map.of("userID", usb.toString()), "Join Room Failed");
         } else {
@@ -67,6 +67,7 @@ public class RoomHandler {
     @DeleteMapping("/destroyRoom")
     public boolean handleDestroyRoom(@RequestParam(name = "roomCode") String roomCode) {
         System.out.printf("Destroy Room: %s%n", roomCode);
+        waitRoomService.broadcastMessage(roomCode);
         return runner.destroyRoom(roomCode);
     }
 }

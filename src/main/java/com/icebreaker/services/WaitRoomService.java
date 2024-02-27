@@ -12,7 +12,8 @@ public class WaitRoomService {
     public WaitRoomService(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
-    public void broadcastPeopleInfoChange(String roomCode) {
+
+    public void broadcastMessage(String roomCode) {
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wait", true);
     }
 }

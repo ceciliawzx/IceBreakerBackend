@@ -5,6 +5,7 @@ import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.utils.JsonUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,10 @@ import java.util.Map;
 @RestController
 public class DrawAndGuessHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
+    private final WaitRoomService waitRoomService;
+    public DrawAndGuessHandler(WaitRoomService waitRoomService) {
+        this.waitRoomService = waitRoomService;
+    }
 
     @PostMapping("/startDrawAndGuess")
     public String startDrawAndGuess(@RequestParam(name = "roomCode") String roomCode,
@@ -23,6 +28,7 @@ public class DrawAndGuessHandler {
         System.out.println("Start Draw and Guess in room: " + roomCode + " with targetWord: " + targetWord);
         if (runner.changeRoomStatus(roomCode, RoomStatus.PICTURING)) {
             runner.setTargetInRoom(roomCode, new Target(fieldName, targetWord));
+            waitRoomService.broadcastMessage(roomCode);
             return "Success";
         }
         return "Fail";

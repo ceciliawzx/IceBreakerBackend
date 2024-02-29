@@ -112,7 +112,6 @@ public class ServerRunner {
         }
     }
 
-
     public boolean containsRoom(Room room) {
         synchronized (this) {
             return activeRooms.containsKey(room);

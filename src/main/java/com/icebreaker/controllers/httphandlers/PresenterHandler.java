@@ -41,6 +41,6 @@ public class PresenterHandler {
             waitRoomService.broadcastMessage(roomCode);
         }
 
-        return JsonUtils.returnJsonError("Room not found");
+        return JsonUtils.returnJson(Map.of("notPresentedPeople", notPresentedPeople), JsonUtils.roomNotFound);
     }
 }

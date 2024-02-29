@@ -60,7 +60,9 @@ public class GeoguesserHandler {
     public boolean setTargetLocation(@RequestParam(name = "roomCode", required = true) String roomCode,
                                      @RequestParam(name = "location", required = true) String location,
                                      @RequestParam(name = "userID", required = true) String userID) {
-        return runner.setTargetLocation(roomCode, location, userID);
+        boolean isSet = runner.setTargetLocation(roomCode, location, userID);
+        waitRoomService.broadcastMessage(roomCode);
+        return isSet;
     }
 
     @GetMapping("getUserGeoSubmission")

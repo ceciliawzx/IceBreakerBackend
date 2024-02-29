@@ -253,7 +253,7 @@ public class Room {
             return this.geoguesser.startGame(location);
         } else {
             boolean result = this.geoguesser.makeGuess(userID, location);
-            if (geoguesser.answersSumitted() >= players.size() - 2) {
+            if (geoguesser.answersSumitted() >= players.size() - 1) {
                 setGeoStatus(GeoguesserStatus.SUBMITTED);
             }
             return result;

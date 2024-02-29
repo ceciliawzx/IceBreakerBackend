@@ -67,7 +67,8 @@ public class RoomHandler {
     @DeleteMapping("/destroyRoom")
     public boolean handleDestroyRoom(@RequestParam(name = "roomCode") String roomCode) {
         System.out.printf("Destroy Room: %s%n", roomCode);
+        boolean result = runner.destroyRoom(roomCode);
         waitRoomService.broadcastMessage(roomCode);
-        return runner.destroyRoom(roomCode);
+        return result;
     }
 }

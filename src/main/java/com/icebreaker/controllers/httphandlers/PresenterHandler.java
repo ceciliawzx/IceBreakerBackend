@@ -33,15 +33,15 @@ public class PresenterHandler {
     @GetMapping("/notPresentedPeople")
     public String getNotPresentedPeople(@RequestParam(name = "roomCode") String roomCode) {
         List<Person> notPresentedPeople = runner.getNotPresentedPeople(roomCode);
+        if (notPresentedPeople == null) {
+            return JsonUtils.returnJsonError("Room not found");
+        }
+
         if (notPresentedPeople.isEmpty()) {
             runner.changeRoomStatus(roomCode, RoomStatus.ALL_PRESENTED);
             waitRoomService.broadcastMessage(roomCode);
         }
 
-        if (notPresentedPeople != null) {
-            return JsonUtils.returnJson(Map.of("notPresentedPeople", notPresentedPeople), JsonUtils.unknownError);
-        }
-
-        return JsonUtils.returnJsonError("Room not found");
+        return JsonUtils.returnJson(Map.of("notPresentedPeople", notPresentedPeople), JsonUtils.roomNotFound);
     }
 }

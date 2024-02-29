@@ -15,6 +15,7 @@ import java.util.Map;
 public class GeoguesserHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
+
     public GeoguesserHandler(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }

@@ -3,6 +3,7 @@ package com.icebreaker.services;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.websocket.TimerMessage;
+import com.icebreaker.websocket.TimerModalMessage;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -36,13 +37,16 @@ public class TimerService {
     public void startTimer(TimerMessage timerMessage) {
         countdown = timerMessage.getSeconds();
         String roomCode = timerMessage.getRoomCode();
+        TimerModalMessage timerModalMessage = new TimerModalMessage(roomCode, false);
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", timerModalMessage);
         if (future != null) {
             future.cancel(false);
         }
         future = scheduler.scheduleAtFixedRate(() -> {
             if (countdown > 0) {
                 countdown--;
-                messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", countdown);
+                timerMessage.setSeconds(countdown);
+                messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", timerMessage);
             } else {
                 stopTimer(timerMessage);
             }

@@ -14,7 +14,6 @@ public class TimerController {
 
     private final TimerService timerService;
 
-
     public TimerController(TimerService timerService) {
         this.timerService = timerService;
     }

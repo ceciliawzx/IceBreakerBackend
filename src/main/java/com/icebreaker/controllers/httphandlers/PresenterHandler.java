@@ -17,6 +17,7 @@ import java.util.Map;
 public class PresenterHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
+
     public PresenterHandler(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }

@@ -323,8 +323,9 @@ public class ServerRunner {
         synchronized (this) {
             if (containsRoom(roomCode)) {
                 return getRoom(roomCode).getNotPresentedPeople();
+            } else {
+                return null;
             }
-            return null;
         }
     }
 

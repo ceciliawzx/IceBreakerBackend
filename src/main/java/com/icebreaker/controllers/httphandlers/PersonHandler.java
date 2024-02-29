@@ -49,7 +49,7 @@ public class PersonHandler {
     public String updatePerson(@RequestBody Person person) {
         System.out.printf("Update Person, User: %s, Room: %s%n", person.getUserID(), person.getRoomCode());
         if (runner.roomUpdateUser(person)) {
-            waitRoomService.broadcastPeopleInfoChange(person.getRoomCode());
+            waitRoomService.broadcastMessage(person.getRoomCode());
             return "Success";
         } else {
             return "Fail";
@@ -62,7 +62,7 @@ public class PersonHandler {
         System.out.printf("Kick Person: %s, In room: %s%n", userID, roomCode);
         boolean result = runner.kickPerson(roomCode, userID);
         if (result) {
-            waitRoomService.broadcastPeopleInfoChange(roomCode);
+            waitRoomService.broadcastMessage(roomCode);
         }
         return result;
     }
@@ -110,7 +110,11 @@ public class PersonHandler {
     @PostMapping("/pushNotification")
     public boolean pushNotification(@RequestParam(name = "roomCode") String roomCode,
                                     @RequestParam(name = "userID") String userID) {
-        return runner.notifyPeople(roomCode, userID);
+        boolean result = runner.notifyPeople(roomCode, userID);
+        if (result) {
+            waitRoomService.broadcastMessage(roomCode);
+        }
+        return result;
     }
 
     @GetMapping("/isNotified")

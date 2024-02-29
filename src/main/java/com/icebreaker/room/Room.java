@@ -167,10 +167,6 @@ public class Room {
             }
         }
 
-        if (difference.isEmpty()) {
-            this.roomStatus = RoomStatus.ALL_PRESENTED;
-        }
-
         return difference;
     }
 

@@ -1,5 +1,6 @@
 package com.icebreaker.services;
 
+import com.icebreaker.websocket.HangmanMessage;
 import com.icebreaker.websocket.WordleStateCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,4 +21,6 @@ public class HangmanData {
     private Character[] guessedLetters;
     private List<WordleStateCode> letterStates;
     private int currentWrongGuesses;
+    private int currentGuesses;
+    private HangmanMessage prevMessage;
 }

@@ -16,6 +16,7 @@ import java.util.*;
 public class WordleService {
     private final Map<String, Target> answers = new HashMap<>();
     private final Map<String, List<WordleStateCode>> letterStates = new HashMap<>();
+    private final Map<String, WordleMessage> gameStatus = new HashMap<>();
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
@@ -32,6 +33,7 @@ public class WordleService {
                 code.add(WordleStateCode.UNCHECKED);
             }
             letterStates.put(roomCode, code);
+            gameStatus.put(roomCode, null);
             return true;
         }
         return false;
@@ -49,9 +51,17 @@ public class WordleService {
         if (answers.containsKey(roomCode)) {
             answers.remove(roomCode);
             letterStates.remove(roomCode);
+            gameStatus.remove(roomCode);
             return true;
         }
         return false;
+    }
+
+    public WordleMessage getGameStatus(String roomCode) {
+        if (gameStatus.containsKey(roomCode)) {
+            return gameStatus.get(roomCode);
+        }
+        return null;
     }
 
     private boolean checkCorrectness(String roomCode, WordleMessage message) {
@@ -118,6 +128,7 @@ public class WordleService {
         }
         System.out.println(json);
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", message);
+        gameStatus.put(roomCode, message);
         if (isCorrect || (Objects.equals(message.getCurrentAttempt(), message.getTotalAttempt()) && message.getIsCheck())) {
             System.out.println("Remove Answer: " + roomCode);
             resetSession(roomCode);

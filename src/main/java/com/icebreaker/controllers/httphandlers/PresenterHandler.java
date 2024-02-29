@@ -1,6 +1,7 @@
 package com.icebreaker.controllers.httphandlers;
 
 import com.icebreaker.person.Person;
+import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.utils.JsonUtils;
@@ -24,13 +25,17 @@ public class PresenterHandler {
     public boolean changePresenter(@RequestParam(name = "roomCode") String roomCode,
                                    @RequestParam(name = "userID") String userID) {
         System.out.println("Change Presenter in room: " + roomCode + " to User: " + userID);
-        waitRoomService.broadcastPeopleInfoChange(roomCode);
+        waitRoomService.broadcastMessage(roomCode);
         return runner.changePresenter(roomCode, userID);
     }
 
     @GetMapping("/notPresentedPeople")
     public String getNotPresentedPeople(@RequestParam(name = "roomCode") String roomCode) {
         List<Person> notPresentedPeople = runner.getNotPresentedPeople(roomCode);
+        if (notPresentedPeople.isEmpty()) {
+            runner.changeRoomStatus(roomCode, RoomStatus.ALL_PRESENTED);
+            waitRoomService.broadcastMessage(roomCode);
+        }
 
         if (notPresentedPeople != null) {
             return JsonUtils.returnJson(Map.of("notPresentedPeople", notPresentedPeople), JsonUtils.unknownError);

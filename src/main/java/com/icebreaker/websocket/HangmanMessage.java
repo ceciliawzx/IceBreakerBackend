@@ -20,4 +20,5 @@ public class HangmanMessage {
     private Boolean isFinished;
     private String roomCode;
     private Integer currentWrongGuesses;
+    private Integer currentGuesses;
 }

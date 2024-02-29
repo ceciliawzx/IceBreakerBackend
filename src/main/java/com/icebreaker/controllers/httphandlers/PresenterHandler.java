@@ -25,8 +25,9 @@ public class PresenterHandler {
     public boolean changePresenter(@RequestParam(name = "roomCode") String roomCode,
                                    @RequestParam(name = "userID") String userID) {
         System.out.println("Change Presenter in room: " + roomCode + " to User: " + userID);
+        boolean result = runner.changePresenter(roomCode, userID);
         waitRoomService.broadcastMessage(roomCode);
-        return runner.changePresenter(roomCode, userID);
+        return result;
     }
 
     @GetMapping("/notPresentedPeople")

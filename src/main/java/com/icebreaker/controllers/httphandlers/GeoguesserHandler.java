@@ -6,9 +6,11 @@ import com.icebreaker.serverrunner.ServerRunner;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+@RestController
 public class GeoguesserHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
 

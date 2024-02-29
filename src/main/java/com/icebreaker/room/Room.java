@@ -37,8 +37,11 @@ public class Room {
     @Getter
     @Setter
     private PresentRoomInfo presentRoomInfo;
-    private Geoguesser geoguesser;
+    private final Geoguesser geoguesser;
     private final List<String> notifyIDs = new ArrayList<>();
+    @Getter
+    @Setter
+    private boolean showTimerModal = true;
 
     public Room(int roomNumber, String roomCode, Admin host) {
         this.roomNumber = roomNumber;

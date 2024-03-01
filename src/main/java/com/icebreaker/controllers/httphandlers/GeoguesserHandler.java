@@ -1,12 +1,10 @@
 package com.icebreaker.controllers.httphandlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.GeoguesserService;
 import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.utils.JsonUtils;
-import com.icebreaker.websocket.GeoguesserMessage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,9 +24,11 @@ public class GeoguesserHandler {
     }
 
     @PostMapping("startGeoguesser")
-    public boolean startGeoguesser(@RequestParam(name = "roomCode") String roomCode) {
+    public boolean startGeoguesser(@RequestParam(name = "roomCode") String roomCode,
+                                   @RequestParam(name = "fieldName") String fieldName) {
         if (runner.changeRoomStatus(roomCode, RoomStatus.GEO_GUESSING)) {
             runner.resetGeoguesser(roomCode);
+            runner.setField(roomCode, fieldName);
             waitRoomService.broadcastMessage(roomCode);
             return true;
         }
@@ -38,7 +38,7 @@ public class GeoguesserHandler {
     @GetMapping("getGeoguesserStatus")
     public String getGeoguesserStatus(@RequestParam(name = "roomCode") String roomCode) {
         if (runner.containsRoom(roomCode)) {
-            JsonUtils.returnJson(Map.of("status", runner.getGeoguesserStatus(roomCode)), JsonUtils.returnJsonError("Serilisation error"));
+            return JsonUtils.returnJson(Map.of("status", runner.getGeoguesserStatus(roomCode)), JsonUtils.returnJsonError("Serilisation error"));
         }
         return JsonUtils.roomNotFound;
     }
@@ -71,4 +71,8 @@ public class GeoguesserHandler {
         return runner.presenterLocation(roomCode);
     }
 
+    @GetMapping("/geoguesserFieldName")
+    public String geoguesserFieldName(@RequestParam(name = "roomCode") String roomCode) {
+        return runner.geoGuesserFieldName(roomCode);
+    }
 }

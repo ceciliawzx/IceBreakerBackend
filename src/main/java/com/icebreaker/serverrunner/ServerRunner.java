@@ -571,4 +571,26 @@ public class ServerRunner {
             return false;
         }
     }
+
+    public boolean setField(String roomCode, String fieldName) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                room.setField(fieldName);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public String geoGuesserFieldName(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                return room.getGeoGuesserFieldName();
+            }
+            return "";
+        }
+    }
+
 }

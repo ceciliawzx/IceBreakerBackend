@@ -400,4 +400,13 @@ public class Room {
     public void resetGeoguesser() {
         this.geoguesser = new Geoguesser(GeoguesserStatus.PRE_CHOOSE);
     }
+
+    public void setField(String fieldName) {
+        this.geoguesser.setFieldName(fieldName);
+    }
+
+    public String getGeoGuesserFieldName() {
+        return this.geoguesser.getFieldName();
+    }
+
 }

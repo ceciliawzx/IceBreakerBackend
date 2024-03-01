@@ -1,5 +1,6 @@
 package com.icebreaker.services;
 
+import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.websocket.TimerMessage;
@@ -37,6 +38,7 @@ public class TimerService {
     public void startTimer(TimerMessage timerMessage) {
         countdown = timerMessage.getSeconds();
         String roomCode = timerMessage.getRoomCode();
+        runner.getRoom(roomCode).setShowTimerModal(false);
         TimerModalMessage timerModalMessage = new TimerModalMessage(roomCode, false);
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", timerModalMessage);
         if (future != null) {
@@ -86,5 +88,10 @@ public class TimerService {
 
     public void resetTimer() {
         if (future != null) future.cancel(false);
+    }
+
+    public void resetShowTimerModal(String roomCode) {
+        Room room = runner.getRoom(roomCode);
+        room.setShowTimerModal(true);
     }
 }

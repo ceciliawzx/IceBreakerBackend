@@ -22,6 +22,7 @@ public class DrawingMessage {
         private String color;
         private String strokeWidth;
         private boolean eraser;
+        private boolean clear; // Boolean to indicate clear operation
     }
 
     private String roomCode;

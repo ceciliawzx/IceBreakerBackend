@@ -323,8 +323,9 @@ public class ServerRunner {
         synchronized (this) {
             if (containsRoom(roomCode)) {
                 return getRoom(roomCode).getNotPresentedPeople();
+            } else {
+                return null;
             }
-            return null;
         }
     }
 
@@ -351,7 +352,6 @@ public class ServerRunner {
     public List<GameType> availableGames(String roomCode, String userID, String fieldName) {
         synchronized (this) {
             if (containsRoom(roomCode)) {
-                int roomNumber = codeNumberMapping.get(roomCode);
                 return getRoom(roomCode).getAvailableGames(userID, fieldName);
             }
             return null;

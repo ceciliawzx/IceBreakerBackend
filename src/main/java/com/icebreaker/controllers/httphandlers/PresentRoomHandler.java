@@ -84,7 +84,8 @@ public class PresentRoomHandler {
                 waitRoomService.broadcastMessage(roomCode);
                 System.out.println("Resetting Geoguesser");
             }
-            // Reset Timer when return to present room
+            // Reset Timer and showTimerModal when return to present room
+            timerService.resetShowTimerModal(roomCode);
             timerService.resetTimer();
 
             return "Success";

@@ -37,7 +37,7 @@ public class Room {
     @Getter
     @Setter
     private PresentRoomInfo presentRoomInfo;
-    private final Geoguesser geoguesser;
+    private Geoguesser geoguesser;
     private final List<String> notifyIDs = new ArrayList<>();
     @Getter
     @Setter
@@ -397,5 +397,9 @@ public class Room {
     public void resetPresentRoomInfo() {
         System.out.println("Resetting presentRoomInfo in room " + roomCode);
         this.presentRoomInfo = new PresentRoomInfo();
+    }
+
+    public void resetGeoguesser() {
+        this.geoguesser = new Geoguesser(GeoguesserStatus.PRE_CHOOSE);
     }
 }

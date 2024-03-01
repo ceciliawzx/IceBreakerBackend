@@ -27,6 +27,7 @@ public class GeoguesserHandler {
     @PostMapping("startGeoguesser")
     public boolean startGeoguesser(@RequestParam(name = "roomCode", required = true) String roomCode) {
         if (runner.changeRoomStatus(roomCode, RoomStatus.GEO_GUESSING)) {
+            runner.resetGeoguesser(roomCode);
             waitRoomService.broadcastMessage(roomCode);
             return true;
         }

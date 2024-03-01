@@ -211,7 +211,7 @@ public class Room {
                 games.add(GameType.SHAREBOARD);
                 games.add(GameType.HANGMAN);
             }
-            case "favFood", "favActivity" -> {
+            case "favFood", "favActivity", "feeling" -> {
                 if (value.length() <= 7 && value.length() >= 4) {
                     games.add(GameType.WORDLE);
                 }

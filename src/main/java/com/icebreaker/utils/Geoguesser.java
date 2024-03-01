@@ -120,7 +120,10 @@ public class Geoguesser {
     }
 
     public List<Pair<String, Double>> geoGuesserRank() {
-        Collections.sort(guesses, Comparator.comparingDouble(Pair::getSecond));
+        if (guesses == null) {
+            return Collections.emptyList();
+        }
+        guesses.sort(Comparator.comparingDouble(Pair::getSecond));
         return guesses;
     }
 

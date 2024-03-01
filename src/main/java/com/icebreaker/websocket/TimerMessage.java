@@ -1,10 +1,7 @@
 package com.icebreaker.websocket;
 
 import com.icebreaker.room.RoomStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
@@ -14,6 +11,7 @@ public class TimerMessage {
     private String roomCode;
     private RoomStatus roomStatus;
     private int seconds;
+    private boolean isStarted;
 
     @Override
     public String toString() {

@@ -5,6 +5,7 @@ import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.GeoguesserService;
 import com.icebreaker.services.WaitRoomService;
+import com.icebreaker.utils.JsonUtils;
 import com.icebreaker.websocket.GeoguesserMessage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,7 @@ public class GeoguesserHandler {
     @PostMapping("startGeoguesser")
     public boolean startGeoguesser(@RequestParam(name = "roomCode") String roomCode) {
         if (runner.changeRoomStatus(roomCode, RoomStatus.GEO_GUESSING)) {
-//            runner.resetGeoguesser(roomCode);
+            runner.resetGeoguesser(roomCode);
             waitRoomService.broadcastMessage(roomCode);
             return true;
         }
@@ -36,29 +37,10 @@ public class GeoguesserHandler {
 
     @GetMapping("getGeoguesserStatus")
     public String getGeoguesserStatus(@RequestParam(name = "roomCode") String roomCode) {
-        ObjectMapper objectMapper = new ObjectMapper();
         if (runner.containsRoom(roomCode)) {
-            String json;
-
-            try {
-                json = objectMapper.writeValueAsString(Map.of("status", runner.getGeoguesserStatus(roomCode)));
-            } catch (Exception e) {
-                e.printStackTrace();
-                json = "{\"error\": \"Serialization error\"}";
-            }
-
-            return json;
+            JsonUtils.returnJson(Map.of("status", runner.getGeoguesserStatus(roomCode)), JsonUtils.returnJsonError("Serilisation error"));
         }
-
-        String jsonError;
-        try {
-            jsonError = objectMapper.writeValueAsString(Map.of("error", "Room not found"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            jsonError = "{\"error\": \"Serialization error\"}";
-        }
-
-        return jsonError;
+        return JsonUtils.roomNotFound;
     }
 
     @PostMapping("setTargetLocation")
@@ -78,29 +60,10 @@ public class GeoguesserHandler {
 
     @GetMapping("/geoGuesserRank")
     public String geoGuesserRank(@RequestParam(name = "roomCode") String roomCode) {
-        ObjectMapper objectMapper = new ObjectMapper();
         if (runner.containsRoom(roomCode)) {
-            String json;
-
-            try {
-                json = objectMapper.writeValueAsString(Map.of("winner", runner.geoGuesserWinner(roomCode), "rankPerson", runner.geoGuesserPersonRank(roomCode), "rankDistance", runner.geoGuesserDistanceRank(roomCode)));
-            } catch (Exception e) {
-                e.printStackTrace();
-                json = "{\"error\": \"Serialization error\"}";
-            }
-
-            return json;
+            return JsonUtils.returnJson(Map.of("winner", runner.geoGuesserWinner(roomCode), "rankPerson", runner.geoGuesserPersonRank(roomCode), "rankDistance", runner.geoGuesserDistanceRank(roomCode)), JsonUtils.returnJsonError("Serialisation error"));
         }
-
-        String jsonError;
-        try {
-            jsonError = objectMapper.writeValueAsString(Map.of("error", "Room not found"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            jsonError = "{\"error\": \"Serialization error\"}";
-        }
-
-        return jsonError;
+        return JsonUtils.roomNotFound;
     }
 
     @GetMapping("/presenterLocation")

@@ -31,12 +31,15 @@ public class ChatService {
         Room room = runner.getRoom(roomCode);
         Target target = room.getTarget();
         if (target.getTargetWord().equalsIgnoreCase(message.getContent())) {
-            String guesserId = message.getSenderId();
-            drawingService.addCorrectGuesser(roomCode, guesserId);
-
-            message.setContent(message.getSender() + " has guessed right!");
-            message.setSender("System");
+            addCorrectGuesser(roomCode, message);
         }
+    }
+
+    public void addCorrectGuesser(String roomCode, ChatMessage message) {
+        String guesserId = message.getSenderId();
+        drawingService.addCorrectGuesser(roomCode, guesserId);
+        message.setContent(message.getSender() + " has guessed right!");
+        message.setSender("System");
     }
 
 }

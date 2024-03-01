@@ -40,7 +40,7 @@ public class GeoguesserHandler {
     @GetMapping("getGeoguesserStatus")
     public String getGeoguesserStatus(@RequestParam(name = "roomCode") String roomCode) {
         if (runner.containsRoom(roomCode)) {
-            JsonUtils.returnJson(Map.of("status", runner.getGeoguesserStatus(roomCode)), JsonUtils.returnJsonError("Serilisation error"));
+            return JsonUtils.returnJson(Map.of("status", runner.getGeoguesserStatus(roomCode)), JsonUtils.returnJsonError("Serilisation error"));
         }
         return JsonUtils.roomNotFound;
     }

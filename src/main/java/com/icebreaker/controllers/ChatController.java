@@ -7,12 +7,18 @@ import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.ChatService;
 import com.icebreaker.websocket.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @Controller
+@RestController
 public class ChatController {
 
     private final ChatService chatService;
@@ -36,6 +42,14 @@ public class ChatController {
             System.out.println("handleMessage has been triggered, received message: " + message);
             message.setContent("Server has received your message: " + message.getContent());
         }
+        chatService.broadcastToRoom(roomCode, message);
+    }
+
+    @PostMapping(path = "/guessedCorrect", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public void guessedCorrect(@RequestParam(name = "roomCode") String roomCode, @RequestBody ChatMessage message) {
+        System.out.println("GuessedCorrect, receives message " + message + "in room " + roomCode);
+        chatService.addCorrectGuesser(roomCode, message);
         chatService.broadcastToRoom(roomCode, message);
     }
 }

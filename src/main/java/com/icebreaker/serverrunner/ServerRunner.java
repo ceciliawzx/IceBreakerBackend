@@ -560,4 +560,15 @@ public class ServerRunner {
             return "Room Not Found";
         }
     }
+
+    public boolean resetGeoguesser(String roomCode) {
+        synchronized (this) {
+            if (containsRoom(roomCode)) {
+                Room room = getRoom(roomCode);
+                room.resetGeoguesser();
+                return true;
+            }
+            return false;
+        }
+    }
 }

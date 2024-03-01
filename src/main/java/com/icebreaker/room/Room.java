@@ -408,4 +408,5 @@ public class Room {
     public String getGeoGuesserFieldName() {
         return this.geoguesser.getFieldName();
     }
+
 }

@@ -1,12 +1,10 @@
 package com.icebreaker.controllers.httphandlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.GeoguesserService;
 import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.utils.JsonUtils;
-import com.icebreaker.websocket.GeoguesserMessage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,5 +75,4 @@ public class GeoguesserHandler {
     public String geoguesserFieldName(@RequestParam(name = "roomCode") String roomCode) {
         return runner.geoGuesserFieldName(roomCode);
     }
-
 }

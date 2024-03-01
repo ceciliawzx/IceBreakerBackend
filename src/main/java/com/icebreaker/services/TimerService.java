@@ -48,6 +48,7 @@ public class TimerService {
             if (countdown > 0) {
                 countdown--;
                 timerMessage.setSeconds(countdown);
+                hangmanService.broadCastTimerStarted(roomCode);
                 messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", timerMessage);
             } else {
                 stopTimer(timerMessage);

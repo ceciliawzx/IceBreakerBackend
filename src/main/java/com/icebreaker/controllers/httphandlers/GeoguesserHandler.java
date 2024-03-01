@@ -3,92 +3,72 @@ package com.icebreaker.controllers.httphandlers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.services.GeoguesserService;
+import com.icebreaker.services.WaitRoomService;
+import com.icebreaker.utils.JsonUtils;
+import com.icebreaker.websocket.GeoguesserMessage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+@RestController
 public class GeoguesserHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
+    private final WaitRoomService waitRoomService;
+    private final GeoguesserService geoguesserService;
+
+    public GeoguesserHandler(WaitRoomService waitRoomService, GeoguesserService geoguesserService) {
+        this.waitRoomService = waitRoomService;
+        this.geoguesserService = geoguesserService;
+    }
 
     @PostMapping("startGeoguesser")
-    public boolean startGeoguesser(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public boolean startGeoguesser(@RequestParam(name = "roomCode") String roomCode) {
         if (runner.changeRoomStatus(roomCode, RoomStatus.GEO_GUESSING)) {
+            runner.resetGeoguesser(roomCode);
+            waitRoomService.broadcastMessage(roomCode);
             return true;
         }
         return false;
     }
 
     @GetMapping("getGeoguesserStatus")
-    public String getGeoguesserStatus(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public String getGeoguesserStatus(@RequestParam(name = "roomCode") String roomCode) {
         if (runner.containsRoom(roomCode)) {
-            String json;
-
-            try {
-                json = objectMapper.writeValueAsString(Map.of("status", runner.getGeoguesserStatus(roomCode)));
-            } catch (Exception e) {
-                e.printStackTrace();
-                json = "{\"error\": \"Serialization error\"}";
-            }
-
-            return json;
+            JsonUtils.returnJson(Map.of("status", runner.getGeoguesserStatus(roomCode)), JsonUtils.returnJsonError("Serilisation error"));
         }
-
-        String jsonError;
-        try {
-            jsonError = objectMapper.writeValueAsString(Map.of("error", "Room not found"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            jsonError = "{\"error\": \"Serialization error\"}";
-        }
-
-        return jsonError;
+        return JsonUtils.roomNotFound;
     }
 
     @PostMapping("setTargetLocation")
-    public boolean setTargetLocation(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                     @RequestParam(name = "location", required = true) String location,
-                                     @RequestParam(name = "userID", required = true) String userID) {
-        return runner.setTargetLocation(roomCode, location, userID);
+    public boolean setTargetLocation(@RequestParam(name = "roomCode") String roomCode,
+                                     @RequestParam(name = "location") String location,
+                                     @RequestParam(name = "userID") String userID) {
+        boolean isSet = runner.setTargetLocation(roomCode, location, userID);
+        waitRoomService.broadcastMessage(roomCode);
+        return isSet;
     }
 
     @GetMapping("getUserGeoSubmission")
-    public boolean getUserGeoSubmission(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                        @RequestParam(name = "userID", required = true) String userID) {
+    public boolean getUserGeoSubmission(@RequestParam(name = "roomCode") String roomCode,
+                                        @RequestParam(name = "userID") String userID) {
         return !runner.checkNotSubmission(roomCode, userID);
     }
 
     @GetMapping("/geoGuesserRank")
-    public String geoGuesserRank(@RequestParam(name = "roomCode", required = true) String roomCode) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public String geoGuesserRank(@RequestParam(name = "roomCode") String roomCode) {
         if (runner.containsRoom(roomCode)) {
-            String json;
-
-            try {
-                json = objectMapper.writeValueAsString(Map.of("winner", runner.geoGuesserWinner(roomCode), "rankPerson", runner.geoGuesserPersonRank(roomCode), "rankDistance", runner.geoGuesserDistanceRank(roomCode)));
-            } catch (Exception e) {
-                e.printStackTrace();
-                json = "{\"error\": \"Serialization error\"}";
-            }
-
-            return json;
+            return JsonUtils.returnJson(Map.of("winner", runner.geoGuesserWinner(roomCode), "rankPerson", runner.geoGuesserPersonRank(roomCode), "rankDistance", runner.geoGuesserDistanceRank(roomCode)), JsonUtils.returnJsonError("Serialisation error"));
         }
-
-        String jsonError;
-        try {
-            jsonError = objectMapper.writeValueAsString(Map.of("error", "Room not found"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            jsonError = "{\"error\": \"Serialization error\"}";
-        }
-
-        return jsonError;
+        return JsonUtils.roomNotFound;
     }
 
     @GetMapping("/presenterLocation")
-    public String presenterLocation(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String presenterLocation(@RequestParam(name = "roomCode") String roomCode) {
         return runner.presenterLocation(roomCode);
     }
+
 }

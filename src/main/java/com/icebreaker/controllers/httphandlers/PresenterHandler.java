@@ -17,6 +17,7 @@ import java.util.Map;
 public class PresenterHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
+
     public PresenterHandler(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }
@@ -25,22 +26,23 @@ public class PresenterHandler {
     public boolean changePresenter(@RequestParam(name = "roomCode") String roomCode,
                                    @RequestParam(name = "userID") String userID) {
         System.out.println("Change Presenter in room: " + roomCode + " to User: " + userID);
+        boolean result = runner.changePresenter(roomCode, userID);
         waitRoomService.broadcastMessage(roomCode);
-        return runner.changePresenter(roomCode, userID);
+        return result;
     }
 
     @GetMapping("/notPresentedPeople")
     public String getNotPresentedPeople(@RequestParam(name = "roomCode") String roomCode) {
         List<Person> notPresentedPeople = runner.getNotPresentedPeople(roomCode);
+        if (notPresentedPeople == null) {
+            return JsonUtils.returnJsonError("Room not found");
+        }
+
         if (notPresentedPeople.isEmpty()) {
             runner.changeRoomStatus(roomCode, RoomStatus.ALL_PRESENTED);
             waitRoomService.broadcastMessage(roomCode);
         }
 
-        if (notPresentedPeople != null) {
-            return JsonUtils.returnJson(Map.of("notPresentedPeople", notPresentedPeople), JsonUtils.unknownError);
-        }
-
-        return JsonUtils.returnJsonError("Room not found");
+        return JsonUtils.returnJson(Map.of("notPresentedPeople", notPresentedPeople), JsonUtils.roomNotFound);
     }
 }

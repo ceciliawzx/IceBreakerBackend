@@ -20,15 +20,17 @@ public class PresentRoomHandler {
     private final DrawingService drawingService;
     private final TimerService timerService;
     private final WaitRoomService waitRoomService;
+    private final GeoguesserService geoguesserService;
     private final ServerRunner runner = ServerRunner.getInstance();
 
     @Autowired
-    public PresentRoomHandler(WordleService wordleService, HangmanService hangmanService, DrawingService drawingService, TimerService timerService, WaitRoomService waitRoomService) {
+    public PresentRoomHandler(WordleService wordleService, HangmanService hangmanService, DrawingService drawingService, TimerService timerService, WaitRoomService waitRoomService, GeoguesserService geoguesserService) {
         this.wordleService = wordleService;
         this.hangmanService = hangmanService;
         this.drawingService = drawingService;
         this.timerService = timerService;
         this.waitRoomService = waitRoomService;
+        this.geoguesserService = geoguesserService;
     }
 
     @GetMapping("/getPresentRoomInfo")
@@ -77,8 +79,13 @@ public class PresentRoomHandler {
                 drawingService.returnToPresentingRoom(roomCode);
                 waitRoomService.broadcastMessage(roomCode);
                 System.out.println("Reseting Pictionary/Shareboard");
+            } else if (currentStat == RoomStatus.GEO_GUESSING) {
+                geoguesserService.returnToPresentingRoom(roomCode);
+                waitRoomService.broadcastMessage(roomCode);
+                System.out.println("Resetting Geoguesser");
             }
-            // Reset Timer when return to present room
+            // Reset Timer and showTimerModal when return to present room
+            timerService.resetShowTimerModal(roomCode);
             timerService.resetTimer();
 
             return "Success";

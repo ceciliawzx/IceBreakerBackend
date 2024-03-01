@@ -9,7 +9,6 @@ import org.glassfish.grizzly.utils.Pair;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Room {
@@ -19,7 +18,6 @@ public class Room {
     private final int roomNumber;
     @Getter
     private final String roomCode;
-    @Getter
     private final List<Person> players = new ArrayList<>(); // All players including the host. Host is at position 0
     private final List<Person> presentedList = new ArrayList<>();
     @Getter
@@ -39,6 +37,9 @@ public class Room {
     private PresentRoomInfo presentRoomInfo;
     private Geoguesser geoguesser;
     private final List<String> notifyIDs = new ArrayList<>();
+    @Getter
+    @Setter
+    private boolean showTimerModal = true;
 
     public Room(int roomNumber, String roomCode, Admin host) {
         this.roomNumber = roomNumber;
@@ -208,7 +209,7 @@ public class Room {
                 games.add(GameType.SHAREBOARD);
                 games.add(GameType.HANGMAN);
             }
-            case "favFood", "favActivity" -> {
+            case "favFood", "favActivity", "feeling" -> {
                 if (value.length() <= 7 && value.length() >= 4) {
                     games.add(GameType.WORDLE);
                 }
@@ -253,7 +254,7 @@ public class Room {
             return this.geoguesser.startGame(location);
         } else {
             boolean result = this.geoguesser.makeGuess(userID, location);
-            if (geoguesser.answersSumitted() >= players.size() - 2) {
+            if (geoguesser.answersSumitted() >= players.size() - 1) {
                 setGeoStatus(GeoguesserStatus.SUBMITTED);
             }
             return result;
@@ -269,7 +270,7 @@ public class Room {
     }
 
     public boolean checkNotSubmitted(String userID) {
-        if (userID.equals(this.host.getUserID())) {
+        if (userID.equals(this.presenter.getUserID())) {
             return this.geoguesser.getStatus().equals(GeoguesserStatus.PRE_CHOOSE);
         } else {
             return this.geoguesser.checkNotSubmitted(userID);
@@ -394,5 +395,9 @@ public class Room {
     public void resetPresentRoomInfo() {
         System.out.println("Resetting presentRoomInfo in room " + roomCode);
         this.presentRoomInfo = new PresentRoomInfo();
+    }
+
+    public void resetGeoguesser() {
+        this.geoguesser = new Geoguesser(GeoguesserStatus.PRE_CHOOSE);
     }
 }

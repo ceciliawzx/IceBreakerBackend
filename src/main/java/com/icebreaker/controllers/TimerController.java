@@ -1,22 +1,41 @@
 package com.icebreaker.controllers;
 
+import com.icebreaker.room.Room;
+import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.DrawingService;
 import com.icebreaker.services.HangmanService;
 import com.icebreaker.services.TimerService;
 import com.icebreaker.services.WordleService;
+import com.icebreaker.utils.JsonUtils;
 import com.icebreaker.websocket.TimerMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @Controller
+@RestController
 public class TimerController {
 
     private final TimerService timerService;
 
-
     public TimerController(TimerService timerService) {
         this.timerService = timerService;
+    }
+
+    @GetMapping("/getShowTimerModal")
+    public String getShowTimerModal(@RequestParam(name = "roomCode") String roomCode) {
+        ServerRunner serverRunner = ServerRunner.getInstance();
+        Room room = serverRunner.getRoom(roomCode);
+        if (room == null) {
+            return JsonUtils.returnRoomNotFoundJsonError();
+        }
+        boolean showTimerModal = room.isShowTimerModal();
+        return JsonUtils.returnJson(Map.of("showTimerModal", showTimerModal), JsonUtils.unknownError);
     }
 
     // Endpoint to start the timer

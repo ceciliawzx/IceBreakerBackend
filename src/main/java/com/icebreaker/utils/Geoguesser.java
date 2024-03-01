@@ -22,6 +22,9 @@ public class Geoguesser {
     private double correctLongitude;
     @Getter
     private String location;
+    @Setter
+    @Getter
+    private String fieldName;
 
     @Setter
     @Getter

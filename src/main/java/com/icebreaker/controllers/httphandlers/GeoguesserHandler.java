@@ -26,9 +26,11 @@ public class GeoguesserHandler {
     }
 
     @PostMapping("startGeoguesser")
-    public boolean startGeoguesser(@RequestParam(name = "roomCode") String roomCode) {
+    public boolean startGeoguesser(@RequestParam(name = "roomCode") String roomCode,
+                                   @RequestParam(name = "fieldName") String fieldName) {
         if (runner.changeRoomStatus(roomCode, RoomStatus.GEO_GUESSING)) {
             runner.resetGeoguesser(roomCode);
+            runner.setField(roomCode, fieldName);
             waitRoomService.broadcastMessage(roomCode);
             return true;
         }
@@ -69,6 +71,11 @@ public class GeoguesserHandler {
     @GetMapping("/presenterLocation")
     public String presenterLocation(@RequestParam(name = "roomCode") String roomCode) {
         return runner.presenterLocation(roomCode);
+    }
+
+    @GetMapping("/geoguesserFieldName")
+    public String geoguesserFieldName(@RequestParam(name = "roomCode") String roomCode) {
+        return runner.geoGuesserFieldName(roomCode);
     }
 
 }

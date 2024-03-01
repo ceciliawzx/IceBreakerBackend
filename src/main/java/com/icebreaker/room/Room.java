@@ -112,7 +112,7 @@ public class Room {
     }
 
     public boolean kickPerson(String userID) {
-        if (userID.equals(this.presenter.getUserID())) {
+        if (userID.equals(host.getUserID())) {
             return false;
         } else {
             for (Person p : players) {

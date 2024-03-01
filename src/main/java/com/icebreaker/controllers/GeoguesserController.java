@@ -7,7 +7,9 @@ import com.icebreaker.websocket.HangmanMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class GeoguesserController {
     private final GeoguesserService geoguesserService;
 

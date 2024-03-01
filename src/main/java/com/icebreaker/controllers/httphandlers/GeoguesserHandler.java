@@ -25,9 +25,9 @@ public class GeoguesserHandler {
     }
 
     @PostMapping("startGeoguesser")
-    public boolean startGeoguesser(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public boolean startGeoguesser(@RequestParam(name = "roomCode") String roomCode) {
         if (runner.changeRoomStatus(roomCode, RoomStatus.GEO_GUESSING)) {
-            runner.resetGeoguesser(roomCode);
+//            runner.resetGeoguesser(roomCode);
             waitRoomService.broadcastMessage(roomCode);
             return true;
         }
@@ -35,7 +35,7 @@ public class GeoguesserHandler {
     }
 
     @GetMapping("getGeoguesserStatus")
-    public String getGeoguesserStatus(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String getGeoguesserStatus(@RequestParam(name = "roomCode") String roomCode) {
         ObjectMapper objectMapper = new ObjectMapper();
         if (runner.containsRoom(roomCode)) {
             String json;
@@ -62,22 +62,22 @@ public class GeoguesserHandler {
     }
 
     @PostMapping("setTargetLocation")
-    public boolean setTargetLocation(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                     @RequestParam(name = "location", required = true) String location,
-                                     @RequestParam(name = "userID", required = true) String userID) {
+    public boolean setTargetLocation(@RequestParam(name = "roomCode") String roomCode,
+                                     @RequestParam(name = "location") String location,
+                                     @RequestParam(name = "userID") String userID) {
         boolean isSet = runner.setTargetLocation(roomCode, location, userID);
         waitRoomService.broadcastMessage(roomCode);
         return isSet;
     }
 
     @GetMapping("getUserGeoSubmission")
-    public boolean getUserGeoSubmission(@RequestParam(name = "roomCode", required = true) String roomCode,
-                                        @RequestParam(name = "userID", required = true) String userID) {
+    public boolean getUserGeoSubmission(@RequestParam(name = "roomCode") String roomCode,
+                                        @RequestParam(name = "userID") String userID) {
         return !runner.checkNotSubmission(roomCode, userID);
     }
 
     @GetMapping("/geoGuesserRank")
-    public String geoGuesserRank(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String geoGuesserRank(@RequestParam(name = "roomCode") String roomCode) {
         ObjectMapper objectMapper = new ObjectMapper();
         if (runner.containsRoom(roomCode)) {
             String json;
@@ -104,7 +104,7 @@ public class GeoguesserHandler {
     }
 
     @GetMapping("/presenterLocation")
-    public String presenterLocation(@RequestParam(name = "roomCode", required = true) String roomCode) {
+    public String presenterLocation(@RequestParam(name = "roomCode") String roomCode) {
         return runner.presenterLocation(roomCode);
     }
 

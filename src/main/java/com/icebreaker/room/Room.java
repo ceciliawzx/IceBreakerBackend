@@ -9,7 +9,6 @@ import org.glassfish.grizzly.utils.Pair;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Room {
@@ -19,7 +18,6 @@ public class Room {
     private final int roomNumber;
     @Getter
     private final String roomCode;
-    @Getter
     private final List<Person> players = new ArrayList<>(); // All players including the host. Host is at position 0
     private final List<Person> presentedList = new ArrayList<>();
     @Getter
@@ -114,7 +112,7 @@ public class Room {
     }
 
     public boolean kickPerson(String userID) {
-        if (userID.equals(host.getUserID())) {
+        if (userID.equals(this.presenter.getUserID())) {
             return false;
         } else {
             for (Person p : players) {
@@ -272,7 +270,7 @@ public class Room {
     }
 
     public boolean checkNotSubmitted(String userID) {
-        if (userID.equals(this.host.getUserID())) {
+        if (userID.equals(this.presenter.getUserID())) {
             return this.geoguesser.getStatus().equals(GeoguesserStatus.PRE_CHOOSE);
         } else {
             return this.geoguesser.checkNotSubmitted(userID);

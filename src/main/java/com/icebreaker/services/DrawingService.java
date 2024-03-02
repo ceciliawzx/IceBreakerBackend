@@ -5,6 +5,7 @@ import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.websocket.BackMessage;
 import com.icebreaker.websocket.DrawingMessage;
 import com.icebreaker.websocket.ModalMessage;
+import com.icebreaker.websocket.PasteImgMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,11 @@ public class DrawingService {
 
     public void broadcastDrawing(String roomCode, DrawingMessage message) {
         System.out.println("Broadcast drawing to room " + roomCode + ": " + message.toString());
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/drawing", message);
+    }
+
+    public void broadcastPasteImg(String roomCode, PasteImgMessage message) {
+        System.out.println("Broadcast pasteImg to room " + roomCode + ": " + message.toString());
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/drawing", message);
     }
 

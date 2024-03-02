@@ -2,6 +2,7 @@ package com.icebreaker.controllers;
 
 import com.icebreaker.services.DrawingService;
 import com.icebreaker.websocket.DrawingMessage;
+import com.icebreaker.websocket.PasteImgMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -24,6 +25,13 @@ public class DrawingController {
         String roomCode = String.valueOf(message.getRoomCode());
         System.out.println("Receiving drawing message " + message + "from room " + roomCode);
         drawingService.broadcastDrawing(roomCode, message);
+    }
+
+    @MessageMapping("/room/{roomCode}/sendPasteImg")
+    public void handlePasteImg(@Payload PasteImgMessage message) {
+        String roomCode = String.valueOf(message.getRoomCode());
+        System.out.println("Receiving paste message " + message + "from room " + roomCode);
+        drawingService.broadcastPasteImg(roomCode, message);
     }
 
 }

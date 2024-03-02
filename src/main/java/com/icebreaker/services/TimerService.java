@@ -48,6 +48,8 @@ public class TimerService {
             if (countdown > 0) {
                 countdown--;
                 timerMessage.setSeconds(countdown);
+                timerMessage.setStarted(true);
+                // Broadcast this message to hangman in order to ban keyboard input before timer starts
                 hangmanService.broadCastTimerStarted(roomCode);
                 messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", timerMessage);
             } else {

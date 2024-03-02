@@ -27,6 +27,7 @@ public class MockRoomHandler {
         final String MOCK_ROOM_CODE = "TEST";
         wordleService.resetSession(MOCK_ROOM_CODE);
         hangmanService.resetSession(MOCK_ROOM_CODE);
+
         return runner.restartMockRoom();
     }
 }

@@ -155,4 +155,10 @@ public class HangmanService {
             resetSession(roomCode);
         }
     }
+
+    public void broadCastTimerStarted(String roomCode) {
+        TimerMessage timerMessage = new TimerMessage();
+        timerMessage.setStarted(true);
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/hangman", timerMessage);
+    }
 }

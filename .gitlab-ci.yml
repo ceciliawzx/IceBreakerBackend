@@ -4,7 +4,9 @@ image: openjdk:17-jdk-alpine
 
 stages:
   - build_and_test
-  - deploy
+  - deploy_master
+  - deploy_dev
+  - deploy_test
   - integration_test
 
 cache:
@@ -36,10 +38,11 @@ variables:
   REMOTE_USER: "ice"
   JAR_FILE: "target/IceBreakerBackend-1.0.jar"
   SSH_PASSWORD: "$CI_SSH_PASSWORD"
-  EXISTING_PORT: 8080
 
-deploy:
-  stage: deploy
+deploy_master:
+  stage: deploy_master
+  variables:
+    EXISTING_PORT: 8080
   script:
     - apk add openssh-client
     - apk add sshpass
@@ -50,7 +53,7 @@ deploy:
     - echo "EXISTING_PID $EXISTING_PID"
 
     # copy jar to server
-    - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$JAR_FILE" "$REMOTE_USER@$REMOTE_SERVER:IceBreaker/cicd/"
+    - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$JAR_FILE" "$REMOTE_USER@$REMOTE_SERVER:IceBreaker/prod/"
 
     # if existing, kill it
     - >
@@ -62,12 +65,87 @@ deploy:
       fi
 
     # launch
-    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "nohup java -jar IceBreaker/cicd/IceBreakerBackend-1.0.jar &>/dev/null  &"
+    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "nohup java -jar IceBreaker/prod/IceBreakerBackend-1.0.jar &>/dev/null  &"
 
     - sleep 5
 
     # Show current pid
     - echo $(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
+  only:
+    - master
+
+
+deploy_dev:
+  stage: deploy_dev
+  variables:
+    EXISTING_PORT: 8081
+  script:
+    - apk add openssh-client
+    - apk add sshpass
+
+    # search if there is existing pid
+    - EXISTING_PID=$(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
+    - echo "Checking for existing process on port $EXISTING_PORT"
+    - echo "EXISTING_PID $EXISTING_PID"
+
+    # copy jar to server
+    - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$JAR_FILE" "$REMOTE_USER@$REMOTE_SERVER:IceBreaker/dev/"
+
+    # if existing, kill it
+    - >
+      if [ "$EXISTING_PID" != "not_found" ]; then
+        echo "Killing existing process on port $EXISTING_PORT with PID $EXISTING_PID"
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "kill $EXISTING_PID"
+      else
+        echo "No existing process found on port $EXISTING_PORT"
+      fi
+
+    # launch
+    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "nohup java -jar IceBreaker/dev/IceBreakerBackend-1.0.jar &>/dev/null  &"
+
+    - sleep 5
+
+    # Show current pid
+    - echo $(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
+  except:
+    - master
+    - test
+
+
+deploy_test:
+  stage: deploy_test
+  variables:
+    EXISTING_PORT: 8888
+  script:
+    - apk add openssh-client
+    - apk add sshpass
+
+    # search if there is existing pid
+    - EXISTING_PID=$(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
+    - echo "Checking for existing process on port $EXISTING_PORT"
+    - echo "EXISTING_PID $EXISTING_PID"
+
+    # copy jar to server
+    - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$JAR_FILE" "$REMOTE_USER@$REMOTE_SERVER:IceBreaker/test/"
+
+    # if existing, kill it
+    - >
+      if [ "$EXISTING_PID" != "not_found" ]; then
+        echo "Killing existing process on port $EXISTING_PORT with PID $EXISTING_PID"
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "kill $EXISTING_PID"
+      else
+        echo "No existing process found on port $EXISTING_PORT"
+      fi
+
+    # launch
+    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "nohup java -jar IceBreaker/test/IceBreakerBackend-1.0.jar &>/dev/null  &"
+
+    - sleep 5
+
+    # Show current pid
+    - echo $(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
+  only:
+    - test
 
 integration_test:
   stage: integration_test
@@ -80,3 +158,5 @@ integration_test:
     - ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
     # Only run integration tests after deployment
     - mvn failsafe:integration-test
+  only:
+    - master

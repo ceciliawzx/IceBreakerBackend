@@ -65,7 +65,8 @@ deploy_master:
       fi
 
     # launch
-    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "nohup java -jar IceBreaker/prod/IceBreakerBackend-1.0.jar &>/dev/null  &"
+    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "export PATH=\$PATH:/home/ice/.local/bin && cd $DEPLOY_DIRECTORY && nohup gunicorn --workers 2 --bind 0.0.0.0:$GUNICORN_PORT $APP_MODULE &>/dev/null & < /dev/null &"
+
 
     - sleep 5
 

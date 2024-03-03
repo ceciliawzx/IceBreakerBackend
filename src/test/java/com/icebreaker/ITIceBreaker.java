@@ -1,6 +1,7 @@
 package com.icebreaker;
 
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -8,10 +9,13 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class ITIceBreaker {
 
+    @BeforeAll
+    public static void setup() {
+        RestAssured.baseURI = "https://ljthey.co.uk:8080/";
+    }
+
     @Test
     public void endpointCanReceiveRequestAndResponse() {
-        // Specify the base URL of your deployed server
-        RestAssured.baseURI = "https://ljthey.co.uk:8080/";
         given()
                 .queryParam("message", "Hello")
                 .when()

@@ -60,7 +60,7 @@ public class RoomHandler {
             return JsonUtils.returnJson(
                     Map.of("userID", usb.toString()), "Join Room Failed");
         } else {
-            return "Join Room Failed";
+            return JsonUtils.roomNotFound;
         }
     }
 

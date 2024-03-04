@@ -202,26 +202,43 @@ public class Room {
         switch (fieldName) {
             case "country", "city" -> {
                 games.add(GameType.GEOGUESSER);
-                if (value.length() <= 7 && value.length() >= 4) {
+                if (checkForWorldle(value)) {
                     games.add(GameType.WORDLE);
                 }
                 games.add(GameType.PICTIONARY);
+                if (checkForHangman(value)) {
+                    games.add(GameType.HANGMAN);
+                }
                 games.add(GameType.SHAREBOARD);
-                games.add(GameType.HANGMAN);
             }
             case "favFood", "favActivity", "feeling" -> {
-                if (value.length() <= 7 && value.length() >= 4) {
+                if (checkForWorldle(value)) {
                     games.add(GameType.WORDLE);
                 }
                 games.add(GameType.PICTIONARY);
                 games.add(GameType.SHAREBOARD);
-                games.add(GameType.HANGMAN);
+                if (checkForHangman(value)) {
+                    games.add(GameType.HANGMAN);
+                }
             }
             default -> {
                 return games;
             }
         }
         return games;
+    }
+
+    private boolean checkForHangman(String value) {
+        return value.matches("[a-zA-Z ]+");
+    }
+
+    private boolean checkForWorldle(String value) {
+        if (value.length() <= 7 && value.length() >= 4) {
+            if (!value.contains(" ")) {
+                return value.matches("[a-zA-Z]+");
+            }
+        }
+        return false;
     }
 
     public String getFieldValue(String userID, String fieldName) {

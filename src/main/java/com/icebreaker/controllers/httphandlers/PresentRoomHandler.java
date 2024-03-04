@@ -69,16 +69,16 @@ public class PresentRoomHandler {
                 wordleService.returnToPresentingRoom(roomCode);
                 wordleService.resetSession(roomCode);
                 waitRoomService.broadcastMessage(roomCode);
-                System.out.println("Reseting Wordle");
+                System.out.println("Resetting Wordle");
             } else if (currentStat == RoomStatus.HANGMAN) {
                 hangmanService.returnToPresentingRoom(roomCode);
                 hangmanService.resetSession(roomCode);
                 waitRoomService.broadcastMessage(roomCode);
-                System.out.println("Reseting Hangman");
+                System.out.println("Resetting Hangman");
             } else if (currentStat == RoomStatus.PICTURING || currentStat == RoomStatus.SHAREBOARD) {
                 drawingService.returnToPresentingRoom(roomCode);
                 waitRoomService.broadcastMessage(roomCode);
-                System.out.println("Reseting Pictionary/Shareboard");
+                System.out.println("Resetting Pictionary/Shareboard");
             } else if (currentStat == RoomStatus.GEO_GUESSING) {
                 geoguesserService.returnToPresentingRoom(roomCode);
                 waitRoomService.broadcastMessage(roomCode);

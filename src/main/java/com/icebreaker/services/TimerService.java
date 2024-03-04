@@ -39,8 +39,6 @@ public class TimerService {
         countdown = timerMessage.getSeconds();
         String roomCode = timerMessage.getRoomCode();
         runner.getRoom(roomCode).setShowTimerModal(false);
-        TimerModalMessage timerModalMessage = new TimerModalMessage(roomCode, false);
-        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", timerModalMessage);
         if (future != null) {
             future.cancel(false);
         }
@@ -49,8 +47,9 @@ public class TimerService {
                 countdown--;
                 timerMessage.setSeconds(countdown);
                 timerMessage.setStarted(true);
-                // Broadcast this message to hangman in order to ban keyboard input before timer starts
+                // Broadcast this message to services in order to ban keyboard input before timer starts
                 hangmanService.broadCastTimerStarted(roomCode);
+                wordleService.broadCastTimerStarted(roomCode);
                 messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", timerMessage);
             } else {
                 stopTimer(timerMessage);

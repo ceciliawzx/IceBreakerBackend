@@ -2,10 +2,7 @@ package com.icebreaker.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.room.Target;
-import com.icebreaker.websocket.BackMessage;
-import com.icebreaker.websocket.ModalMessage;
-import com.icebreaker.websocket.WordleMessage;
-import com.icebreaker.websocket.WordleStateCode;
+import com.icebreaker.websocket.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -133,6 +130,12 @@ public class WordleService {
             System.out.println("Remove Answer: " + roomCode);
             resetSession(roomCode);
         }
+    }
+
+    public void broadCastTimerStarted(String roomCode) {
+        TimerMessage timerMessage = new TimerMessage();
+        timerMessage.setStarted(true);
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", timerMessage);
     }
 }
 

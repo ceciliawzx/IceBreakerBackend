@@ -4,6 +4,7 @@ import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.GeoguesserService;
 import com.icebreaker.services.WaitRoomService;
+import com.icebreaker.utils.GeoguesserStatus;
 import com.icebreaker.utils.JsonUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,5 +75,10 @@ public class GeoguesserHandler {
     @GetMapping("/geoguesserFieldName")
     public String geoguesserFieldName(@RequestParam(name = "roomCode") String roomCode) {
         return runner.geoGuesserFieldName(roomCode);
+    }
+
+    @PostMapping("/geoguesserForceEnd")
+    public boolean geoguesserForceEnd(@RequestParam(name = "roomCode") String roomCode) {
+        return runner.setGeoStatusInRoom(roomCode, GeoguesserStatus.SUBMITTED);
     }
 }

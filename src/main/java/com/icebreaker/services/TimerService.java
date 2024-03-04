@@ -26,13 +26,15 @@ public class TimerService {
     private final DrawingService drawingService;
     private final WordleService wordleService;
     private final HangmanService hangmanService;
+    private final GeoguesserService geoguesserService;
     private final ServerRunner runner = ServerRunner.getInstance();
 
-    public TimerService(SimpMessagingTemplate messagingTemplate, DrawingService drawingService, WordleService wordleService, HangmanService hangmanService) {
+    public TimerService(SimpMessagingTemplate messagingTemplate, DrawingService drawingService, WordleService wordleService, HangmanService hangmanService, GeoguesserService geoguesserService) {
         this.messagingTemplate = messagingTemplate;
         this.drawingService = drawingService;
         this.wordleService = wordleService;
         this.hangmanService = hangmanService;
+        this.geoguesserService = geoguesserService;
     }
 
     public void startTimer(TimerMessage timerMessage) {
@@ -81,6 +83,8 @@ public class TimerService {
                 wordleService.showModal(roomCode);
             } else if (currentStat == RoomStatus.HANGMAN) {
                 hangmanService.showModal(roomCode);
+            } else if (currentStat == RoomStatus.GEO_GUESSING) {
+                geoguesserService.showModal(roomCode);
             } else if (currentStat == RoomStatus.PRESENTING) {
             } else {
                 System.out.println("Uncaught case in stopTimer: " + currentStat);

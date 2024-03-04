@@ -1,10 +1,7 @@
 package com.icebreaker.utils;
 
-import com.icebreaker.person.Person;
-import groovy.transform.Sealed;
 import lombok.*;
 import org.glassfish.grizzly.utils.Pair;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +14,6 @@ import static java.lang.Math.toRadians;
 public class Geoguesser {
 
     private static final double EARTH_RADIUS = 6371;
-    private int score = 0;
     private double correctLatitude;
     private double correctLongitude;
     @Getter
@@ -34,7 +30,6 @@ public class Geoguesser {
     private List<Pair<String, Double>> guesses;
 
     public boolean startGame(String location) {
-        this.score = 0;
         this.guesses = new ArrayList<>();
         String[] parts = location.split(",");
         this.correctLatitude = Double.parseDouble(parts[0].trim());

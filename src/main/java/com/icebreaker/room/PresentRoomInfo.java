@@ -1,4 +1,5 @@
 package com.icebreaker.room;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
@@ -12,25 +13,25 @@ public class PresentRoomInfo {
     // true -> field has been revealed
     @Getter
     @Setter
-    private boolean firstName = false;
+    private boolean firstName;
     @Getter
     @Setter
-    private boolean lastName = false;
+    private boolean lastName;
     @Getter
     @Setter
-    private boolean country = false;
+    private boolean country;
     @Getter
     @Setter
-    private boolean city = false;
+    private boolean city;
     @Getter
     @Setter
-    private boolean feeling = false;
+    private boolean feeling;
     @Getter
     @Setter
-    private boolean favFood = false;
+    private boolean favFood;
     @Getter
     @Setter
-    private boolean favActivity = false;
+    private boolean favActivity;
 
     public PresentRoomInfo(@NonNull boolean firstName, @NonNull boolean lastName, @NonNull boolean country, @NonNull boolean city, @NonNull boolean feeling, @NonNull boolean favFood, @NonNull boolean favActivity) {
         this.firstName = firstName;

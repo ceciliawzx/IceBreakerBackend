@@ -1,6 +1,5 @@
 package com.icebreaker.services;
 
-import com.icebreaker.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.websocket.BackMessage;
 import com.icebreaker.websocket.DrawingMessage;
@@ -9,8 +8,6 @@ import com.icebreaker.websocket.PasteImgMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class DrawingService {

@@ -1,5 +1,6 @@
 package com.icebreaker.websocket;
 
+import com.icebreaker.utils.WordleStateCode;
 import lombok.*;
 
 import java.util.List;
@@ -9,9 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HangmanMessage {
-    // Char guessLetter
-    // bool isCorrect
-    // List<int> correctPositions
     private Character guessLetter;
     private Boolean isCorrect;
     private List<Integer> correctPositions;

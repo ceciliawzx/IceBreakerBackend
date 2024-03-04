@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShareBoardHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
+
     public ShareBoardHandler(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }

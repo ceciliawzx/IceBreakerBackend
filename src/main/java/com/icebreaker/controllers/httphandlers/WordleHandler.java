@@ -19,6 +19,7 @@ public class WordleHandler {
     private final WordleService wordleService;
     private final WaitRoomService waitRoomService;
     private final ServerRunner runner = ServerRunner.getInstance();
+
     @Autowired
     public WordleHandler(WordleService wordleService, WaitRoomService waitRoomService) {
         this.wordleService = wordleService;

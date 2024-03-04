@@ -16,6 +16,7 @@ public class HangmanHandler {
     private final HangmanService hangmanService;
     private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
+
     @Autowired
     public HangmanHandler(HangmanService hangmanService, WaitRoomService waitRoomService) {
         this.hangmanService = hangmanService;
@@ -52,7 +53,7 @@ public class HangmanHandler {
     public String getHangmanAnswer(@RequestParam(name = "roomCode") String roomCode) {
         if (hangmanService.roomExist(roomCode)) {
             System.out.println("Get hangman answer, the answer is: " + hangmanService.getAnswer(roomCode));
-            Target target =  hangmanService.getAnswer(roomCode);
+            Target target = hangmanService.getAnswer(roomCode);
             return JsonUtils.returnJson(Map.of("target", target), "Room not found");
         }
         return "Error";
@@ -64,7 +65,7 @@ public class HangmanHandler {
             try {
                 return JsonUtils.returnJson(Map.of("hangmanmessage", hangmanService.getGameStatus(roomCode)), "Error fetching Hangman Status");
             } catch (Exception e) {
-
+                return JsonUtils.returnJsonError(e.getMessage());
             }
         }
         return "Error";

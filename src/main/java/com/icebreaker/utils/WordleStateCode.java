@@ -1,4 +1,4 @@
-package com.icebreaker.websocket;
+package com.icebreaker.utils;
 
 public enum WordleStateCode {
     UNCHECKED,

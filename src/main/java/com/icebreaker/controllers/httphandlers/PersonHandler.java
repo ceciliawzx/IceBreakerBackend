@@ -15,6 +15,7 @@ import java.util.Map;
 public class PersonHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
+
     public PersonHandler(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }

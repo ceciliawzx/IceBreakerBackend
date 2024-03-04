@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-import java.net.InetSocketAddress;
-
 @Getter
 @Setter
 public class Admin extends Person {

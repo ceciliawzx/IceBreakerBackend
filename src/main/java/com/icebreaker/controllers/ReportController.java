@@ -53,7 +53,7 @@ public class ReportController {
 
     @GetMapping("/fetchReportsForUser")
     public String fetchReportsForUser(@RequestParam(name = "roomCode") String roomCode,
-                                                 @RequestParam(name = "userID") String userID) {
+                                      @RequestParam(name = "userID") String userID) {
         if (!allReports.containsKey(roomCode)) {
             fetchReports(roomCode);
         }
@@ -67,8 +67,8 @@ public class ReportController {
 
     @GetMapping("/fetchReportOfUser")
     public String fetchReportOfUser(@RequestParam(name = "roomCode") String roomCode,
-                                               @RequestParam(name = "userID1") String userID1,
-                                               @RequestParam(name = "userID2") String userID2) {
+                                    @RequestParam(name = "userID1") String userID1,
+                                    @RequestParam(name = "userID2") String userID2) {
         if (!allReports.containsKey(roomCode)) {
             fetchReports(roomCode);
         }

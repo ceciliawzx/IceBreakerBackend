@@ -2,6 +2,7 @@ package com.icebreaker.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.room.Target;
+import com.icebreaker.utils.WordleStateCode;
 import com.icebreaker.websocket.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

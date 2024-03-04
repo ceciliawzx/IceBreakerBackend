@@ -6,7 +6,6 @@ import com.icebreaker.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.*;
 import com.icebreaker.utils.JsonUtils;
-import com.icebreaker.websocket.TimerMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,28 +64,39 @@ public class PresentRoomHandler {
         if (runner.changeRoomStatus(roomCode, RoomStatus.PRESENTING)) {
             // Reset target
             runner.setTargetInRoom(roomCode, new Target("", ""));
-            if (currentStat == RoomStatus.WORDLING) {
-                wordleService.returnToPresentingRoom(roomCode);
-                wordleService.resetSession(roomCode);
-                waitRoomService.broadcastMessage(roomCode);
-                System.out.println("Resetting Wordle");
-            } else if (currentStat == RoomStatus.HANGMAN) {
-                hangmanService.returnToPresentingRoom(roomCode);
-                hangmanService.resetSession(roomCode);
-                waitRoomService.broadcastMessage(roomCode);
-                System.out.println("Resetting Hangman");
-            } else if (currentStat == RoomStatus.PICTURING || currentStat == RoomStatus.SHAREBOARD) {
-                drawingService.returnToPresentingRoom(roomCode);
-                waitRoomService.broadcastMessage(roomCode);
-                System.out.println("Resetting Pictionary/Shareboard");
-            } else if (currentStat == RoomStatus.GEO_GUESSING) {
-                geoguesserService.returnToPresentingRoom(roomCode);
-                waitRoomService.broadcastMessage(roomCode);
-                System.out.println("Resetting Geoguesser");
+            switch (currentStat) {
+                case WORDLING -> {
+                    wordleService.returnToPresentingRoom(roomCode);
+                    wordleService.resetSession(roomCode);
+                    waitRoomService.broadcastMessage(roomCode);
+                    System.out.println("Resetting Wordle");
+                }
+                case HANGMAN -> {
+                    hangmanService.returnToPresentingRoom(roomCode);
+                    hangmanService.resetSession(roomCode);
+                    waitRoomService.broadcastMessage(roomCode);
+                    System.out.println("Resetting Hangman");
+                }
+                case PICTURING -> {
+                    drawingService.returnToPresentingRoom(roomCode);
+                    waitRoomService.broadcastMessage(roomCode);
+                    System.out.println("Resetting Pictionary");
+                }
+                case SHAREBOARD -> {
+                    drawingService.returnToPresentingRoom(roomCode);
+                    waitRoomService.broadcastMessage(roomCode);
+                    System.out.println("Resetting ShareBoard");
+                }
+                case GEO_GUESSING -> {
+                    geoguesserService.returnToPresentingRoom(roomCode);
+                    waitRoomService.broadcastMessage(roomCode);
+                    System.out.println("Resetting Geoguesser");
+                }
+                default -> System.out.println("Uncaught case in backToPresentRoom");
             }
             // Reset Timer and showTimerModal when return to present room
             timerService.resetShowTimerModal(roomCode);
-            timerService.resetTimer();
+            timerService.resetTimer(roomCode);
 
             return "Success";
         }

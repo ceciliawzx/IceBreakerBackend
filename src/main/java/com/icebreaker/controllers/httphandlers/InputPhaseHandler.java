@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class InputPhaseHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
+
     public InputPhaseHandler(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }

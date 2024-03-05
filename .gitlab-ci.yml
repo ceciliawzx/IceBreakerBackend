@@ -7,6 +7,7 @@ stages:
   - deploy_master
   - deploy_dev
   - deploy_test
+  - deploy_release
   - integration_test
 
 cache:
@@ -73,6 +74,42 @@ deploy_master:
     - echo $(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
   only:
     - master
+
+deploy_release:
+  stage: deploy_release
+  variables:
+    EXISTING_PORT: 8866
+  script:
+    - apk add openssh-client
+    - apk add sshpass
+
+    # search if there is existing pid
+    - EXISTING_PID=$(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
+    - echo "Checking for existing process on port $EXISTING_PORT"
+    - echo "EXISTING_PID $EXISTING_PID"
+
+    # copy jar to server
+    - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$JAR_FILE" "$REMOTE_USER@$REMOTE_SERVER:IceBreaker/release/"
+
+    # if existing, kill it
+    - >
+      if [ "$EXISTING_PID" != "not_found" ]; then
+        echo "Killing existing process on port $EXISTING_PORT with PID $EXISTING_PID"
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "kill $EXISTING_PID"
+      else
+        echo "No existing process found on port $EXISTING_PORT"
+      fi
+
+    # launch
+    - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "nohup java -jar IceBreaker/release/IceBreakerBackend-1.0.jar &>/dev/null  &"
+
+    - sleep 5
+
+    # Show current pid
+    - echo $(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
+  only:
+    - release
+
 
 
 deploy_dev:

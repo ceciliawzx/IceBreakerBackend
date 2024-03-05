@@ -4,9 +4,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-import java.net.InetSocketAddress;
-
-
 @Getter
 @Setter
 public class User extends Person {

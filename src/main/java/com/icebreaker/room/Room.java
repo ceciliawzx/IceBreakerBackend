@@ -13,7 +13,6 @@ import java.util.List;
 
 public class Room {
 
-    private final int MAX_CAPACITY = 10;
     @Getter
     private final int roomNumber;
     @Getter
@@ -243,7 +242,7 @@ public class Room {
 
     public String getFieldValue(String userID, String fieldName) {
         Person person = null;
-        for (Person player: players) {
+        for (Person player : players) {
             if (player.getUserID().equals(userID)) {
                 person = player;
                 break;
@@ -322,12 +321,12 @@ public class Room {
         List<String> playerIDs = new ArrayList<>();
         List<Person> playerRankList = new ArrayList<>();
 
-        for (int i = 0; i < rank.size(); i++) {
-            playerIDs.add(rank.get(i).getFirst());
+        for (Pair<String, Double> stringDoublePair : rank) {
+            playerIDs.add(stringDoublePair.getFirst());
         }
 
-        for (int i = 0; i < playerIDs.size(); i++) {
-            Person person = findPersonByID(playerIDs.get(i));
+        for (String playerID : playerIDs) {
+            Person person = findPersonByID(playerID);
             if (person != null) {
                 playerRankList.add(person);
             }
@@ -339,8 +338,8 @@ public class Room {
         List<Pair<String, Double>> rank = this.geoguesser.geoGuesserRank();
         List<Double> distances = new ArrayList<>();
 
-        for (int i = 0; i < rank.size(); i++) {
-            distances.add(rank.get(i).getSecond());
+        for (Pair<String, Double> stringDoublePair : rank) {
+            distances.add(stringDoublePair.getSecond());
         }
 
         return distances;
@@ -352,7 +351,7 @@ public class Room {
 
     public List<Person> getOtherPlayers() {
         List<Person> res = new ArrayList<>();
-        for (Person player: players) {
+        for (Person player : players) {
             if (!player.getUserID().equals(host.getUserID()) && !player.getUserID().equals(presenter.getUserID())) {
                 res.add(player);
             }
@@ -362,15 +361,15 @@ public class Room {
 
     public List<String> getOtherPlayersIds() {
         List<String> res = new ArrayList<>();
-        for (Person player: getOtherPlayers()) {
-           res.add(player.getUserID());
+        for (Person player : getOtherPlayers()) {
+            res.add(player.getUserID());
         }
         return res;
     }
 
     public boolean allGuessed() {
         System.out.println("all guessed: other players, " + getOtherPlayersIds().toString() + "correctly guessed: " + correctlyGuessedPlayerIds.toString());
-        for (String id: getOtherPlayersIds()) {
+        for (String id : getOtherPlayersIds()) {
             if (!correctlyGuessedPlayerIds.contains(id)) {
                 return false;
             }

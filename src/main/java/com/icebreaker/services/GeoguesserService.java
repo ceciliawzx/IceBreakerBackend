@@ -1,6 +1,5 @@
 package com.icebreaker.services;
 
-import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.websocket.BackMessage;
 import com.icebreaker.websocket.GeoguesserMessage;
 import com.icebreaker.websocket.ModalMessage;

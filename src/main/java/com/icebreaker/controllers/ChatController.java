@@ -1,8 +1,6 @@
 package com.icebreaker.controllers;
 
-import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
-import com.icebreaker.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.ChatService;
 import com.icebreaker.websocket.ChatMessage;
@@ -27,6 +25,7 @@ public class ChatController {
     public ChatController(ChatService chatService) {
         this.chatService = chatService;
     }
+
     private final ServerRunner serverRunner = ServerRunner.getInstance();
 
     @MessageMapping("/room/{roomCode}/sendMessage")

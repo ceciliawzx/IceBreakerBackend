@@ -1,8 +1,6 @@
 package com.icebreaker.controllers.httphandlers;
 
-import com.icebreaker.room.PresentRoomInfo;
 import com.icebreaker.serverrunner.ServerRunner;
-import com.icebreaker.services.DrawingService;
 import com.icebreaker.services.HangmanService;
 import com.icebreaker.services.WordleService;
 import org.springframework.beans.factory.annotation.Autowired;

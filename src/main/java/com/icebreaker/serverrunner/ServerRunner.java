@@ -29,7 +29,6 @@ public class ServerRunner {
     private final Map<Integer, Room> roomNumbers = new HashMap<>();
     private final Map<String, Integer> codeNumberMapping = new HashMap<>();
     private final Map<Integer, String> numberCodeMapping = new HashMap<>();
-    private final int mockRoomNumber = -1;
     private final String mockRoomCode = "TEST";
     private Room mockRoom;
     private final Person mockAlex = new User("Alexy", mockRoomCode, "2", Constants.getYellowDuck(),
@@ -62,6 +61,7 @@ public class ServerRunner {
     }
 
     private Room createMockRoom() {
+        int mockRoomNumber = -1;
         Room mockRoom = new Room(mockRoomNumber, mockRoomCode, mockAdminBob);
         addRoom(mockRoom, mockRoomCode);
         joinRoom(mockRoomCode, "Alexy", "2");

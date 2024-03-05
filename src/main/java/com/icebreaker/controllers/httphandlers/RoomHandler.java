@@ -23,6 +23,7 @@ public class RoomHandler {
     private final AtomicInteger roomNumber = new AtomicInteger(0);
     private final AtomicInteger userID = new AtomicInteger(0);
     private final WaitRoomService waitRoomService;
+
     public RoomHandler(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }

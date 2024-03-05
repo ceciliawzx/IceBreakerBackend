@@ -1,6 +1,7 @@
 package com.icebreaker.services;
 
 import com.icebreaker.room.Room;
+import com.icebreaker.room.RoomStatus;
 import com.icebreaker.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.websocket.ChatMessage;
@@ -24,8 +25,20 @@ public class ChatService {
     }
 
     public void broadcastToRoom(String roomCode, ChatMessage message) {
-        System.out.println("Broadcast to room " + roomCode + ": " + message.toString());
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/chatRoom", message);
+    }
+
+    public void handleMessage(ChatMessage message) {
+        // Draw & Guess: handle guess messages
+        // When the RoomStatus changes to PICTURING, any message sent to server will be regarded as a guess
+        String roomCode = message.getRoomCode();
+        if (runner.getStatus(roomCode) == RoomStatus.PICTURING) {
+            checkGuessWord(roomCode, message);
+        } else {
+            // Otherwise, just broadcast the chat message
+            message.setContent("Server has received your message: " + message.getContent());
+        }
+        broadcastToRoom(roomCode, message);
     }
 
     public void checkGuessWord(String roomCode, ChatMessage message) {

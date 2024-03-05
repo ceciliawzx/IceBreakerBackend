@@ -21,14 +21,12 @@ public class DrawingController {
     @MessageMapping("/room/{roomCode}/sendDrawing")
     public void handleDrawing(@Payload DrawingMessage message) {
         String roomCode = String.valueOf(message.getRoomCode());
-        System.out.println("Receiving drawing message " + message + "from room " + roomCode);
         drawingService.broadcastDrawing(roomCode, message);
     }
 
     @MessageMapping("/room/{roomCode}/sendPasteImg")
     public void handlePasteImg(@Payload PasteImgMessage message) {
         String roomCode = String.valueOf(message.getRoomCode());
-        System.out.println("Receiving paste message " + message + "from room " + roomCode);
         drawingService.broadcastPasteImg(roomCode, message);
     }
 

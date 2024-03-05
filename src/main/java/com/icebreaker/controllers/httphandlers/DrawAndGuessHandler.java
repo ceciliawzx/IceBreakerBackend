@@ -23,21 +23,24 @@ public class DrawAndGuessHandler {
     }
 
     @PostMapping("/startDrawAndGuess")
-    public String startDrawAndGuess(@RequestParam(name = "roomCode") String roomCode,
+    public boolean startDrawAndGuess(@RequestParam(name = "roomCode") String roomCode,
                                     @RequestParam(name = "fieldName") String fieldName,
                                     @RequestParam(name = "targetWord") String targetWord) {
         System.out.println("Start Draw and Guess in room: " + roomCode + " with targetWord: " + targetWord);
         if (runner.changeRoomStatus(roomCode, RoomStatus.PICTURING)) {
             runner.setTargetInRoom(roomCode, new Target(fieldName, targetWord));
             waitRoomService.broadcastMessage(roomCode);
-            return "Success";
+            return true;
         }
-        return "Fail";
+        return false;
     }
 
     @GetMapping("/getTarget")
     public String getTarget(@RequestParam(name = "roomCode") String roomCode) {
         Room room = runner.getRoom(roomCode);
+        if (room == null) {
+            return JsonUtils.returnRoomNotFoundJsonError();
+        }
         Target target = room.getTarget();
         return JsonUtils.returnJson(Map.of("target", target), "Error fetching target of a room");
     }

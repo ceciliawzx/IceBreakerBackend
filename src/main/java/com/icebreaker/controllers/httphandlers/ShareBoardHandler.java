@@ -18,8 +18,7 @@ public class ShareBoardHandler {
     }
 
     @PostMapping("/startShareBoard")
-    public boolean startShareBoard(@RequestParam(name = "roomCode") String roomCode,
-                                   @RequestParam(name = "fieldName") String fieldName) {
+    public boolean startShareBoard(@RequestParam(name = "roomCode") String roomCode, @RequestParam(name = "fieldName") String fieldName) {
         if (runner.changeRoomStatus(roomCode, RoomStatus.SHAREBOARD)) {
             runner.setTargetInRoom(roomCode, new Target(fieldName, ""));
             waitRoomService.broadcastMessage(roomCode);

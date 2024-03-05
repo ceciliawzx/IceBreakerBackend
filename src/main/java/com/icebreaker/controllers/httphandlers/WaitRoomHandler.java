@@ -10,36 +10,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class WaitRoomHandler {
-    private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
 
     public WaitRoomHandler(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }
 
-
     @PostMapping("/backToWaitRoom")
-    public String backToWaitRoom(@RequestParam(name = "roomCode") String roomCode) {
-        System.out.println("Back to wait room: " + roomCode);
-        if (runner.changeRoomStatus(roomCode, RoomStatus.WAITING)) {
-            // Reset Target
-            runner.setTargetInRoom(roomCode, new Target("", ""));
-            // add presented person to presentedList
-            runner.addToPresentedList(roomCode);
-            // Reset presentRoomInfo when back to WaitRoom
-            String result = runner.resetPresentRoomInfo(roomCode) ? "Success" : "Fail";
-            waitRoomService.broadcastMessage(roomCode);
-            return result;
-        }
-        return "Fail";
+    public boolean backToWaitRoom(@RequestParam(name = "roomCode") String roomCode) {
+        return waitRoomService.backToPresentRoom(roomCode);
     }
 
     @PostMapping("/forceBackToAllPresentedRoom")
-    public String forceBackToAllPresentedRoom(@RequestParam(name = "roomCode") String roomCode) {
-        if (runner.forceBackToAllPresentedRoom(roomCode)) {
-            waitRoomService.broadcastMessage(roomCode);
-            return "Success";
-        }
-        return "Fail";
+    public boolean forceBackToAllPresentedRoom(@RequestParam(name = "roomCode") String roomCode) {
+        return waitRoomService.forceBackToAllPresentedRoom(roomCode);
     }
 }

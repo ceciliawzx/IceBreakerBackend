@@ -58,7 +58,7 @@ public class WordleHandler {
             Target target = wordleService.getAnswer(roomCode);
             return JsonUtils.returnJson(Map.of("target", target), "Error fetching Wordle answer");
         }
-        return "Error";
+        return JsonUtils.returnRoomNotFoundJsonError();
     }
 
     @GetMapping("/getWordleGameStatus")
@@ -67,9 +67,9 @@ public class WordleHandler {
             try {
                 return JsonUtils.returnJson(Map.of("wordlemessage", wordleService.getGameStatus(roomCode)), "Error fetching Wordle Status");
             } catch (Exception e) {
-
+                return JsonUtils.returnJsonError("Error fetching Wordle Status");
             }
         }
-        return "Error";
+        return JsonUtils.returnRoomNotFoundJsonError();
     }
 }

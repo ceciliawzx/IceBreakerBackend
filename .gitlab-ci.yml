@@ -146,6 +146,7 @@ deploy_dev:
     - echo $(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$EXISTING_PORT -t || echo 'not_found'")
   except:
     - master
+    - release
     - test
 
 

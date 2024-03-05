@@ -1,23 +1,35 @@
 package com.icebreaker.services;
 
+import com.icebreaker.room.RoomStatus;
 import com.icebreaker.room.Target;
+import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.utils.JsonUtils;
 import com.icebreaker.utils.WordleStateCode;
-import com.icebreaker.websocket.*;
+import com.icebreaker.websocket.BackMessage;
+import com.icebreaker.websocket.HangmanMessage;
+import com.icebreaker.websocket.ModalMessage;
+import com.icebreaker.websocket.TimerMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class HangmanService {
 
     private final Map<String, HangmanData> gameData = new HashMap<>();
     private final SimpMessagingTemplate messagingTemplate;
+    private final ServerRunner runner = ServerRunner.getInstance();
+    private final WaitRoomService waitRoomService;
 
     @Autowired
-    public HangmanService(SimpMessagingTemplate messagingTemplate) {
+    public HangmanService(SimpMessagingTemplate messagingTemplate, WaitRoomService waitRoomService) {
         this.messagingTemplate = messagingTemplate;
+        this.waitRoomService = waitRoomService;
     }
 
     public boolean setAnswers(String roomCode, String answer, String fieldName) {
@@ -140,5 +152,41 @@ public class HangmanService {
         TimerMessage timerMessage = new TimerMessage();
         timerMessage.setStarted(true);
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/hangman", timerMessage);
+    }
+
+    public boolean startHangman(String roomCode, String userID, String field) {
+        if (runner.changeRoomStatus(roomCode, RoomStatus.HANGMAN)) {
+            String word = runner.getFieldValue(roomCode, userID, field);
+            boolean result = setAnswers(roomCode, word, field);
+            waitRoomService.broadcastMessage(roomCode);
+            return result;
+        }
+        return false;
+    }
+
+    public Character[] getHangmanInfo(String roomCode) {
+        if (roomExist(roomCode)) {
+            return getCurrentStages(roomCode);
+        }
+        return null;
+    }
+
+    public String getHangmanAnswer(String roomCode) {
+        if (roomExist(roomCode)) {
+            Target target = getAnswer(roomCode);
+            return JsonUtils.returnJson(Map.of("target", target), JsonUtils.unknownError);
+        }
+        return JsonUtils.returnRoomNotFoundJsonError();
+    }
+
+    public String getHangmanGameStatus(String roomCode) {
+        if (roomExist(roomCode)) {
+            try {
+                return JsonUtils.returnJson(Map.of("hangmanmessage", getGameStatus(roomCode)), "Error fetching Hangman Status");
+            } catch (Exception e) {
+                return JsonUtils.returnJsonError(e.getMessage());
+            }
+        }
+        return JsonUtils.returnRoomNotFoundJsonError();
     }
 }

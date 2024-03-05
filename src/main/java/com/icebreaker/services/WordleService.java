@@ -1,6 +1,9 @@
 package com.icebreaker.services;
 
+import com.icebreaker.room.RoomStatus;
 import com.icebreaker.room.Target;
+import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.utils.JsonUtils;
 import com.icebreaker.utils.WordleStateCode;
 import com.icebreaker.websocket.BackMessage;
 import com.icebreaker.websocket.ModalMessage;
@@ -18,10 +21,13 @@ public class WordleService {
     private final Map<String, List<WordleStateCode>> letterStates = new HashMap<>();
     private final Map<String, WordleMessage> gameStatus = new HashMap<>();
     private final SimpMessagingTemplate messagingTemplate;
+    private final ServerRunner runner = ServerRunner.getInstance();
+    private final WaitRoomService waitRoomService;
 
     @Autowired
-    public WordleService(SimpMessagingTemplate messagingTemplate) {
+    public WordleService(SimpMessagingTemplate messagingTemplate, WaitRoomService waitRoomService) {
         this.messagingTemplate = messagingTemplate;
+        this.waitRoomService = waitRoomService;
     }
 
     public boolean setAnswers(String roomCode, String fieldName, String answer) {
@@ -122,6 +128,42 @@ public class WordleService {
         TimerMessage timerMessage = new TimerMessage();
         timerMessage.setStarted(true);
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", timerMessage);
+    }
+
+    public boolean startWordle(String roomCode, String userID, String field) {
+        if (runner.changeRoomStatus(roomCode, RoomStatus.WORDLING)) {
+            String word = runner.getFieldValue(roomCode, userID, field);
+            boolean result = setAnswers(roomCode, field, word);
+            waitRoomService.broadcastMessage(roomCode);
+            return result;
+        }
+        return false;
+    }
+
+    public int getWordleInfo(String roomCode) {
+        if (roomExist(roomCode)) {
+            return getAnswer(roomCode).getTargetWord().length();
+        }
+        return -1;
+    }
+
+    public String getWordleAnswer(String roomCode) {
+        if (roomExist(roomCode)) {
+            Target target = getAnswer(roomCode);
+            return JsonUtils.returnJson(Map.of("target", target), "Error fetching Wordle answer");
+        }
+        return JsonUtils.returnRoomNotFoundJsonError();
+    }
+
+    public String getWordleGameStatus(String roomCode) {
+        if (roomExist(roomCode)) {
+            try {
+                return JsonUtils.returnJson(Map.of("wordlemessage", getGameStatus(roomCode)), "Error fetching Wordle Status");
+            } catch (Exception e) {
+                return JsonUtils.returnJsonError("Error fetching Wordle Status");
+            }
+        }
+        return JsonUtils.returnRoomNotFoundJsonError();
     }
 }
 

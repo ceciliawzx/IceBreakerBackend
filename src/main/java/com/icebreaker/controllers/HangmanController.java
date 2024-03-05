@@ -19,7 +19,6 @@ public class HangmanController {
 
     @MessageMapping("/room/{roomCode}/hangman")
     public void handleMessage(@Payload HangmanMessage message) {
-        System.out.println("Received: " + message);
         String roomCode = String.valueOf(message.getRoomCode());
         hangmanService.broadcastResult(roomCode, message);
     }

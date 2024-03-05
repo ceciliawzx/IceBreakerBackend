@@ -59,7 +59,6 @@ public class PersonHandler {
         return result;
     }
 
-
     @GetMapping("/getPlayers")
     public String getPlayersInARoom(@RequestParam(name = "roomCode") String roomCode) {
         if (runner.containsRoom(roomCode)) {

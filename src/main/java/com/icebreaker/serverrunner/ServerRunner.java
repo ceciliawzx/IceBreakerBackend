@@ -3,16 +3,11 @@ package com.icebreaker.serverrunner;
 import com.icebreaker.person.Admin;
 import com.icebreaker.person.Person;
 import com.icebreaker.person.User;
-
-import com.icebreaker.room.GameType;
-import com.icebreaker.room.PresentRoomInfo;
-import com.icebreaker.room.Room;
-import com.icebreaker.room.RoomStatus;
-import com.icebreaker.utils.GeoguesserStatus;
+import com.icebreaker.room.*;
 import com.icebreaker.utils.Constants;
+import com.icebreaker.utils.GeoguesserStatus;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
-import com.icebreaker.room.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -599,4 +594,9 @@ public class ServerRunner {
         }
     }
 
+    public boolean startPresenting(String roomCode) {
+        synchronized (this) {
+            return serverStartRoom(roomCode);
+        }
+    }
 }

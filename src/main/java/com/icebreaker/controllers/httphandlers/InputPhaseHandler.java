@@ -17,19 +17,17 @@ public class InputPhaseHandler {
     }
 
     @PostMapping("/startPresenting")
-    public String startPresenting(@RequestParam(name = "roomCode") String roomCode) {
-        System.out.printf("Start Room: %s%n", roomCode);
-        if (runner.serverStartRoom(roomCode)) {
+    public boolean startPresenting(@RequestParam(name = "roomCode") String roomCode) {
+        boolean result = runner.startPresenting(roomCode);
+        if (result) {
             waitRoomService.broadcastMessage(roomCode);
-            return "Success";
         }
-        return "Fail";
+        return result;
     }
 
     @GetMapping("/infoComplete")
     public boolean checkPlayerInfoComplete(@RequestParam(name = "roomCode") String roomCode,
                                            @RequestParam(name = "userID") String userID) {
-        System.out.printf("Info Complete, User: %s, Room: %s%n", userID, roomCode);
         return runner.checkPlayerInfoComplete(roomCode, userID);
     }
 }

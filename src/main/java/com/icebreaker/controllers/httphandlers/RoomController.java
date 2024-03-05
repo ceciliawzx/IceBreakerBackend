@@ -18,13 +18,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.icebreaker.utils.HashUserId.hashUserId;
 
 @RestController
-public class RoomHandler {
+public class RoomController {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final AtomicInteger roomNumber = new AtomicInteger(0);
     private final AtomicInteger userID = new AtomicInteger(0);
     private final WaitRoomService waitRoomService;
 
-    public RoomHandler(WaitRoomService waitRoomService) {
+    public RoomController(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }
 

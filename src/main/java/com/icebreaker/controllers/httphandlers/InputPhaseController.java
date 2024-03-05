@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class InputPhaseHandler {
+public class InputPhaseController {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
 
-    public InputPhaseHandler(WaitRoomService waitRoomService) {
+    public InputPhaseController(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }
 

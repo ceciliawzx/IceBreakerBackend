@@ -13,7 +13,7 @@ import java.util.Map;
 
 
 @RestController
-public class PresentRoomHandler {
+public class PresentRoomController {
     private final WordleService wordleService;
     private final HangmanService hangmanService;
     private final DrawingService drawingService;
@@ -23,7 +23,7 @@ public class PresentRoomHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
 
     @Autowired
-    public PresentRoomHandler(WordleService wordleService, HangmanService hangmanService, DrawingService drawingService, TimerService timerService, WaitRoomService waitRoomService, GeoguesserService geoguesserService) {
+    public PresentRoomController(WordleService wordleService, HangmanService hangmanService, DrawingService drawingService, TimerService timerService, WaitRoomService waitRoomService, GeoguesserService geoguesserService) {
         this.wordleService = wordleService;
         this.hangmanService = hangmanService;
         this.drawingService = drawingService;

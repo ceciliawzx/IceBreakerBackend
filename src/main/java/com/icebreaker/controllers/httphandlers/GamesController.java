@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class GamesHandler {
+public class GamesController {
     private final ServerRunner runner = ServerRunner.getInstance();
 
     @GetMapping("/availableGames")

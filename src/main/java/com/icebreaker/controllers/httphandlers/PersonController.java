@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class PersonHandler {
+public class PersonController {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
 
-    public PersonHandler(WaitRoomService waitRoomService) {
+    public PersonController(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }
 

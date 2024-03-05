@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class PresenterHandler {
+public class PresenterController {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
 
-    public PresenterHandler(WaitRoomService waitRoomService) {
+    public PresenterController(WaitRoomService waitRoomService) {
         this.waitRoomService = waitRoomService;
     }
 

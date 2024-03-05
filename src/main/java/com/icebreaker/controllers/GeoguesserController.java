@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class GeoguesserController {
+
     private final GeoguesserService geoguesserService;
 
     @Autowired
@@ -19,7 +20,6 @@ public class GeoguesserController {
     @MessageMapping("/room/{roomCode}/sendGuessing")
     public void handleMessage(@Payload GeoguesserMessage message) {
         String roomCode = String.valueOf(message.getRoomCode());
-        System.out.println("Received: geoguessing" + message);
         geoguesserService.broadcastGuessing(roomCode, message);
     }
 }

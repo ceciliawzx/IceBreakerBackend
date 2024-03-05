@@ -3,6 +3,7 @@ package com.icebreaker.services;
 import com.icebreaker.room.Room;
 import com.icebreaker.room.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
+import com.icebreaker.utils.JsonUtils;
 import com.icebreaker.websocket.TimerMessage;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -107,5 +108,14 @@ public class TimerService {
     public void resetShowTimerModal(String roomCode) {
         Room room = runner.getRoom(roomCode);
         room.setShowTimerModal(true);
+    }
+
+    public String getShowTimerModal(String roomCode) {
+        Room room = runner.getRoom(roomCode);
+        if (room == null) {
+            return JsonUtils.returnRoomNotFoundJsonError();
+        }
+        boolean showTimerModal = room.isShowTimerModal();
+        return JsonUtils.returnJson(Map.of("showTimerModal", showTimerModal), JsonUtils.unknownError);
     }
 }

@@ -12,7 +12,6 @@ public class HashUserId {
         for (byte hashByte : userBytes) {
             usb.append(String.format("%02x", hashByte));
         }
-        System.out.println("User ID: " + usb);
         return usb;
     }
 

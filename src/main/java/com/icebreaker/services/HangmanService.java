@@ -1,6 +1,5 @@
 package com.icebreaker.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.room.Target;
 import com.icebreaker.utils.WordleStateCode;
 import com.icebreaker.websocket.*;
@@ -36,7 +35,6 @@ public class HangmanService {
             }
             gameData.put(roomCode, new HangmanData(
                     roomCode, fieldName, answer.toUpperCase(), currentStages, code, 0, 0, null));
-            System.out.println("Set Hangman Answer: " + roomCode + " " + answer.toUpperCase());
             return true;
         }
         return false;
@@ -85,16 +83,11 @@ public class HangmanService {
 
     public void showModal(String roomCode) {
         ModalMessage modalMessage = new ModalMessage(roomCode, true);
-        System.out.println("Send show modal message to Hangman Room");
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/hangman", modalMessage);
     }
 
-    public boolean resetSession(String roomCode) {
-        if (gameData.containsKey(roomCode)) {
-            gameData.remove(roomCode);
-            return true;
-        }
-        return false;
+    public void resetSession(String roomCode) {
+        gameData.remove(roomCode);
     }
 
     public HangmanMessage getGameStatus(String roomCode) {
@@ -110,9 +103,7 @@ public class HangmanService {
         boolean isThisLetterCorrect = correctPositions != null;
 
         message.setCorrectPositions(correctPositions);
-
         HangmanData data = gameData.get(roomCode);
-
         data.setCurrentGuesses(data.getCurrentGuesses() + 1);
 
         Character[] currentStages = data.getGuessedLetters();
@@ -139,20 +130,8 @@ public class HangmanService {
 
         data.setPrevMessage(message);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json;
-
-        try {
-            json = objectMapper.writeValueAsString(message);
-        } catch (Exception e) {
-            // Handle exception if JSON serialization fails
-            e.printStackTrace();
-            json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
-        }
-        System.out.println(json);
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/hangman", message);
         if (isWordCorrect) {
-            System.out.println("Remove Hangman Answer: " + roomCode);
             resetSession(roomCode);
         }
     }

@@ -70,4 +70,13 @@ public class DrawingService {
         Target target = room.getTarget();
         return JsonUtils.returnJson(Map.of("target", target), "Error fetching target of a room");
     }
+
+    public boolean startShareBoard(String roomCode, String fieldName) {
+        if (runner.changeRoomStatus(roomCode, RoomStatus.SHAREBOARD)) {
+            runner.setTargetInRoom(roomCode, new Target(fieldName, ""));
+            waitRoomService.broadcastMessage(roomCode);
+            return true;
+        }
+        return false;
+    }
 }

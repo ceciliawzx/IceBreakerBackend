@@ -41,8 +41,13 @@ public class DrawingController {
     public boolean startDrawAndGuess(@RequestParam(name = "roomCode") String roomCode,
                                      @RequestParam(name = "fieldName") String fieldName,
                                      @RequestParam(name = "targetWord") String targetWord) {
-
         return drawingService.startDrawAndGuess(roomCode, fieldName, targetWord);
+    }
+
+    @PostMapping("/startShareBoard")
+    public boolean startShareBoard(@RequestParam(name = "roomCode") String roomCode,
+                                   @RequestParam(name = "fieldName") String fieldName) {
+        return drawingService.startShareBoard(roomCode, fieldName);
     }
 
     @GetMapping("/getTarget")

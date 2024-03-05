@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class MockRoomHandler {
+public class MockRoomController {
     private final WordleService wordleService;
     private final HangmanService hangmanService;
     private final ServerRunner runner = ServerRunner.getInstance();
 
     @Autowired
-    public MockRoomHandler(WordleService wordleService, HangmanService hangmanService) {
+    public MockRoomController(WordleService wordleService, HangmanService hangmanService) {
         this.wordleService = wordleService;
         this.hangmanService = hangmanService;
     }

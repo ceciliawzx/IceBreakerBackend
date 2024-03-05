@@ -23,7 +23,6 @@ public class HangmanHandler {
         this.waitRoomService = waitRoomService;
     }
 
-
     @PostMapping("/startHangman")
     public boolean startHangman(@RequestParam(name = "roomCode") String roomCode,
                                 @RequestParam(name = "userID") String userID,
@@ -44,7 +43,7 @@ public class HangmanHandler {
         if (hangmanService.roomExist(roomCode)) {
             System.out.println("Get hangman info, the word is: " + hangmanService.getAnswer(roomCode) +
                     " With length: " + hangmanService.getAnswer(roomCode).getTargetWord().length());
-            return hangmanService.getCurrentStages(roomCode); // .getAnswer(roomCode).getTargetWord().length();
+            return hangmanService.getCurrentStages(roomCode);
         }
         return null;
     }

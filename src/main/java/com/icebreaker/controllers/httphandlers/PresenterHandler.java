@@ -25,7 +25,6 @@ public class PresenterHandler {
     @PostMapping("/changePresenter")
     public boolean changePresenter(@RequestParam(name = "roomCode") String roomCode,
                                    @RequestParam(name = "userID") String userID) {
-        System.out.println("Change Presenter in room: " + roomCode + " to User: " + userID);
         boolean result = runner.changePresenter(roomCode, userID);
         waitRoomService.broadcastMessage(roomCode);
         return result;
@@ -37,12 +36,10 @@ public class PresenterHandler {
         if (notPresentedPeople == null) {
             return JsonUtils.returnJsonError("Room not found");
         }
-
         if (notPresentedPeople.isEmpty()) {
             runner.changeRoomStatus(roomCode, RoomStatus.ALL_PRESENTED);
             waitRoomService.broadcastMessage(roomCode);
         }
-
         return JsonUtils.returnJson(Map.of("notPresentedPeople", notPresentedPeople), JsonUtils.roomNotFound);
     }
 }

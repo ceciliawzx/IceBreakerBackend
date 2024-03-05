@@ -17,14 +17,12 @@ import java.util.Map;
 public class GeoguesserHandler {
     private final ServerRunner runner = ServerRunner.getInstance();
     private final WaitRoomService waitRoomService;
-    private final GeoguesserService geoguesserService;
 
     public GeoguesserHandler(WaitRoomService waitRoomService, GeoguesserService geoguesserService) {
         this.waitRoomService = waitRoomService;
-        this.geoguesserService = geoguesserService;
     }
 
-    @PostMapping("startGeoguesser")
+    @PostMapping("/startGeoguesser")
     public boolean startGeoguesser(@RequestParam(name = "roomCode") String roomCode,
                                    @RequestParam(name = "fieldName") String fieldName) {
         if (runner.changeRoomStatus(roomCode, RoomStatus.GEO_GUESSING)) {
@@ -36,15 +34,15 @@ public class GeoguesserHandler {
         return false;
     }
 
-    @GetMapping("getGeoguesserStatus")
+    @GetMapping("/getGeoguesserStatus")
     public String getGeoguesserStatus(@RequestParam(name = "roomCode") String roomCode) {
         if (runner.containsRoom(roomCode)) {
-            return JsonUtils.returnJson(Map.of("status", runner.getGeoguesserStatus(roomCode)), JsonUtils.returnJsonError("Serilisation error"));
+            return JsonUtils.returnJson(Map.of("status", runner.getGeoguesserStatus(roomCode)), JsonUtils.returnJsonError("Serialization error"));
         }
         return JsonUtils.roomNotFound;
     }
 
-    @PostMapping("setTargetLocation")
+    @PostMapping("/setTargetLocation")
     public boolean setTargetLocation(@RequestParam(name = "roomCode") String roomCode,
                                      @RequestParam(name = "location") String location,
                                      @RequestParam(name = "userID") String userID) {
@@ -53,7 +51,7 @@ public class GeoguesserHandler {
         return isSet;
     }
 
-    @GetMapping("getUserGeoSubmission")
+    @GetMapping("/getUserGeoSubmission")
     public boolean getUserGeoSubmission(@RequestParam(name = "roomCode") String roomCode,
                                         @RequestParam(name = "userID") String userID) {
         return !runner.checkNotSubmission(roomCode, userID);
@@ -64,7 +62,7 @@ public class GeoguesserHandler {
         if (runner.containsRoom(roomCode)) {
             return JsonUtils.returnJson(Map.of("winner", runner.geoGuesserWinner(roomCode), "rankPerson", runner.geoGuesserPersonRank(roomCode), "rankDistance", runner.geoGuesserDistanceRank(roomCode)), JsonUtils.returnJsonError("Serialisation error"));
         }
-        return JsonUtils.roomNotFound;
+        return JsonUtils.returnRoomNotFoundJsonError();
     }
 
     @GetMapping("/presenterLocation")

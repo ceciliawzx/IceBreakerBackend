@@ -34,7 +34,6 @@ public class PresentRoomHandler {
 
     @GetMapping("/getPresentRoomInfo")
     public String getPresentRoomInfo(@RequestParam(name = "roomCode") String roomCode) {
-//        System.out.println("Get Present Room Info, Room Code: " + roomCode);
         PresentRoomInfo presentRoomInfo = runner.getPresentRoomInfo(roomCode);
         return JsonUtils.returnJson(Map.of("presentRoomInfo", presentRoomInfo), "Room not found");
     }
@@ -42,7 +41,6 @@ public class PresentRoomHandler {
     @PostMapping("setPresentRoomInfo")
     public boolean setPresentRoomInfo(@RequestParam(name = "roomCode") String roomCode,
                                       @RequestParam(name = "field") String field) {
-        System.out.println("SetPresentRoomInfo in room " + roomCode + " receives " + field);
         boolean result = runner.setPresentRoomInfo(roomCode, field);
         waitRoomService.broadcastMessage(roomCode);
         return result;
@@ -50,17 +48,14 @@ public class PresentRoomHandler {
 
     @PostMapping("revealAllPresentRoomInfo")
     public boolean revealAllPresentRoomInfo(@RequestParam(name = "roomCode") String roomCode) {
-        System.out.println("revealAllPresentRoomInfo in room " + roomCode);
         boolean result = runner.revealAllFields(roomCode);
         waitRoomService.broadcastMessage(roomCode);
         return result;
     }
 
-
     @PostMapping("/backToPresentRoom")
-    public String backToPresentRoom(@RequestParam(name = "roomCode") String roomCode) {
+    public boolean backToPresentRoom(@RequestParam(name = "roomCode") String roomCode) {
         RoomStatus currentStat = runner.getStatus(roomCode);
-        System.out.println("Back To Presenting Room, curStat " + currentStat);
         if (runner.changeRoomStatus(roomCode, RoomStatus.PRESENTING)) {
             // Reset target
             runner.setTargetInRoom(roomCode, new Target("", ""));
@@ -69,28 +64,19 @@ public class PresentRoomHandler {
                     wordleService.returnToPresentingRoom(roomCode);
                     wordleService.resetSession(roomCode);
                     waitRoomService.broadcastMessage(roomCode);
-                    System.out.println("Resetting Wordle");
                 }
                 case HANGMAN -> {
                     hangmanService.returnToPresentingRoom(roomCode);
                     hangmanService.resetSession(roomCode);
                     waitRoomService.broadcastMessage(roomCode);
-                    System.out.println("Resetting Hangman");
                 }
-                case PICTURING -> {
+                case PICTURING, SHAREBOARD -> {
                     drawingService.returnToPresentingRoom(roomCode);
                     waitRoomService.broadcastMessage(roomCode);
-                    System.out.println("Resetting Pictionary");
-                }
-                case SHAREBOARD -> {
-                    drawingService.returnToPresentingRoom(roomCode);
-                    waitRoomService.broadcastMessage(roomCode);
-                    System.out.println("Resetting ShareBoard");
                 }
                 case GEO_GUESSING -> {
                     geoguesserService.returnToPresentingRoom(roomCode);
                     waitRoomService.broadcastMessage(roomCode);
-                    System.out.println("Resetting Geoguesser");
                 }
                 default -> System.out.println("Uncaught case in backToPresentRoom");
             }
@@ -98,9 +84,9 @@ public class PresentRoomHandler {
             timerService.resetShowTimerModal(roomCode);
             timerService.resetTimer(roomCode);
 
-            return "Success";
+            return true;
         }
-        return "Fail";
+        return false;
     }
 
 }

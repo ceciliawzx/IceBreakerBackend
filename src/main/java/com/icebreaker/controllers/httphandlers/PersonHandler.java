@@ -21,9 +21,7 @@ public class PersonHandler {
     }
 
     @GetMapping("/isAdmin")
-    public boolean isAdmin(@RequestParam("userID") String userID,
-                           @RequestParam("roomCode") String roomCode) {
-//        System.out.printf("Check Admin, User: %s, Room: %s%n", userID, roomCode);
+    public boolean isAdmin(@RequestParam("userID") String userID, @RequestParam("roomCode") String roomCode) {
         try {
             return runner.isAdmin(userID, roomCode);
         } catch (Exception e) {
@@ -33,10 +31,7 @@ public class PersonHandler {
     }
 
     @GetMapping("/isPresenter")
-    public boolean isPresenter(@RequestParam("userID") String userID,
-                               @RequestParam("roomCode") String roomCode) {
-//        System.out.printf("Check Presenter, User: %s, Room: %s%n", userID, roomCode);
-
+    public boolean isPresenter(@RequestParam("userID") String userID, @RequestParam("roomCode") String roomCode) {
         try {
             return runner.isPresenter(userID, roomCode);
         } catch (Exception e) {
@@ -45,10 +40,8 @@ public class PersonHandler {
         }
     }
 
-    @PostMapping(path = "/updatePerson", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/updatePerson", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public String updatePerson(@RequestBody Person person) {
-        System.out.printf("Update Person, User: %s, Room: %s%n", person.getUserID(), person.getRoomCode());
         if (runner.roomUpdateUser(person)) {
             waitRoomService.broadcastMessage(person.getRoomCode());
             return "Success";
@@ -58,9 +51,7 @@ public class PersonHandler {
     }
 
     @DeleteMapping("/kickPerson")
-    public boolean kickPerson(@RequestParam(name = "userID") String userID,
-                              @RequestParam(name = "roomCode") String roomCode) {
-        System.out.printf("Kick Person: %s, In room: %s%n", userID, roomCode);
+    public boolean kickPerson(@RequestParam(name = "userID") String userID, @RequestParam(name = "roomCode") String roomCode) {
         boolean result = runner.kickPerson(roomCode, userID);
         if (result) {
             waitRoomService.broadcastMessage(roomCode);
@@ -71,7 +62,6 @@ public class PersonHandler {
 
     @GetMapping("/getPlayers")
     public String getPlayersInARoom(@RequestParam(name = "roomCode") String roomCode) {
-//        System.out.println("Get players in room: " + roomCode);
         if (runner.containsRoom(roomCode)) {
             Person admin = runner.getAdminInRoom(roomCode);
             Person presenter = runner.getPresenterInRoom(roomCode);
@@ -83,9 +73,7 @@ public class PersonHandler {
     }
 
     @GetMapping("/getPlayer")
-    public String getPlayerInARoom(@RequestParam(name = "roomCode") String roomCode,
-                                   @RequestParam(name = "userID") String userID) {
-//        System.out.println("Ger player: " + userID + " in Room: " + roomCode);
+    public String getPlayerInARoom(@RequestParam(name = "roomCode") String roomCode, @RequestParam(name = "userID") String userID) {
         if (!runner.containsRoom(roomCode)) {
             return JsonUtils.returnRoomNotFoundJsonError();
         }
@@ -109,8 +97,7 @@ public class PersonHandler {
     }
 
     @PostMapping("/pushNotification")
-    public boolean pushNotification(@RequestParam(name = "roomCode") String roomCode,
-                                    @RequestParam(name = "userID") String userID) {
+    public boolean pushNotification(@RequestParam(name = "roomCode") String roomCode, @RequestParam(name = "userID") String userID) {
         boolean result = runner.notifyPeople(roomCode, userID);
         if (result) {
             waitRoomService.broadcastMessage(roomCode);
@@ -119,8 +106,7 @@ public class PersonHandler {
     }
 
     @GetMapping("/isNotified")
-    public boolean isNotified(@RequestParam(name = "roomCode") String roomCode,
-                              @RequestParam(name = "userID") String userID) {
+    public boolean isNotified(@RequestParam(name = "roomCode") String roomCode, @RequestParam(name = "userID") String userID) {
         return runner.isNotified(roomCode, userID);
     }
 }

@@ -1,11 +1,9 @@
 package com.icebreaker.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icebreaker.room.Target;
 import com.icebreaker.utils.WordleStateCode;
-import com.icebreaker.websocket.BackMessage;
-import com.icebreaker.websocket.ModalMessage;
-import com.icebreaker.websocket.TimerMessage;
-import com.icebreaker.websocket.WordleMessage;
+import com.icebreaker.websocket.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -27,6 +25,7 @@ public class WordleService {
     public boolean setAnswers(String roomCode, String fieldName, String answer) {
         if (!answers.containsKey(roomCode)) {
             answers.put(roomCode, new Target(fieldName, answer.toUpperCase()));
+            System.out.println("Set Answer: " + roomCode + " " + answer.toUpperCase());
             List<WordleStateCode> code = new ArrayList<>();
             for (int i = 0; i < 26; i++) {
                 code.add(WordleStateCode.UNCHECKED);
@@ -46,12 +45,14 @@ public class WordleService {
         return answers.containsKey(roomCode);
     }
 
-    public void resetSession(String roomCode) {
+    public boolean resetSession(String roomCode) {
         if (answers.containsKey(roomCode)) {
             answers.remove(roomCode);
             letterStates.remove(roomCode);
             gameStatus.remove(roomCode);
+            return true;
         }
+        return false;
     }
 
     public WordleMessage getGameStatus(String roomCode) {
@@ -97,11 +98,13 @@ public class WordleService {
 
     public void returnToPresentingRoom(String roomCode) {
         BackMessage backMessage = new BackMessage(roomCode);
+        System.out.println("Send return to presenting room wordle back message");
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", backMessage);
     }
 
     public void showModal(String roomCode) {
         ModalMessage modalMessage = new ModalMessage(roomCode, true);
+        System.out.println("Send show modal message to Wordle Room");
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", modalMessage);
     }
 
@@ -111,9 +114,21 @@ public class WordleService {
         message.setAllLetterStat(letterStates.get(roomCode));
         message.setIsCorrect(isCorrect);
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json;
+
+        try {
+            json = objectMapper.writeValueAsString(message);
+        } catch (Exception e) {
+            // Handle exception if JSON serialization fails
+            e.printStackTrace();
+            json = "{\"error\": \"Serialization error\"}"; // A fallback JSON response in case of an error
+        }
+        System.out.println(json);
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wordle", message);
         gameStatus.put(roomCode, message);
         if (isCorrect || (Objects.equals(message.getCurrentAttempt(), message.getTotalAttempt()) && message.getIsCheck())) {
+            System.out.println("Remove Answer: " + roomCode);
             resetSession(roomCode);
         }
     }

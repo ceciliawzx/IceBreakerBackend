@@ -1,10 +1,7 @@
 package com.icebreaker.services;
 
 import com.icebreaker.serverrunner.ServerRunner;
-import com.icebreaker.websocket.BackMessage;
-import com.icebreaker.websocket.DrawingMessage;
-import com.icebreaker.websocket.ModalMessage;
-import com.icebreaker.websocket.PasteImgMessage;
+import com.icebreaker.websocket.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;

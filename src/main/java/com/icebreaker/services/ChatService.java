@@ -4,6 +4,7 @@ import com.icebreaker.room.Room;
 import com.icebreaker.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.websocket.ChatMessage;
+import com.icebreaker.websocket.TimerMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class ChatService {
 
     public void broadcastToRoom(String roomCode, ChatMessage message) {
         System.out.println("Broadcast to room " + roomCode + ": " + message.toString());
-        messagingTemplate.convertAndSend("/topic/room/" + roomCode, message);
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/chatRoom", message);
     }
 
     public void checkGuessWord(String roomCode, ChatMessage message) {
@@ -40,6 +41,12 @@ public class ChatService {
         drawingService.addCorrectGuesser(roomCode, guesserId);
         message.setContent(message.getSender() + " has guessed right!");
         message.setSender("System");
+    }
+
+    public void broadCastTimerStarted(String roomCode) {
+        TimerMessage timerMessage = new TimerMessage();
+        timerMessage.setStarted(true);
+        messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/chatRoom", timerMessage);
     }
 
 }

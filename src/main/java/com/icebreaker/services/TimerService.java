@@ -24,14 +24,16 @@ public class TimerService {
     private final WordleService wordleService;
     private final HangmanService hangmanService;
     private final GeoguesserService geoguesserService;
+    private final ChatService chatService;
     private final ServerRunner runner = ServerRunner.getInstance();
 
-    public TimerService(SimpMessagingTemplate messagingTemplate, DrawingService drawingService, WordleService wordleService, HangmanService hangmanService, GeoguesserService geoguesserService) {
+    public TimerService(SimpMessagingTemplate messagingTemplate, DrawingService drawingService, WordleService wordleService, HangmanService hangmanService, GeoguesserService geoguesserService, ChatService chatService) {
         this.messagingTemplate = messagingTemplate;
         this.drawingService = drawingService;
         this.wordleService = wordleService;
         this.hangmanService = hangmanService;
         this.geoguesserService = geoguesserService;
+        this.chatService = chatService;
     }
 
     public void startTimer(TimerMessage timerMessage) {
@@ -49,9 +51,10 @@ public class TimerService {
                 countdownMap.put(roomCode, countdown);
                 timerMessage.setSeconds(countdown);
                 timerMessage.setStarted(true);
-                // Broadcast this message to hangman and wordle to ban input before timer started
+                // Broadcast this message to games to ban input before timer started
                 hangmanService.broadCastTimerStarted(roomCode);
                 wordleService.broadCastTimerStarted(roomCode);
+                chatService.broadCastTimerStarted(roomCode);
                 // Broadcast this message to services and update the timer
                 messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/timer", timerMessage);
             } else {

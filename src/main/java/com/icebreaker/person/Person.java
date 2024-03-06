@@ -8,7 +8,7 @@ import lombok.*;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
-public class Person {
+public abstract class Person {
     @NonNull
     protected String displayName;
     @NonNull

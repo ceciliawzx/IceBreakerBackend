@@ -22,7 +22,15 @@ public class WaitRoomService {
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/wait", true);
     }
 
-    public boolean backToPresentRoom(String roomCode) {
+    public boolean forceBackToAllPresentedRoom(String roomCode) {
+        if (runner.forceBackToAllPresentedRoom(roomCode)) {
+            broadcastMessage(roomCode);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean backToWaitRoom(String roomCode) {
         if (runner.changeRoomStatus(roomCode, RoomStatus.WAITING)) {
             // Reset Target
             runner.setTargetInRoom(roomCode, new Target("", ""));
@@ -33,14 +41,6 @@ public class WaitRoomService {
             // Broadcast re-fetch message
             broadcastMessage(roomCode);
             return result;
-        }
-        return false;
-    }
-
-    public boolean forceBackToAllPresentedRoom(String roomCode) {
-        if (runner.forceBackToAllPresentedRoom(roomCode)) {
-            broadcastMessage(roomCode);
-            return true;
         }
         return false;
     }

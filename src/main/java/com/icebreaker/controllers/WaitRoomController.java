@@ -29,7 +29,7 @@ public class WaitRoomController {
     /* HTTP Handler */
     @PostMapping("/backToWaitRoom")
     public boolean backToWaitRoom(@RequestParam(name = "roomCode") String roomCode) {
-        return waitRoomService.backToPresentRoom(roomCode);
+        return waitRoomService.backToWaitRoom(roomCode);
     }
 
     @PostMapping("/forceBackToAllPresentedRoom")

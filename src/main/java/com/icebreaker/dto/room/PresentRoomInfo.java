@@ -1,4 +1,4 @@
-package com.icebreaker.room;
+package com.icebreaker.dto.room;
 
 import lombok.Data;
 import lombok.Getter;

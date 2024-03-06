@@ -1,7 +1,7 @@
 package com.icebreaker.controllers.httphandlers;
 
-import com.icebreaker.person.Person;
-import com.icebreaker.room.RoomStatus;
+import com.icebreaker.dto.person.Person;
+import com.icebreaker.enums.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.utils.JsonUtils;

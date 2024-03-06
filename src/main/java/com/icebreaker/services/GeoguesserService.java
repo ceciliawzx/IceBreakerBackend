@@ -1,12 +1,12 @@
 package com.icebreaker.services;
 
-import com.icebreaker.room.RoomStatus;
+import com.icebreaker.enums.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
-import com.icebreaker.utils.GeoguesserStatus;
+import com.icebreaker.enums.GeoguesserStatus;
 import com.icebreaker.utils.JsonUtils;
-import com.icebreaker.websocket.BackMessage;
-import com.icebreaker.websocket.GeoguesserMessage;
-import com.icebreaker.websocket.ModalMessage;
+import com.icebreaker.dto.websocket.BackMessage;
+import com.icebreaker.dto.websocket.GeoguesserMessage;
+import com.icebreaker.dto.websocket.ModalMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;

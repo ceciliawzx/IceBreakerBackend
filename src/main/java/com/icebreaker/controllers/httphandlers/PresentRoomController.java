@@ -1,8 +1,8 @@
 package com.icebreaker.controllers.httphandlers;
 
-import com.icebreaker.room.PresentRoomInfo;
-import com.icebreaker.room.RoomStatus;
-import com.icebreaker.room.Target;
+import com.icebreaker.dto.room.PresentRoomInfo;
+import com.icebreaker.enums.RoomStatus;
+import com.icebreaker.dto.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.*;
 import com.icebreaker.utils.JsonUtils;

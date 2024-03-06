@@ -1,6 +1,6 @@
-package com.icebreaker.websocket;
+package com.icebreaker.dto.websocket;
 
-import com.icebreaker.utils.WordleStateCode;
+import com.icebreaker.enums.WordleStateCode;
 import lombok.*;
 
 import java.util.List;

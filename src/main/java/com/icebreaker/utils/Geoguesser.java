@@ -1,5 +1,6 @@
 package com.icebreaker.utils;
 
+import com.icebreaker.enums.GeoguesserStatus;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

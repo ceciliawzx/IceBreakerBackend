@@ -1,7 +1,7 @@
 package com.icebreaker.controllers;
 
 import com.icebreaker.services.TimerService;
-import com.icebreaker.websocket.TimerMessage;
+import com.icebreaker.dto.websocket.TimerMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;

@@ -1,9 +1,13 @@
-package com.icebreaker.room;
+package com.icebreaker.dto.room;
 
+import com.icebreaker.enums.GameType;
+import com.icebreaker.enums.RoomStatus;
+import com.icebreaker.dto.person.Admin;
+import com.icebreaker.dto.person.Person;
+import com.icebreaker.dto.person.User;
 import com.icebreaker.utils.Geoguesser;
-import com.icebreaker.utils.GeoguesserStatus;
+import com.icebreaker.enums.GeoguesserStatus;
 import lombok.Getter;
-import com.icebreaker.person.*;
 import lombok.Setter;
 import org.glassfish.grizzly.utils.Pair;
 

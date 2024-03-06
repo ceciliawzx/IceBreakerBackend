@@ -1,11 +1,15 @@
 package com.icebreaker.serverrunner;
 
-import com.icebreaker.person.Admin;
-import com.icebreaker.person.Person;
-import com.icebreaker.person.User;
-import com.icebreaker.room.*;
+import com.icebreaker.dto.room.PresentRoomInfo;
+import com.icebreaker.dto.room.Room;
+import com.icebreaker.dto.room.Target;
+import com.icebreaker.enums.GameType;
+import com.icebreaker.enums.RoomStatus;
+import com.icebreaker.dto.person.Admin;
+import com.icebreaker.dto.person.Person;
+import com.icebreaker.dto.person.User;
 import com.icebreaker.utils.Constants;
-import com.icebreaker.utils.GeoguesserStatus;
+import com.icebreaker.enums.GeoguesserStatus;
 import com.icebreaker.utils.RoomCodeGenerator;
 import lombok.Getter;
 

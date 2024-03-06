@@ -1,6 +1,6 @@
 package com.icebreaker.controllers.httphandlers;
 
-import com.icebreaker.room.GameType;
+import com.icebreaker.enums.GameType;
 import com.icebreaker.serverrunner.ServerRunner;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

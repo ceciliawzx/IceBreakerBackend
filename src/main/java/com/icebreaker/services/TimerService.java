@@ -1,10 +1,10 @@
 package com.icebreaker.services;
 
-import com.icebreaker.room.Room;
-import com.icebreaker.room.RoomStatus;
+import com.icebreaker.dto.room.Room;
+import com.icebreaker.enums.RoomStatus;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.utils.JsonUtils;
-import com.icebreaker.websocket.TimerMessage;
+import com.icebreaker.dto.websocket.TimerMessage;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 

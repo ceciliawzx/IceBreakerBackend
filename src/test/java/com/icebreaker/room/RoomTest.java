@@ -1,10 +1,10 @@
 package com.icebreaker.room;
 
-import com.icebreaker.person.Admin;
-import com.icebreaker.person.Person;
-import com.icebreaker.person.User;
-import com.icebreaker.room.Room;
-import org.junit.jupiter.api.Assertions;
+import com.icebreaker.dto.person.Admin;
+import com.icebreaker.dto.person.Person;
+import com.icebreaker.dto.person.User;
+import com.icebreaker.enums.GameType;
+import com.icebreaker.dto.room.Room;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -14,14 +14,8 @@ import org.mockito.Mockito;
 
 public class HttpRequestsHandlerTest {
 
-    @Mock
-    private ChatService chatService;
-    private WordleService wordleService;
-    private HangmanService hangmanService;
-
     @Test
     public void handlerCanReceiveRequestAndReply() {
-        HttpServletRequest mockRequest = Mockito.mock(HttpServletRequest.class);
         HttpRequestsController handler = new HttpRequestsController();
 
         // Test with a null message

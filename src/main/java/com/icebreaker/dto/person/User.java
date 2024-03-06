@@ -1,4 +1,4 @@
-package com.icebreaker.person;
+package com.icebreaker.dto.person;
 
 import lombok.Getter;
 import lombok.NonNull;

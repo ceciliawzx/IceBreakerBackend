@@ -1,7 +1,7 @@
 package com.icebreaker.controllers;
 
 import com.icebreaker.services.ChatService;
-import com.icebreaker.websocket.ChatMessage;
+import com.icebreaker.dto.websocket.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;

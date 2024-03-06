@@ -1,7 +1,7 @@
 package com.icebreaker.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.icebreaker.person.Person;
+import com.icebreaker.dto.person.Person;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.utils.JsonUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;

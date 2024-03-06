@@ -1,6 +1,6 @@
-package com.icebreaker.websocket;
+package com.icebreaker.dto.websocket;
 
-import com.icebreaker.room.RoomStatus;
+import com.icebreaker.enums.RoomStatus;
 import lombok.*;
 
 @Data

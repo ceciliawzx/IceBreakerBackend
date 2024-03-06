@@ -1,7 +1,6 @@
 package com.icebreaker.serverrunner;
 
-import com.icebreaker.person.Admin;
-import com.icebreaker.room.Room;
+import com.icebreaker.dto.room.Room;
 import com.icebreaker.utils.RoomCodeGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;

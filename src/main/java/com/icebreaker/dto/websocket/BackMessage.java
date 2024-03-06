@@ -1,4 +1,4 @@
-package com.icebreaker.room;
+package com.icebreaker.dto.websocket;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class Target {
-    String fieldName;
-    String targetWord;
+@AllArgsConstructor
+public class BackMessage {
+    private String roomCode;
 }

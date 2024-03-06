@@ -1,4 +1,4 @@
-package com.icebreaker.room;
+package com.icebreaker.enums;
 
 public enum GameType {
     REVEAL,

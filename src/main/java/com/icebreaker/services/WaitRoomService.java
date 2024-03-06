@@ -1,7 +1,7 @@
 package com.icebreaker.services;
 
-import com.icebreaker.room.RoomStatus;
-import com.icebreaker.room.Target;
+import com.icebreaker.enums.RoomStatus;
+import com.icebreaker.dto.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

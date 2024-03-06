@@ -1,7 +1,7 @@
 package com.icebreaker.controllers;
 
 import com.icebreaker.services.HangmanService;
-import com.icebreaker.websocket.HangmanMessage;
+import com.icebreaker.dto.websocket.HangmanMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

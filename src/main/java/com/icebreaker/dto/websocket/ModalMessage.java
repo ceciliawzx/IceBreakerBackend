@@ -1,4 +1,4 @@
-package com.icebreaker.websocket;
+package com.icebreaker.dto.websocket;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

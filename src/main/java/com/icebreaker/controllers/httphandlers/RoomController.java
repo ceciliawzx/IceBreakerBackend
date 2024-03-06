@@ -1,7 +1,7 @@
 package com.icebreaker.controllers.httphandlers;
 
-import com.icebreaker.person.Admin;
-import com.icebreaker.room.Room;
+import com.icebreaker.dto.person.Admin;
+import com.icebreaker.dto.room.Room;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.services.WaitRoomService;
 import com.icebreaker.utils.JsonUtils;

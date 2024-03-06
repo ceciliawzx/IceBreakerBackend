@@ -1,14 +1,15 @@
 package com.icebreaker.services;
 
-import com.icebreaker.room.RoomStatus;
-import com.icebreaker.room.Target;
+import com.icebreaker.dto.games.HangmanData;
+import com.icebreaker.enums.RoomStatus;
+import com.icebreaker.dto.room.Target;
 import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.utils.JsonUtils;
-import com.icebreaker.utils.WordleStateCode;
-import com.icebreaker.websocket.BackMessage;
-import com.icebreaker.websocket.HangmanMessage;
-import com.icebreaker.websocket.ModalMessage;
-import com.icebreaker.websocket.TimerMessage;
+import com.icebreaker.enums.WordleStateCode;
+import com.icebreaker.dto.websocket.BackMessage;
+import com.icebreaker.dto.websocket.HangmanMessage;
+import com.icebreaker.dto.websocket.ModalMessage;
+import com.icebreaker.dto.websocket.TimerMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;

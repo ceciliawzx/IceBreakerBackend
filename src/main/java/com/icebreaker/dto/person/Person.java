@@ -1,4 +1,4 @@
-package com.icebreaker.person;
+package com.icebreaker.dto.person;
 
 import com.icebreaker.utils.Constants;
 import lombok.*;

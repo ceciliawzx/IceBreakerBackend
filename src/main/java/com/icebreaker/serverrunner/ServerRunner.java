@@ -30,12 +30,15 @@ public class ServerRunner {
     private final Map<Integer, String> numberCodeMapping = new HashMap<>();
     private final String mockRoomCode = "TEST";
     private Room mockRoom;
-    private final Person mockAlex = new User("Alexy", mockRoomCode, "2", Constants.getYellowDuck(),
-            "Alex", "Yang", "China", "Shanghai", "Sleepy",
-            "Sweet and sour chicken", "badminton", true);
-    private final Person mockMohammed = new User("Moha", mockRoomCode, "3", Constants.getYellowDuck(),
-            "Mohammed", "Lee", "Syria", "Damascus", "Excited",
-            "Baked Potato", "Fight", true);
+    private final Person mockBob = new User("Bobby", mockRoomCode, "1", Constants.getYellowDuck(),
+                "Bob", "Li", "China", "Beijing", "Sad",
+                 "Chocolate", "Badminton", true);
+//            new User("Alexy", mockRoomCode, "2", Constants.getYellowDuck(),
+//            "Alex", "Yang", "China", "Shanghai", "Sleepy",
+//            "Sweet and sour chicken", "badminton", true);
+    private final Person mockMohammed = new User("LuckyUser", mockRoomCode, "3", Constants.getYellowDuck(),
+            "Lucky", "You", "United Kingdom", "Reading", "Excited",
+            "Baked Potato", "Swimming", true);
     private final Person mockYHB = new User("Andersuki", mockRoomCode, "4", Constants.getYellowDuck(),
             "Hongbo", "Yu", "China", "Harbin", "Tired",
             "Steak", "Basketball", true);
@@ -45,14 +48,17 @@ public class ServerRunner {
     private final Person mockZX = new User("Cecilia", mockRoomCode, "6", Constants.getYellowDuck(),
             "Zixi", "Wang", "china", "Shenzhen", "Joyful",
             "Cake", "Violin", true);
-    private final Admin mockAdminBob = new Admin("Bobby", mockRoomCode, "1", Constants.getYellowDuck(),
-            "Bob", "Li", "China", "Beijing", "Sad",
-            "Chocolate", "Travel", true);
+    private final Admin mockAdminAlex = new Admin("Alexy", mockRoomCode, "2", Constants.getYellowDuck(),
+            "Alex", "Yang", "United Kingdom", "London", "Happy",
+            "Fish and Chips", "Reading", true);
+//            new Admin("Bobby", mockRoomCode, "1", Constants.getYellowDuck(),
+//            "Bob", "Li", "China", "Beijing", "Sad",
+//            "Chocolate", "Travel", true);
     private final Map<String, Person> mockRoomUserIDMap = new HashMap<>();
 
     private ServerRunner() {
         this.mockRoom = createMockRoom();
-        mockRoomUserIDMap.put("2", mockAlex);
+        mockRoomUserIDMap.put("2", mockBob);
         mockRoomUserIDMap.put("3", mockMohammed);
         mockRoomUserIDMap.put("4", mockYHB);
         mockRoomUserIDMap.put("5", mockWSY);
@@ -61,14 +67,14 @@ public class ServerRunner {
 
     private Room createMockRoom() {
         int mockRoomNumber = -1;
-        Room mockRoom = new Room(mockRoomNumber, mockRoomCode, mockAdminBob);
+        Room mockRoom = new Room(mockRoomNumber, mockRoomCode, mockAdminAlex);
         addRoom(mockRoom, mockRoomCode);
-        joinRoom(mockRoomCode, "Alexy", "2");
-        joinRoom(mockRoomCode, "Moha", "3");
+        joinRoom(mockRoomCode, "Bobby", "2");
+        joinRoom(mockRoomCode, "LuckyUser", "3");
         joinRoom(mockRoomCode, "Andersuki", "4");
         joinRoom(mockRoomCode, "SelinaWan666", "5");
         joinRoom(mockRoomCode, "Cecilia", "6");
-        roomUpdateUser(mockAlex);
+        roomUpdateUser(mockBob);
         roomUpdateUser(mockMohammed);
         roomUpdateUser(mockYHB);
         roomUpdateUser(mockWSY);

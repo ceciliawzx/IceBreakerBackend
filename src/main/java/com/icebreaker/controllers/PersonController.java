@@ -3,6 +3,7 @@ package com.icebreaker.controllers;
 import com.icebreaker.dto.person.Person;
 import com.icebreaker.services.PersonService;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

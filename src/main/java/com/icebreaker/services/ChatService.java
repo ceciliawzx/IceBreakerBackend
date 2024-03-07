@@ -1,11 +1,11 @@
 package com.icebreaker.services;
 
 import com.icebreaker.dto.room.Room;
-import com.icebreaker.enums.RoomStatus;
 import com.icebreaker.dto.room.Target;
-import com.icebreaker.serverrunner.ServerRunner;
 import com.icebreaker.dto.websocket.ChatMessage;
 import com.icebreaker.dto.websocket.TimerMessage;
+import com.icebreaker.enums.RoomStatus;
+import com.icebreaker.serverrunner.ServerRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -62,4 +62,8 @@ public class ChatService {
         messagingTemplate.convertAndSend("/topic/room/" + roomCode + "/chatRoom", timerMessage);
     }
 
+    public void guessedCorrect(String roomCode, ChatMessage message) {
+        addCorrectGuesser(roomCode, message);
+        broadcastToRoom(roomCode, message);
+    }
 }

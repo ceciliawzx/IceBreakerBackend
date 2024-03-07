@@ -1,7 +1,7 @@
 package com.icebreaker.controllers;
 
-import com.icebreaker.services.ChatService;
 import com.icebreaker.dto.websocket.ChatMessage;
+import com.icebreaker.services.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -32,7 +32,6 @@ public class ChatController {
     @PostMapping(path = "/guessedCorrect", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public void guessedCorrect(@RequestParam(name = "roomCode") String roomCode, @RequestBody ChatMessage message) {
-        chatService.addCorrectGuesser(roomCode, message);
-        chatService.broadcastToRoom(roomCode, message);
+        chatService.guessedCorrect(roomCode, message);
     }
 }

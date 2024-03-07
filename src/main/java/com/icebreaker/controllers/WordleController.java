@@ -1,7 +1,7 @@
 package com.icebreaker.controllers;
 
-import com.icebreaker.services.WordleService;
 import com.icebreaker.dto.websocket.WordleMessage;
+import com.icebreaker.services.WordleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

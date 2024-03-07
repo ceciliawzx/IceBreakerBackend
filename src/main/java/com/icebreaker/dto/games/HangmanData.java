@@ -1,7 +1,7 @@
 package com.icebreaker.dto.games;
 
-import com.icebreaker.enums.WordleStateCode;
 import com.icebreaker.dto.websocket.HangmanMessage;
+import com.icebreaker.enums.WordleStateCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

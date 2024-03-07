@@ -1,9 +1,9 @@
-package com.icebreaker.controllers.httphandlers;
+package com.icebreaker.httprequests;
 
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class HttpRequestsController {
+public class HttpRequestTestController {
 
     @GetMapping("/myEndpoint")
     public String handleRequest(@RequestParam(name = "message", required = false) String message) {

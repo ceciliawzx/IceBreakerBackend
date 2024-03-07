@@ -30,7 +30,7 @@ public class ServerRunner {
     private final Map<Integer, String> numberCodeMapping = new HashMap<>();
     private final String mockRoomCode = "TEST";
     private Room mockRoom;
-    private final Person mockBob = new User("Bobby", mockRoomCode, "1", Constants.getYellowDuck(),
+    private final Person mockBob = new User("Bobby", mockRoomCode, "2", Constants.getYellowDuck(),
                 "Bob", "Li", "China", "Beijing", "Sad",
                  "Chocolate", "Badminton", true);
 //            new User("Alexy", mockRoomCode, "2", Constants.getYellowDuck(),
@@ -48,7 +48,7 @@ public class ServerRunner {
     private final Person mockZX = new User("Cecilia", mockRoomCode, "6", Constants.getYellowDuck(),
             "Zixi", "Wang", "china", "Shenzhen", "Joyful",
             "Cake", "Violin", true);
-    private final Admin mockAdminAlex = new Admin("Alexy", mockRoomCode, "2", Constants.getYellowDuck(),
+    private final Admin mockAdminAlex = new Admin("Alexy", mockRoomCode, "1", Constants.getYellowDuck(),
             "Alex", "Yang", "United Kingdom", "London", "Happy",
             "Fish and Chips", "Reading", true);
 //            new Admin("Bobby", mockRoomCode, "1", Constants.getYellowDuck(),

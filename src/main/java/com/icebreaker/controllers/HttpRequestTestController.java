@@ -1,4 +1,4 @@
-package com.icebreaker.httprequests;
+package com.icebreaker.controllers;
 
 import org.springframework.web.bind.annotation.*;
 

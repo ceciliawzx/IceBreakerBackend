@@ -38,13 +38,13 @@ public class ServerRunner {
 //            "Sweet and sour chicken", "badminton", true);
     private final Person mockMohammed = new User("LuckyUser", mockRoomCode, "3", Constants.getYellowDuck(),
             "Lucky", "You", "United Kingdom", "Reading", "Excited",
-            "Baked Potato", "Swimming", true);
+            "Banana", "Swimming", true);
     private final Person mockYHB = new User("Andersuki", mockRoomCode, "4", Constants.getYellowDuck(),
             "Hongbo", "Yu", "China", "Harbin", "Tired",
             "Steak", "Basketball", true);
     private final Person mockWSY = new User("SelinaWan666", mockRoomCode, "5", Constants.getYellowDuck(),
-            "Siyu", "Wan", "Maldives", "Olhuveli", "Happy",
-            "Nang", "Sing", true);
+            "Siyu", "Wan", "France", "Paris", "Happy",
+            "Toast", "Sing", true);
     private final Person mockZX = new User("Cecilia", mockRoomCode, "6", Constants.getYellowDuck(),
             "Zixi", "Wang", "china", "Shenzhen", "Joyful",
             "Cake", "Violin", true);

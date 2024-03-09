@@ -32,10 +32,6 @@ public class ReportService {
     }
 
     public void fetchReports(String roomCode) {
-        if (allReports.containsKey(roomCode)) {
-            // Return cached reports if available
-            return;
-        }
         HttpHeaders headers = new HttpHeaders();
         List<Person> players = runner.getRoom(roomCode).getPlayers();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -55,9 +51,7 @@ public class ReportService {
     }
 
     public String fetchReportsForUser(String roomCode, String userID) {
-        if (!allReports.containsKey(roomCode)) {
-            fetchReports(roomCode);
-        }
+        fetchReports(roomCode);
 
         Map<String, Object> reports = allReports.get(roomCode);
         Object userReport = reports.getOrDefault(userID, "No report available for this user.");
@@ -66,9 +60,7 @@ public class ReportService {
     }
 
     public String fetchReportOfUser(String roomCode, String userID1, String userID2) {
-        if (!allReports.containsKey(roomCode)) {
-            fetchReports(roomCode);
-        }
+        fetchReports(roomCode);
 
         Map<String, Object> reports = allReports.get(roomCode);
         Map<String, Object> user1Reports = (Map<String, Object>) reports.getOrDefault(userID1, Collections.emptyMap());
@@ -82,6 +74,10 @@ public class ReportService {
             }
         }
         return JsonUtils.returnJson(Map.of("report", reportForUser2), JsonUtils.unknownError);
+    }
+
+    public void removeReports(String roomCode) {
+        allReports.remove(roomCode);
     }
 
 }

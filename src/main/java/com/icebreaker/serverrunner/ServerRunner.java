@@ -160,6 +160,7 @@ public class ServerRunner {
                 codeNumberMapping.remove(roomCode);
                 numberCodeMapping.remove(roomNumber);
                 roomCodeGenerator.deleteUnUseCode(roomCode);
+
                 return true;
             }
             return false;

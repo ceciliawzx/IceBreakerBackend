@@ -28,18 +28,20 @@ public class RoomService {
     private final TimerService timerService;
     private final WaitRoomService waitRoomService;
     private final GeoguesserService geoguesserService;
+    private final ReportService reportService;
 
     private final ServerRunner runner = ServerRunner.getInstance();
     private final AtomicInteger roomNumber = new AtomicInteger(0);
     private final AtomicInteger userID = new AtomicInteger(0);
 
-    public RoomService(WordleService wordleService, HangmanService hangmanService, DrawingService drawingService, TimerService timerService, WaitRoomService waitRoomService, GeoguesserService geoguesserService) {
+    public RoomService(WordleService wordleService, HangmanService hangmanService, DrawingService drawingService, TimerService timerService, WaitRoomService waitRoomService, GeoguesserService geoguesserService, ReportService reportService) {
         this.wordleService = wordleService;
         this.hangmanService = hangmanService;
         this.drawingService = drawingService;
         this.timerService = timerService;
         this.waitRoomService = waitRoomService;
         this.geoguesserService = geoguesserService;
+        this.reportService = reportService;
     }
 
     public String handleCreateRoom(String name) throws NoSuchAlgorithmException {
@@ -72,6 +74,7 @@ public class RoomService {
 
     public boolean handleDestroyRoom(String roomCode) {
         boolean result = runner.destroyRoom(roomCode);
+        reportService.removeReports(roomCode);
         waitRoomService.broadcastMessage(roomCode);
         return result;
     }

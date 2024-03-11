@@ -105,7 +105,7 @@ the end of the game.
     will be dismissed
 
 ### Page linking graph
-![PageLinkingGraph](./img/page-linking-graph.png?raw=true)
+<img src="./img/page-linking-graph.png?raw=true" alt="drawing" width="200"/>
 
 ### Instruction graphs
 

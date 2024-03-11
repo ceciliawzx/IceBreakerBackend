@@ -105,15 +105,15 @@ the end of the game.
     will be dismissed
 
 ### Page linking graph
-<img src="./img/page-linking-graph.png?raw=true" width="500"/>
+![PageLinkingGraph] <img src="./img/page-linking-graph.png?raw=true" alt="drawing" width="800"/>
 
 ### Instruction graphs
 
 - **Wait Room**
-    <img src="./img/WaitRoom.png?raw=true" width="600"/>
+    ![WaitRoom] <img src="./img/PresentRoom.png?raw=true" width="600"/>
 
 - **Present Room**
-    <img src="./img/PresentRoom.png?raw=true" width="700"/>
+    ![PresentRoom] <img src="./img/PresentRoom.png?raw=true" width="600"/>
     
 - **Pictionary Game**
     

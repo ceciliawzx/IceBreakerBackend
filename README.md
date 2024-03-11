@@ -274,8 +274,11 @@ We have implemented a CI/CD pipeline on gitlab for deploying the frontend websit
 - Front-end
     
     Basic idea: build the project, put the `build/` folder into your specified web directory
+
+    Notice that you need to set these CI/CD variables in git:
+    - SSH_PRIVATE_KEY: Your private key for authentication
     
-    Example deploy stage: 
+    <!-- Deploy stage idea: 
     
     ```bash
     deploy:
@@ -284,6 +287,26 @@ We have implemented a CI/CD pipeline on gitlab for deploying the frontend websit
         - {commands to ssh into your server}
       script:
         - scp -r build/* {target dir path in your server that you want to put the code into}
+    ``` -->
+
+    Example deploy stage: 
+     ```bash
+    deploy:
+        stage: deploy
+        before_script:
+        # Preparing ssh environment
+        - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+        - eval $(ssh-agent -s)
+
+        # Adding the private key for authentication
+        - ssh-add <(echo "$SSH_PRIVATE_KEY")
+
+        #  Configuring SSH settings
+        - mkdir -p ~/.ssh
+        - chmod 700 ~/.ssh
+        - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    script:
+        - scp -r build/* user@your-server-ip:{target-dir-path}
     ```
     
 - Back-end

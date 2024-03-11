@@ -105,10 +105,7 @@ the end of the game.
     will be dismissed
 
 ### Page linking graph
-
-!https://prod-files-secure.s3.us-west-2.amazonaws.com/b00b43fb-e4c5-4359-871c-7823afdd653e/50f4623b-5639-4543-83cf-831d221a65db/Documentation_660b2b4fcdf44ddd8af695b4a8a6dcb9PageGraph.png
-
-PageGraph.png
+![PageLinkingGraph](./img/page-linking-graph.png?raw=true)
 
 ### Instruction graphs
 
@@ -351,11 +348,11 @@ We have implemented a CI/CD pipeline on gitlab for deploying the frontend websit
 ## System Architecture
 
 ### Front-end System Architecture Diagram
-![Front-end System Architecture Diagram](https://prod-files-secure.s3.us-west-2.amazonaws.com/b00b43fb-e4c5-4359-871c-7823afdd653e/e32e6957-8291-407f-8ea9-e800911ce03e/Documentation_660b2b4fcdf44ddd8af695b4a8a6dcb9FrontendStructure.svg)
+![Front-end System Architecture Diagram](./img/frontendArchitecture.jpg?raw=true)
 
 ### Back-end System Architecture Diagram
 
-![Back-end System Architecture Diagram](https://prod-files-secure.s3.us-west-2.amazonaws.com/b00b43fb-e4c5-4359-871c-7823afdd653e/ee45a087-9dd4-421f-b10a-ea5e30bfbb3f/Untitled.svg)
+![Back-end System Architecture Diagram](./img/backendArchitecture.jpg?raw=true)
 
 ### WebSocket and HTTP
 

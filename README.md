@@ -113,34 +113,34 @@ PageGraph.png
 ### Instruction graphs
 
 - **Wait Room**
-    ![WaitRoom](https://github.com/g236002112/icebreakerbackend/blob/master/WaitRoom.png?raw=true)
+    ![WaitRoom](./img/WaitRoom.png?raw=true)
 
 - **Present Room**
     
-    ![PresentRoom](https://prod-files-secure.s3.us-west-2.amazonaws.com/b00b43fb-e4c5-4359-871c-7823afdd653e/dabfd8b8-090c-4c71-87b0-e5bddb65f755/Documentation_660b2b4fcdf44ddd8af695b4a8a6dcb9Present.png)
+    ![PresentRoom](./img/PresentRoom.png?raw=true)
     
 - **Pictionary Game**
     
-    ![PictionaryGame](https://prod-files-secure.s3.us-west-2.amazonaws.com/b00b43fb-e4c5-4359-871c-7823afdd653e/fb388164-5074-4121-931a-bab8a15f80ac/Documentation_660b2b4fcdf44ddd8af695b4a8a6dcb9Pictionary.png)
+    ![PictionaryGame](./img/PictionaryGame.png?raw=true)
     
 - **Shareboard Game**
     
-    ![ShareBoardGame](https://prod-files-secure.s3.us-west-2.amazonaws.com/b00b43fb-e4c5-4359-871c-7823afdd653e/e2dbd385-deed-4396-af8f-0e3d64348bf6/Documentation_660b2b4fcdf44ddd8af695b4a8a6dcb9Shareboard.png)
+    ![ShareBoardGame](./img/ShareboardGame.png?raw=true)
     
 - **GeoGuesser Game**
     
-    ![GeoGuesser Game 1](https://prod-files-secure.s3.us-west-2.amazonaws.com/b00b43fb-e4c5-4359-871c-7823afdd653e/587fcffe-ea28-44ae-8c77-836dad3f624c/Documentation_660b2b4fcdf44ddd8af695b4a8a6dcb9Geoguesser1.png)
+    ![GeoGuesser Game 1](./img/GeoguesserGame1.png?raw=true)
     
-    ![GeoGuesser Game 2](https://prod-files-secure.s3.us-west-2.amazonaws.com/b00b43fb-e4c5-4359-871c-7823afdd653e/efce2d27-08ea-42c4-b56e-49e98489910b/Documentation_660b2b4fcdf44ddd8af695b4a8a6dcb9Geoguesser2.png)
+    ![GeoGuesser Game 2](./img/GeoguesserGame2.png?raw=true)
     
 
 - **Wordle Game**
     
-    ![Wordle Game](https://prod-files-secure.s3.us-west-2.amazonaws.com/b00b43fb-e4c5-4359-871c-7823afdd653e/1761c2fc-6b8b-4f93-b435-e140ba88ed98/Documentation_660b2b4fcdf44ddd8af695b4a8a6dcb9Wordle.png)
+    ![Wordle Game](./img/WordleGame.png?raw=true)
     
 - **Hangman Game**
     
-    ![Hangman Game](https://prod-files-secure.s3.us-west-2.amazonaws.com/b00b43fb-e4c5-4359-871c-7823afdd653e/7247783f-ef51-400f-bfdb-5e286d664ff3/Documentation_660b2b4fcdf44ddd8af695b4a8a6dcb9Hangman.png)
+    ![Hangman Game](./img/HangmanGame.png?raw=true)
     
 
 ## How to Use

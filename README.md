@@ -105,7 +105,7 @@ the end of the game.
     will be dismissed
 
 ### Page linking graph
-<img src="./img/page-linking-graph.png?raw=true" alt="drawing" width="800"/>
+<img src="./img/page-linking-graph.png?raw=true" width="800"/>
 
 ### Instruction graphs
 
@@ -342,11 +342,10 @@ We have implemented a CI/CD pipeline on gitlab for deploying the frontend websit
 ## System Architecture
 
 ### Front-end System Architecture Diagram
-![Front-end System Architecture Diagram](./img/frontendArchitecture.jpg?raw=true)
+<img src="./img/frontendArchitecture.jpg?raw=true" width="800"/>
 
 ### Back-end System Architecture Diagram
-
-![Back-end System Architecture Diagram](./img/backendArchitecture.jpg?raw=true)
+<img src="./img/backendArchitecture.jpg?raw=true" width="800"/>
 
 ### WebSocket and HTTP
 

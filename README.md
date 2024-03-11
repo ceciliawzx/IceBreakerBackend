@@ -360,6 +360,58 @@ We have implemented a CI/CD pipeline on gitlab for deploying the frontend websit
 - Analyser:
     
     Basic idea: put the whole project into into your specified server, select port and run the `flask_app.py`
+
+    Notice that, we currently assume the Java Backend and the Python Analyser will run in the same server, therefore when the backend fetch the similarity analysis in file `ReportService` in function `fetchReports`, it set the API of Python Analyser to `pythonServiceUrl = http://localhost:8000/generate_reports`. If in the real deployment, the Python Analyzer will run in a different server, make sure you change this `pythonServiceUrl` variable to the real endpoint. 
+
+    Notice that you need to change these CI/CD variables in git:
+
+    - REMOTE_USER: Your server user account
+    - REMOTE_SERVER: Your server url
+    - SSH_PASSWORD: The password of the user account
+    - DEPLOY_DIRECTORY: target_deployment_path in your server
+    - GUNICORN_PORT: port that you want this analyzer to run on
+
+    Example deploy stage:
+
+    ```bash
+    deploy:
+    stage: deploy
+    script:
+        # Search for existing pid on port
+        - EXISTING_PID=$(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$GUNICORN_PORT -t || echo 'not_found'")
+        - echo "Checking for existing process on port $GUNICORN_PORT"
+        - echo "EXISTING_PID $EXISTING_PID"
+            # Extract the first PID from the list
+        - FIRST_PID=$(echo "$EXISTING_PID" | head -n 1)
+
+        # Kill the first PID if it's not "not_found"
+        - >
+        if [ "$FIRST_PID" != "not_found" ]; then
+            echo "Killing existing process on port $GUNICORN_PORT with PID $FIRST_PID"
+            sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "kill $FIRST_PID"
+        else
+            echo "No existing process found on port $GUNICORN_PORT"
+        fi
+
+        # make dir and copy files
+        - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "mkdir -p $DEPLOY_DIRECTORY"
+        - sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./* "$REMOTE_USER@$REMOTE_SERVER:$DEPLOY_DIRECTORY"
+        
+        # launch - there is issue with running
+        - sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" 'bash -c "{ export PATH=\$PATH:/home/ice/.local/bin && cd {target_dir_path} && nohup gunicorn --workers 2 --bind 0.0.0.0:{target_port} flask_app:app >/dev/null 2>&1 & } < /dev/null > /dev/null 2>&1 &"'
+
+        - sleep 5
+
+        # Show current pid
+        - echo $(sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$REMOTE_USER@$REMOTE_SERVER" "lsof -i :$GUNICORN_PORT -t || echo 'not_found'")
+    ```
+
+    Notice that you need to change the following line to match your server's setup:
+    ```bash
+        export PATH=\$PATH:/home/ice/.local/bin
+    ```
+
+    Notice that you need to change the `{target_dir_path}` to the real dir in your server where the `flask_app.py` exists, and change the `{target_port}` to match the `$GUNICORN_PORT`.
     
 
 ## System Architecture

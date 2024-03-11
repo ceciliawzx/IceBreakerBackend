@@ -113,7 +113,7 @@ PageGraph.png
 ### Instruction graphs
 
 - **Wait Room**
-    ![WaitRoom](https://prod-files-secure.s3.us-west-2.amazonaws.com/b00b43fb-e4c5-4359-871c-7823afdd653e/7d0953b2-14eb-4601-a3a6-cdc3fcf6b39e/Documentation_660b2b4fcdf44ddd8af695b4a8a6dcb9WaitRoomAdmin.png)
+    ![WaitRoom](https://github.com/g236002112/icebreakerbackend/blob/master/img/WaitRoom.png?raw=true)
 
 - **Present Room**
     

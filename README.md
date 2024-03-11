@@ -105,38 +105,33 @@ the end of the game.
     will be dismissed
 
 ### Page linking graph
-![PageLinkingGraph] <img src="./img/page-linking-graph.png?raw=true" alt="drawing" width="800"/>
+<img src="./img/page-linking-graph.png?raw=true" alt="drawing" width="800"/>
 
 ### Instruction graphs
 
 - **Wait Room**
-    ![WaitRoom] <img src="./img/PresentRoom.png?raw=true" width="600"/>
+    <img src="./img/WaitRoom.png?raw=true" width="600"/>
 
 - **Present Room**
-    ![PresentRoom] <img src="./img/PresentRoom.png?raw=true" width="600"/>
+    <img src="./img/PresentRoom.png?raw=true" width="600"/>
     
 - **Pictionary Game**
-    
-    ![PictionaryGame](./img/PictionaryGame.png?raw=true)
+    <img src="./img/PictionaryGame.png?raw=true" width="600"/>
     
 - **Shareboard Game**
-    
-    ![ShareBoardGame](./img/ShareboardGame.png?raw=true)
+    <img src="./img/ShareboardGame.png?raw=true" width="600"/>
     
 - **GeoGuesser Game**
-    
-    ![GeoGuesser Game 1](./img/GeoguesserGame1.png?raw=true)
-    
-    ![GeoGuesser Game 2](./img/GeoguesserGame2.png?raw=true)
+    <img src="./img/GeoguesserGame1.png?raw=true" width="600"/>
+
+    <img src="./img/GeoguesserGame2.png?raw=true" width="600"/>
     
 
 - **Wordle Game**
-    
-    ![Wordle Game](./img/WordleGame.png?raw=true)
+    <img src="./img/WordleGame.png?raw=true" width="600"/>
     
 - **Hangman Game**
-    
-    ![Hangman Game](./img/HangmanGame.png?raw=true)
+    <img src="./img/HangmanGame.png?raw=true" width="600"/>
     
 
 ## How to Use
